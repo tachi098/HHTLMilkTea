@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +23,7 @@ public class Product implements Serializable {
 
     private String name;
     private String title;
+
     private String linkImage;
     private String nameImage;
     private long price;
@@ -48,4 +51,27 @@ public class Product implements Serializable {
             mappedBy = "product"
     )
     private SaleOff saleOff;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_sizeoption",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "sizeoption_id")
+    )
+    private Set<SizeOption> sizeOptions;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_additionoption",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "additionoption_id")
+    )
+    private Set<AdditionOption> additionOptions;
+
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "product"
+    )
+    private OrderDetail orderDetail;
 }

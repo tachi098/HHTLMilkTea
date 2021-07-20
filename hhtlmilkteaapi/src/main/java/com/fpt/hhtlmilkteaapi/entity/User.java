@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -56,6 +57,20 @@ public class User implements Serializable {
     private Date updatedAt;
 
     private Date deletedAt;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "userId",
+            cascade = CascadeType.ALL
+    )
+    private Collection<Order> orders;
+
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private MemberVip memberVip;
 
     public User(String username, String email, String password) {
         this.username = username;
