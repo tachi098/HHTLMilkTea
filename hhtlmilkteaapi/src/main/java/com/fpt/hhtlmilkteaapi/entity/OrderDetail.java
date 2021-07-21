@@ -33,8 +33,4 @@ public class OrderDetail implements Serializable {
     )
     @JsonIgnore
     private Order orderId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
 }
