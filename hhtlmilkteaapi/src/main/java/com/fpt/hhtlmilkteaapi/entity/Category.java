@@ -2,6 +2,7 @@ package com.fpt.hhtlmilkteaapi.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,14 +13,17 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name="category")
 public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NonNull
     private long id;
 
+    @NonNull
     private String name;
 
     @CreationTimestamp
@@ -36,4 +40,5 @@ public class Category implements Serializable {
             cascade = CascadeType.ALL
     )
     private Collection<Product> products;
+
 }

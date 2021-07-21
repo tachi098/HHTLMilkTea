@@ -1,8 +1,10 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Nationalized;
 
@@ -13,12 +15,12 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="product")
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id; // Sử dụng P + getTime()
 
     private String name;
@@ -45,12 +47,9 @@ public class Product implements Serializable {
     @JsonIgnore
     private Category categoryId;
 
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "product"
-    )
-    private SaleOff saleOff;
+//    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+//    @JoinColumn(name = "saleoff_id", nullable = false)
+//    private SaleOff saleOff;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -68,10 +67,16 @@ public class Product implements Serializable {
     )
     private Set<AdditionOption> additionOptions;
 
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "product"
-    )
-    private OrderDetail orderDetail;
+    public Product(String id, String name, String title, String linkImage, String nameImage, long price, Category categoryId, Set<SizeOption> sizeOptions, Set<AdditionOption> additionOptions) {
+        this.id = id;
+        this.name = name;
+        this.title = title;
+        this.linkImage = linkImage;
+        this.nameImage = nameImage;
+        this.price = price;
+        this.categoryId = categoryId;
+        this.sizeOptions = sizeOptions;
+        this.additionOptions = additionOptions;
+//        this.saleOff = saleOff;
+    }
 }

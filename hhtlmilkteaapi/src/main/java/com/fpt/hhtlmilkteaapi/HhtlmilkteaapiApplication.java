@@ -1,7 +1,6 @@
 package com.fpt.hhtlmilkteaapi;
 
-import com.fpt.hhtlmilkteaapi.seed.SeedRolesTable;
-import com.fpt.hhtlmilkteaapi.seed.SeedUsersTable;
+import com.fpt.hhtlmilkteaapi.seed.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -22,5 +21,10 @@ public class HhtlmilkteaapiApplication {
         SeedRolesTable.insertData();
         SeedUsersTable.insertData();
 
+        SeedCategoriesTable.insertData();
+        SeedSizeOptionsTable.insertData();
+        SeedAddOptionsTable.insertData();
+        SeedProductsTable.insertData();
+        SeedSaleOffsTable.insertData();
     }
 }
