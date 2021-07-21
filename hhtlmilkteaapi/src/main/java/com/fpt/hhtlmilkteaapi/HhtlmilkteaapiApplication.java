@@ -26,5 +26,7 @@ public class HhtlmilkteaapiApplication {
         SeedAddOptionsTable.insertData();
         SeedProductsTable.insertData();
         SeedSaleOffsTable.insertData();
+
+
     }
 }

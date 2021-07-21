@@ -38,12 +38,14 @@ public class SaleOff implements Serializable {
     private Date deletedAt;
 
     @OneToOne(
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            optional = false
     )
     @JoinColumn(
-            name = "product_id"
+            name = "product_id",
+            nullable = false
     )
     @NonNull
-//    @JsonIgnore
+    @JsonIgnore
     private Product product;
 }

@@ -58,9 +58,12 @@ public class SeedProductsTable {
 
             Category category = categoryRepository.findById(2L).get();
 //            SaleOff saleOff01 = saleOffRepository.findById(1L).get();
+
             // Insert Products
-            Product product01 = new Product("P001","Tra sua", "Milktea", null, null, 2500, category, sizeOptions01, addOptions01);
-            Product product02 = new Product("P002","Tra sua mam tom", "Milktea", null, null, 2500, category, sizeOptions02, addOptions02);
+            Product product01 = new Product("P001","Tra sua", "Milktea", null, null,
+                    2500, category, sizeOptions01, addOptions01);
+            Product product02 = new Product("P002","Tra sua mam tom", "Milktea", null, null,
+                    2500, category, sizeOptions02, addOptions02);
 
             // Insert Data
             productRepository.saveAll(Arrays.asList(product01, product02));

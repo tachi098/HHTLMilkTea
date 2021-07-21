@@ -24,12 +24,16 @@ public class SeedSaleOffsTable {
     }
 
     public static void insertData() {
+
         long count = saleOffRepository.count();
+
         if (count == 0) {
+
             Product product01 = productRepository.findById("P001").get();
-            // Insert SaleOffs
+            Product product02 = productRepository.findById("P002").get();
+
             SaleOff saleOff01 = new SaleOff(1,0.3, new Date(), product01);
-            SaleOff saleOff02 = new SaleOff(2,0.15, new Date(), product01);
+            SaleOff saleOff02 = new SaleOff(2,0.15, new Date(), product02);
 
             // Insert Data
             saleOffRepository.saveAll(Arrays.asList(saleOff01, saleOff02));

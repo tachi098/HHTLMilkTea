@@ -47,9 +47,12 @@ public class Product implements Serializable {
     @JsonIgnore
     private Category categoryId;
 
-//    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
-//    @JoinColumn(name = "saleoff_id", nullable = false)
-//    private SaleOff saleOff;
+    @OneToOne(
+            mappedBy = "product",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private SaleOff saleOff;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -67,7 +70,8 @@ public class Product implements Serializable {
     )
     private Set<AdditionOption> additionOptions;
 
-    public Product(String id, String name, String title, String linkImage, String nameImage, long price, Category categoryId, Set<SizeOption> sizeOptions, Set<AdditionOption> additionOptions) {
+    public Product(String id, String name, String title, String linkImage, String nameImage, long price,
+                   Category categoryId, Set<SizeOption> sizeOptions, Set<AdditionOption> additionOptions) {
         this.id = id;
         this.name = name;
         this.title = title;
