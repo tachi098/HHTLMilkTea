@@ -8,7 +8,7 @@ public class Constant {
             "/api/product/**",
             "/api/sizeoption/**",
             "/api/additionoption/**",
-            "/api/saleoffs/**",
+            "/api/saleoff/**",
     };
 
 }
