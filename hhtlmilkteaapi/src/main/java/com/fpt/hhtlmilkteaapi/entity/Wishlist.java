@@ -1,5 +1,6 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="wishlist")
 public class Wishlist implements Serializable {

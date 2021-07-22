@@ -1,6 +1,7 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orderdetail")
 public class OrderDetail implements Serializable {
@@ -18,7 +20,7 @@ public class OrderDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private int sizeOptionId;
+    private Long sizeOptionId;
     private String addOptionId;
     private int quantity;
 
@@ -33,4 +35,5 @@ public class OrderDetail implements Serializable {
     )
     @JsonIgnore
     private Order orderId;
+
 }

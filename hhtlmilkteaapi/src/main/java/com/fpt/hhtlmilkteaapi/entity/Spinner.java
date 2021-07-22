@@ -23,4 +23,10 @@ public class Spinner implements Serializable {
 
     @CreationTimestamp
     private Date createdAt;
+
+    public Spinner(long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
 }

@@ -24,4 +24,11 @@ public class Voucher implements Serializable {
 
     @CreationTimestamp
     private Date createdAt;
+
+    public Voucher(long id, String codeName, String userName, boolean status) {
+        this.id = id;
+        this.codeName = codeName;
+        this.userName = userName;
+        this.status = status;
+    }
 }

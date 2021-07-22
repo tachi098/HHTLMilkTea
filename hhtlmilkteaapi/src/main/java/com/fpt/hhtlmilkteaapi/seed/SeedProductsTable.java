@@ -39,31 +39,32 @@ public class SeedProductsTable {
         long count = productRepository.count();
 
         if (count == 0) {
+            // Insert Products
+            // Insert Product1
+            Category category01 = categoryRepository.findById(2L).get();
             Set<SizeOption> sizeOptions01 = new HashSet<>();
-            Set<SizeOption> sizeOptions02 = new HashSet<>();
             SizeOption sizeOption01 = sizeOptionRepository.findById(1L).get();
             SizeOption sizeOption02 = sizeOptionRepository.findById(2L).get();
             sizeOptions01.add(sizeOption01);
             sizeOptions01.add(sizeOption02);
-            sizeOptions02.add(sizeOption02);
-
             Set<AdditionOption> addOptions01 = new HashSet<>();
-            Set<AdditionOption> addOptions02 = new HashSet<>();
             AdditionOption addOption01 = addOptionRepository.findById(1L).get();
             AdditionOption addOption02 = addOptionRepository.findById(2L).get();
-            AdditionOption addOption03 = addOptionRepository.findById(3L).get();
             addOptions01.add(addOption01);
             addOptions01.add(addOption02);
-            addOptions02.add(addOption03);
-
-            Category category = categoryRepository.findById(2L).get();
-//            SaleOff saleOff01 = saleOffRepository.findById(1L).get();
-
-            // Insert Products
             Product product01 = new Product("P001","Tra sua", "Milktea", null, null,
-                    2500, category, sizeOptions01, addOptions01);
+                    2500, category01, sizeOptions01, addOptions01);
+
+            // Insert Product2
+            Category category02 = categoryRepository.findById(2L).get();
+            Set<SizeOption> sizeOptions02 = new HashSet<>();
+            SizeOption sizeOption03 = sizeOptionRepository.findById(2L).get();
+            sizeOptions02.add(sizeOption03);
+            Set<AdditionOption> addOptions02 = new HashSet<>();
+            AdditionOption addOption03 = addOptionRepository.findById(3L).get();
+            addOptions02.add(addOption03);
             Product product02 = new Product("P002","Tra sua mam tom", "Milktea", null, null,
-                    2500, category, sizeOptions02, addOptions02);
+                    2500, category02, sizeOptions02, addOptions02);
 
             // Insert Data
             productRepository.saveAll(Arrays.asList(product01, product02));

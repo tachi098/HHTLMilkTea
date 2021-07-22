@@ -12,6 +12,11 @@ public class Constant {
             "/api/additionoption/**",
             "/api/saleoff/**",
             "/api/membervip/**",
+            "/api/order/**",
+            "/api/orderdetail/**",
+            "/api/wishlist/**",
+            "/api/code/**",
+            "/api/spinner/**",
     };
 
 }

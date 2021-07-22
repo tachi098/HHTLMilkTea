@@ -28,6 +28,11 @@ public class HhtlmilkteaapiApplication {
         SeedProductsTable.insertData();
         SeedSaleOffsTable.insertData();
 
-
+        SeedOrdersTable.insertData();
+        SeedOrderDetailsTable.insertData();
+        SeedWishlistsTable.insertData();
+        SeedCodesTable.insertData();
+        SeedVouchersTable.insertData();
+        SeedSpinnersTable.insertData();
     }
 }
