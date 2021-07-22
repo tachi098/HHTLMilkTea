@@ -15,7 +15,12 @@ import java.util.Date;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-@Table(name="category")
+@Table(
+        name="category",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "name")
+        }
+)
 public class Category implements Serializable {
 
     @Id
