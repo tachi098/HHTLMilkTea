@@ -20,6 +20,7 @@ public class HhtlmilkteaapiApplication {
 
         SeedRolesTable.insertData();
         SeedUsersTable.insertData();
+        SeedMemberVipsTable.insertData();
 
         SeedCategoriesTable.insertData();
         SeedSizeOptionsTable.insertData();
