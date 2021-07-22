@@ -1,5 +1,6 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -44,6 +45,7 @@ public class Category implements Serializable {
             mappedBy = "categoryId",
             cascade = CascadeType.ALL
     )
+    @JsonIgnoreProperties("categoryId")
     private Collection<Product> products;
 
 }

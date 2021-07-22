@@ -25,4 +25,12 @@ public class Code implements Serializable {
 
     @CreationTimestamp
     private Date createdAt;
+
+    public Code(long id, String name, long mark, String username, Date endDate) {
+        this.id = id;
+        this.name = name;
+        this.mark = mark;
+        this.username = username;
+        this.endDate = endDate;
+    }
 }

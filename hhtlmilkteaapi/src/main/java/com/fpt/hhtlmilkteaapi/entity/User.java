@@ -1,14 +1,18 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -63,6 +67,7 @@ public class User implements Serializable {
             mappedBy = "userId",
             cascade = CascadeType.ALL
     )
+    @JsonIgnoreProperties("userId")
     private Collection<Order> orders;
 
     @OneToOne(

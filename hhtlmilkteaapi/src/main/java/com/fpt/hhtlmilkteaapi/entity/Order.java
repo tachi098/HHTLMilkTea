@@ -1,6 +1,7 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -47,7 +49,7 @@ public class Order implements Serializable {
             referencedColumnName = "id",
             nullable = false
     )
-    @JsonIgnore
+    @JsonIgnoreProperties("orders")
     private User userId;
 
     @OneToMany(
@@ -56,4 +58,14 @@ public class Order implements Serializable {
             cascade = CascadeType.ALL
     )
     private Collection<OrderDetail> orderDetails;
+
+    public Order(long id, String address, String phone, int payment, String noteOrder, long memberVip, User userId) {
+        this.id = id;
+        this.address = address;
+        this.phone = phone;
+        this.payment = payment;
+        this.noteOrder = noteOrder;
+        this.memberVip = memberVip;
+        this.userId = userId;
+    }
 }
