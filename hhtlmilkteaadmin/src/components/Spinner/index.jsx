@@ -35,6 +35,7 @@ const useStyles = makeStyles({
   },
   btn: {
     height: 36,
+    marginRight: 15,
   },
   flexForm: {
     display: "flex",
