@@ -1,17 +1,18 @@
-import React from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import { Euro, FormatAlignCenter } from '@material-ui/icons';
-import { Divider } from '@material-ui/core';
-import { Link } from 'react-router-dom'
+import React from "react";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import PeopleIcon from "@material-ui/icons/People";
+import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
+import { Euro, FormatAlignCenter } from "@material-ui/icons";
+import { Divider } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const mainListItems = (
   <div>
-    <Link to="/" style={{textDecoration: "none", color: 'black'}}>
+    <Link to="/" style={{ textDecoration: "none", color: "black" }}>
       <ListItem button>
         <ListItemIcon>
           <DashboardIcon />
@@ -37,9 +38,17 @@ const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Người dùng" />
     </ListItem>
+    <Link to="/spinner" style={{ textDecoration: "none", color: "black" }}>
+      <ListItem>
+        <ListItemIcon>
+          <CardGiftcardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Vòng Quay" />
+      </ListItem>
+    </Link>
     <Divider />
 
-    <Link to="/form" style={{textDecoration: "none", color: 'black'}}>
+    <Link to="/form" style={{ textDecoration: "none", color: "black" }}>
       <ListItem button>
         <ListItemIcon>
           <FormatAlignCenter />
@@ -47,7 +56,7 @@ const mainListItems = (
         <ListItemText primary="Form" />
       </ListItem>
     </Link>
-    <Link to="/table" style={{textDecoration: "none", color: 'black'}}>
+    <Link to="/table" style={{ textDecoration: "none", color: "black" }}>
       <ListItem button>
         <ListItemIcon>
           <FormatAlignCenter />

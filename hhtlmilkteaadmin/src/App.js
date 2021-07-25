@@ -1,18 +1,20 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Navbar from './components/Layout/Navbar'
-import Footer from './components/Layout/Footer'
-import Dashboard from './components/Dashboard';
-import Form from './components/Something/Form';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import SpanningTable from './components/Something/Table';
+import React, { Suspense } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Container from "@material-ui/core/Container";
+import Navbar from "./components/Layout/Navbar";
+import Dashboard from "./components/Dashboard";
+import Form from "./components/Something/Form";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import SpanningTable from "./components/Something/Table";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const Spinner = React.lazy(() => import("./components/Spinner"));
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: "flex",
   },
   title: {
     flexGrow: 1,
@@ -20,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    height: "100vh",
+    overflow: "auto",
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -33,27 +35,31 @@ const App = () => {
   const classes = useStyles();
 
   return (
-    <Router>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Navbar />
+    <>
+      <ToastContainer />
+      <Router>
+        <div className={classes.root}>
+          <CssBaseline />
+          <Navbar />
 
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-          <Switch>
-            <Route exact path={"/"} component={Dashboard}/>
-            <Route exact path={"/form"} component={Form}/>
-            <Route exact path={"/table"} component={SpanningTable}/>
-          </Switch>
-            <Box pt={4}>
-              <Footer />
-            </Box>
-          </Container>
-        </main>
-      </div>
-    </Router>
+          <main className={classes.content}>
+            <div className={classes.appBarSpacer} />
+            <Container maxWidth="lg" className={classes.container}>
+              <Switch>
+                <Suspense fallback={<h1>Loading...</h1>}>
+                  <Route exact path={"/"} component={Dashboard} />
+                  <Route exact path={"/form"} component={Form} />
+                  <Route exact path={"/table"} component={SpanningTable} />
+
+                  <Route path="/spinner" component={Spinner} />
+                </Suspense>
+              </Switch>
+            </Container>
+          </main>
+        </div>
+      </Router>
+    </>
   );
-}
+};
 
 export default App;

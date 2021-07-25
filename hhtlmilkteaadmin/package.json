@@ -38,5 +38,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-confirm-alert": "^2.7.0",
+    "react-hook-form": "6.15.8",
+    "react-toastify": "^7.0.4",
+    "react-wheel-of-prizes": "^1.0.8"
   }
 }
