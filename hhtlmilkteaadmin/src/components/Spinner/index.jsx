@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -19,7 +19,19 @@ import WheelComponent from "react-wheel-of-prizes";
 import "react-wheel-of-prizes/dist/index.css";
 import Notification from "./../../common/Notification";
 import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
+import {
+  SPINNER_ALERT_TITLE,
+  SPINNER_ALERT_MESSAGE,
+  SPINNER_FORM_NAME_REUIRED,
+  SPINNER_NOTIFICATION_WARN,
+} from "./../../common/Constant";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  SpinnerListAction,
+  SpinnerSaveAction,
+  SpinnerRemoveAction,
+} from "./../../store/actions/SpinnerAction";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles({
   root: {
@@ -59,34 +71,41 @@ const useStyles = makeStyles({
     left: "-10%",
     transform: "translate(0, -10%)",
   },
+  btnReload: {
+    position: "relative",
+    zIndex: 1,
+  },
 });
 
 const Spinner = () => {
   const classes = useStyles();
-
   const [disabled, setDisabled] = useState(true);
   const { register, errors, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const { spinners, segments, segColors, isLoading } = useSelector(
+    (state) => state.spinner
+  );
 
-  const segments = [
-    "Voucher HH",
-    "May Mắn Lần Sau",
+  const lableSpinner = [
+    "May mắn lần sau",
+    "Voucher",
     "10",
-    "Voucher HH",
-    "May Mắn Lần Sau",
-    "Voucher HH",
-    "5",
     "100",
+    "1000",
+    "10000",
+    "20",
+    "200",
+    "2000",
+    "20000",
+    "30",
+    "300",
+    "3000",
+    "30000",
   ];
-  const segColors = [
-    "#EE4040",
-    "#F0CF50",
-    "#815CD1",
-    "#3DA5E0",
-    "#34A24F",
-    "#F9AA1F",
-    "#EC3F3F",
-    "#FF9000",
-  ];
+
+  useEffect(() => {
+    dispatch(SpinnerListAction());
+  }, [dispatch]);
 
   const onFinished = (winner) => {
     console.log(winner);
@@ -100,25 +119,29 @@ const Spinner = () => {
     }
   };
 
-  const handleDelete = () => {
+  const handleOnDelete = (id) => {
+    dispatch(SpinnerRemoveAction(id));
+    Notification.warn(SPINNER_NOTIFICATION_WARN);
+  };
+
+  const handleDelete = (id) => {
     confirmAlert({
-      title: "Confirm to submit",
-      message: "Are you sure to do this.",
+      title: SPINNER_ALERT_TITLE,
+      message: SPINNER_ALERT_MESSAGE,
       buttons: [
         {
-          label: "Yes",
-          onClick: () => Notification.warn("Đã xoá thành công!"),
+          label: "Có",
+          onClick: () => handleOnDelete(id),
         },
         {
-          label: "No",
-          onClick: () => console.log("Click No"),
+          label: "Không",
         },
       ],
     });
   };
 
   const handleOnSubmit = (data) => {
-    console.log(data);
+    dispatch(SpinnerSaveAction(data));
   };
 
   return (
@@ -136,38 +159,25 @@ const Spinner = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>1</TableCell>
-                  <TableCell>Voucher</TableCell>
-                  <TableCell>
-                    <input type="color" disabled />
-                  </TableCell>
-                  <TableCell className={classes.flexRight}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={handleDelete}
-                    >
-                      Xoá
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>1</TableCell>
-                  <TableCell>Voucher</TableCell>
-                  <TableCell>
-                    <input type="color" disabled />
-                  </TableCell>
-                  <TableCell className={classes.flexRight}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={handleDelete}
-                    >
-                      Xoá
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                {isLoading &&
+                  spinners.map((spinner, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{spinner.name}</TableCell>
+                      <TableCell>
+                        <input type="color" value={spinner.color} disabled />
+                      </TableCell>
+                      <TableCell className={classes.flexRight}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleDelete(spinner.id)}
+                        >
+                          Xoá
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -185,14 +195,24 @@ const Spinner = () => {
                 xs={12}
                 className={classes.inputLableSpin}
               >
-                <TextField
-                  label="Nhãn Quay"
-                  required
-                  fullWidth
+                <Autocomplete
+                  freeSolo
                   disabled={disabled}
-                  inputRef={register({ required: "Hãy nhập nhãn quay vào" })}
-                  name="name"
-                  error={errors.name?.message && true}
+                  options={lableSpinner}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Nhãn Quay"
+                      required
+                      fullWidth
+                      disabled={disabled}
+                      inputRef={register({
+                        required: SPINNER_FORM_NAME_REUIRED,
+                      })}
+                      name="name"
+                      error={errors.name?.message && true}
+                    />
+                  )}
                 />
                 {errors.name?.message && (
                   <FormHelperText error={true}>
@@ -230,20 +250,28 @@ const Spinner = () => {
         </Grid>
         <Grid item md={5} sm={12} xs={12} className={classes.flexCenter}>
           <div className={classes.positionRootSpin}>
+            <Button
+              variant="contained"
+              onClick={() => window.location.reload()}
+              className={classes.btnReload}
+            >
+              Nạp Lại
+            </Button>
             <div className={classes.positionWeel}>
-              <WheelComponent
-                refs={true}
-                segments={segments}
-                segColors={segColors}
-                onFinished={(winner) => onFinished(winner)}
-                primaryColor="black"
-                contrastColor="white"
-                buttonText="Spin"
-                isOnlyOnce={false}
-                size={195}
-                upDuration={100}
-                downDuration={1000}
-              />
+              {isLoading && (
+                <WheelComponent
+                  segments={segments}
+                  segColors={segColors}
+                  onFinished={(winner) => onFinished(winner)}
+                  primaryColor="black"
+                  contrastColor="white"
+                  buttonText="Spin"
+                  isOnlyOnce={false}
+                  size={195}
+                  upDuration={100}
+                  downDuration={1000}
+                />
+              )}
             </div>
           </div>
         </Grid>

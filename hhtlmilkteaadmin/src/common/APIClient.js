@@ -1,0 +1,51 @@
+import axios from "axios";
+import history from "./History";
+import { BASE_URL } from "./Constant";
+
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use((config) => {
+  const getUser = JSON.parse(localStorage.getItem("user"));
+
+  if (getUser && getUser.token) {
+    config.headers.Authorization = `Bearer ${getUser.token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    return new Promise((resolve, reject) => {
+      resolve(response);
+    });
+  },
+  (error) => {
+    if (!error.response) {
+      return new Promise((resolve, reject) => {
+        reject(error);
+      });
+    }
+
+    if (Object.is(401, error.response.status)) {
+      localStorage.removeItem("user");
+      history.replace("/");
+      return;
+    }
+
+    if (Object.is(403, error.response.status)) {
+      throw error;
+    }
+
+    return new Promise((resolve, reject) => {
+      reject(error);
+    });
+  }
+);
+
+export default api;
