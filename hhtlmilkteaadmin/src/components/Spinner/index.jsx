@@ -12,6 +12,7 @@ import {
   makeStyles,
   Grid,
   Switch,
+  FormHelperText,
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import WheelComponent from "react-wheel-of-prizes";
@@ -23,6 +24,7 @@ import {
   SPINNER_ALERT_MESSAGE,
   SPINNER_NOTIFICATION_WARN,
   SPINNER_LABLE,
+  SPINNER_ERROR_LABLE,
 } from "./../../common/Constant";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -79,6 +81,7 @@ const useStyles = makeStyles({
 const Spinner = () => {
   const classes = useStyles();
   const [disabled, setDisabled] = useState(true);
+  const [error, setError] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { spinners, segments, segColors, isLoading } = useSelector(
@@ -123,8 +126,10 @@ const Spinner = () => {
   };
 
   const handleOnSubmit = (data) => {
+    setError(true);
     if (!Object.is(data.name, "")) {
       dispatch(SpinnerSaveAction(data));
+      setError(false);
     }
   };
 
@@ -195,6 +200,11 @@ const Spinner = () => {
                     />
                   )}
                 />
+                {error && (
+                  <FormHelperText error={error}>
+                    {SPINNER_ERROR_LABLE}
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid
                 item
