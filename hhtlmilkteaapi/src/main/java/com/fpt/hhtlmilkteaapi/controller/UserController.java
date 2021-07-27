@@ -3,7 +3,7 @@ package com.fpt.hhtlmilkteaapi.controller;
 import com.fpt.hhtlmilkteaapi.config.ERole;
 import com.fpt.hhtlmilkteaapi.entity.Role;
 import com.fpt.hhtlmilkteaapi.entity.User;
-import com.fpt.hhtlmilkteaapi.payload.request.UpdateUserRequest;
+import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.repository.IRoleRepository;
 import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
@@ -71,28 +71,28 @@ public class UserController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@Valid @ModelAttribute UpdateUserRequest updateUserRequest) throws IOException {
+    public ResponseEntity<?> updateUser(@Valid @ModelAttribute UserRequest userRequest) throws IOException {
 
         // Check Exits Username
-        if (!userRepository.existsByUsername(updateUserRequest.getUsername())) {
+        if (!userRepository.existsByUsername(userRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Unable to identify account"));
         }
 
         // Find User By Username
-        User user = userRepository.findByUsername(updateUserRequest.getUsername()).get();
+        User user = userRepository.findByUsername(userRequest.getUsername()).get();
 
         // Set Propeties To Entity User To Update
-        user.setFullName(updateUserRequest.getFullName());
-        user.setBirthday(updateUserRequest.getBirthday());
-        user.setAddress(updateUserRequest.getAddress());
-        user.setPostcode(updateUserRequest.getPostcode());
-        user.setPhone(updateUserRequest.getPhone());
-        user.setEmail(updateUserRequest.getEmail());
+        user.setFullName(userRequest.getFullName());
+        user.setBirthday(userRequest.getBirthday());
+        user.setAddress(userRequest.getAddress());
+        user.setPostcode(userRequest.getPostcode());
+        user.setPhone(userRequest.getPhone());
+        user.setEmail(userRequest.getEmail());
 
         // Set Roles To Entity User To Update
-        Set<String> strRoles = updateUserRequest.getRoles();
+        Set<String> strRoles = userRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null || strRoles.size() == 0) {
@@ -120,7 +120,7 @@ public class UserController {
 
 
         // Check Image Avatar
-        MultipartFile multipartFile = updateUserRequest.getAvatar();
+        MultipartFile multipartFile = userRequest.getAvatar();
 
         if (multipartFile != null) {
             BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
