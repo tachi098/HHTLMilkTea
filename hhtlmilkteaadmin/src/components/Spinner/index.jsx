@@ -12,7 +12,6 @@ import {
   makeStyles,
   Grid,
   Switch,
-  FormHelperText,
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import WheelComponent from "react-wheel-of-prizes";
@@ -22,7 +21,6 @@ import { confirmAlert } from "react-confirm-alert";
 import {
   SPINNER_ALERT_TITLE,
   SPINNER_ALERT_MESSAGE,
-  SPINNER_FORM_NAME_REUIRED,
   SPINNER_NOTIFICATION_WARN,
   SPINNER_LABLE,
 } from "./../../common/Constant";
@@ -81,7 +79,7 @@ const useStyles = makeStyles({
 const Spinner = () => {
   const classes = useStyles();
   const [disabled, setDisabled] = useState(true);
-  const { register, errors, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { spinners, segments, segColors, isLoading } = useSelector(
     (state) => state.spinner
@@ -125,7 +123,9 @@ const Spinner = () => {
   };
 
   const handleOnSubmit = (data) => {
-    dispatch(SpinnerSaveAction(data));
+    if (!Object.is(data.name, "")) {
+      dispatch(SpinnerSaveAction(data));
+    }
   };
 
   return (
@@ -190,19 +190,11 @@ const Spinner = () => {
                       required
                       fullWidth
                       disabled={disabled}
-                      inputRef={register({
-                        required: SPINNER_FORM_NAME_REUIRED,
-                      })}
+                      inputRef={register}
                       name="name"
-                      error={errors.name?.message && true}
                     />
                   )}
                 />
-                {errors.name?.message && (
-                  <FormHelperText error={true}>
-                    {errors.name?.message}
-                  </FormHelperText>
-                )}
               </Grid>
               <Grid
                 item
