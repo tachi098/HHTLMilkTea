@@ -24,6 +24,7 @@ import {
   SPINNER_ALERT_MESSAGE,
   SPINNER_FORM_NAME_REUIRED,
   SPINNER_NOTIFICATION_WARN,
+  SPINNER_LABLE,
 } from "./../../common/Constant";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -85,23 +86,6 @@ const Spinner = () => {
   const { spinners, segments, segColors, isLoading } = useSelector(
     (state) => state.spinner
   );
-
-  const lableSpinner = [
-    "May mắn lần sau",
-    "Voucher",
-    "10",
-    "100",
-    "1000",
-    "10000",
-    "20",
-    "200",
-    "2000",
-    "20000",
-    "30",
-    "300",
-    "3000",
-    "30000",
-  ];
 
   useEffect(() => {
     dispatch(SpinnerListAction());
@@ -198,7 +182,7 @@ const Spinner = () => {
                 <Autocomplete
                   freeSolo
                   disabled={disabled}
-                  options={lableSpinner}
+                  options={SPINNER_LABLE}
                   renderInput={(params) => (
                     <TextField
                       {...params}
