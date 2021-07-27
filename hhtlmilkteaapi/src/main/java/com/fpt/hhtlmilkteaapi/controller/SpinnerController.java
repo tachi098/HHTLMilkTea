@@ -7,6 +7,7 @@ import com.fpt.hhtlmilkteaapi.payload.response.SpinnerResponse;
 import com.fpt.hhtlmilkteaapi.repository.ISpinnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ public class SpinnerController {
     private ISpinnerRepository spinnerRepository;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> list() {
         List<Spinner> spinners = spinnerRepository.findAll();
 
@@ -43,6 +45,7 @@ public class SpinnerController {
 
 
     @PostMapping("/insert")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> insert(@Valid @RequestBody SpinnerRequest spinnerRequest) {
         Spinner spinner = new Spinner();
         spinner.setName(spinnerRequest.getName());
@@ -53,6 +56,7 @@ public class SpinnerController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         Spinner spinner = spinnerRepository.findById(id).get();
         spinnerRepository.delete(spinner);
