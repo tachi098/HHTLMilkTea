@@ -1,32 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from "./components/Home";
+import DefaultLayout from "./components/layout/DefaultLayout";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import Milktea from "./components/Milktea";
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
-function App() {
+const App = () => {
     return (
-        < div
-    className = "App" >
-        < header
-    className = "App-header" >
-        < img
-    src = {logo}
-    className = "App-logo"
-    alt = "logo" / >
-        < p >
-        Edit < code > src / App.js < /code> and save to reload.
-        < /p>
-        < a
-    className = "App-link"
-    href = "https://reactjs.org"
-    target = "_blank"
-    rel = "noopener noreferrer"
-        >
-        Learn
-    React
-    < /a>
-    < /header>
-    < /div>
-)
-    ;
+        <Router>
+            <DefaultLayout>
+                <Switch>
+                    <Route path={["/", "/home"]} exact component={Home}/>
+                    <Route path="/milktea" exact component={Milktea}/>
+                    <Route path="/signin" exact component={SignIn}/>
+                    <Route path="/signup" exact component={SignUp}/>
+                </Switch>
+            </DefaultLayout>
+        </Router>
+
+    )
 }
 
-export default App;
+export default App
