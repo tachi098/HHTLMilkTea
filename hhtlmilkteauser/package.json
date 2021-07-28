@@ -34,5 +34,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.11.2",
+    "react-responsive-carousel": "^3.2.20",
+    "react-router-dom": "^5.2.0"
   }
 }
