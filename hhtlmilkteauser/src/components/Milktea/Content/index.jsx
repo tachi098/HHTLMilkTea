@@ -13,6 +13,11 @@ const useStyles = makeStyles((theme) => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        boxShadow: 'none',
+        backgroundColor: '#fafafa',
+        '&:hover': {
+            boxShadow: '2px 4px 4px 2px  #a5abb5'
+        }
     },
     cardMedia: {
         display: 'block',

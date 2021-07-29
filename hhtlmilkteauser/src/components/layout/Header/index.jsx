@@ -17,7 +17,7 @@ import { Link, NavLink } from 'react-router-dom';
 const sections = [
     { title: 'TRANG CHỦ', url: '/home' },
     { title: 'TRÀ SỮA', url: '/milktea' },
-    { title: 'CÀ PHÊ', url: '/coffee' },
+    { title: 'TRÁNG MIỆNG', url: '/dessert' },
     { title: 'SẢN PHẨM', url: '/product' },
     { title: 'KHUYẾN MÃI', url: '/saleoff' },
     { title: 'VỀ CHÚNG TÔI', url: '/about' },
@@ -150,13 +150,13 @@ const Header = () => {
                         MenuListProps={{ onMouseLeave: handleClose }}
                         style={{ marginTop: 25, marginLeft: -100, width: '350' }}
                     >
-                        <MenuItem style={{ paddingLeft: 100, paddingRight: 100, color: "#416c48" }}>
+                        <MenuItem style={{ paddingLeft: 100, paddingRight: 100, color: "#416c48", backgroundColor: 'transparent' }}>
                             Giỏ hàng của bạn
                         </MenuItem>
-                        <MenuItem style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>
+                        <MenuItem style={{ display: 'flex', justifyContent: 'center', color: 'red', backgroundColor: 'transparent' }}>
                             Không có sản phẩm nào
                         </MenuItem>
-                        <MenuItem style={{ display: 'flex', justifyContent: 'center' }}>
+                        <MenuItem style={{ display: 'flex', justifyContent: 'center', backgroundColor: 'transparent' }}>
                             <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
                                 Xem chi tiết
                             </Button>
