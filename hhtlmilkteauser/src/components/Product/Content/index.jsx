@@ -1,10 +1,10 @@
 import { Grid, Button, Card, CardActions, CardContent, CardMedia, makeStyles, Typography, Container, FormControl, NativeSelect, TextField, Dialog, DialogContent, DialogActions, TextareaAutosize } from "@material-ui/core"
-import productImg from "./../../../assets/img/product.png"
+import ProductImg from "./../../../assets/img/product1.jpg"
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import { useState } from "react";
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import Notification from "./../../../common/Notification";
+import Notification from "../../../common/Notification";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginTop: 20,
         paddingTop: '76.25%',
-        width: '50%',
+        width: '75%',
     },
     cardContent: {
         flexGrow: 1,
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     btnOrder: {
         color: "#0c713d",
         fontSize: 16,
-        border: '1px solid',
+        border: '2px solid',
         paddingRight: 10,
         paddingLeft: 10,
         '&:hover': {
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     searchItem: {
         display: 'flex',
         padding: 25,
-        borderRight: '2px solid #ececec',
+        borderRight: '1px solid #ececec',
         [theme.breakpoints.down('sm')]: {
             borderRight: 'none',
             paddingLeft: 40
@@ -184,18 +184,18 @@ const Content = () => {
                             </div>
                             <CardMedia
                                 className={classes.cardMedia}
-                                image={productImg}
+                                image={ProductImg}
                                 title="Image title"
                             />
                             <CardContent className={classes.cardContent}>
                                 <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    Trà xanh hoa sen
                                 </Typography>
                                 <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    lotus tea
                                 </Typography>
                                 <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                    35.000 VNĐ
+                                    28.000 VNĐ
                                 </Typography>
                             </CardContent>
                             <CardActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
@@ -224,16 +224,16 @@ const Content = () => {
                                 <Grid item xs={12} md={6}>
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image={productImg}
+                                        image={ProductImg}
                                         title="Image title"
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
                                     <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 36, fontWeight: 'bold', color: "#0c713d" }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                        Trà xanh hoa sen
                                     </Typography>
                                     <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                        Lotus tea
                                     </Typography>
 
                                     <div style={{ display: 'flex', marginTop: 30 }}>
@@ -260,7 +260,7 @@ const Content = () => {
                                             <b>Tổng tiền: </b>
                                         </Typography>
                                         <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                            35.000 VNĐ
+                                            28.000 VNĐ
                                         </Typography>
                                     </div>
                                 </Grid>

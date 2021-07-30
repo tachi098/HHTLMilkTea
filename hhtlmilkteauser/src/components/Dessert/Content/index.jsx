@@ -1,5 +1,5 @@
 import { Grid, Button, Card, CardActions, CardContent, CardMedia, makeStyles, Typography, Container, FormControl, NativeSelect, TextField, Dialog, DialogContent, DialogActions, TextareaAutosize } from "@material-ui/core"
-import productImg from "./../../../assets/img/product.png"
+import dessertImg from "./../../../assets/img/dessert1.png"
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import { useState } from "react";
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginTop: 20,
         paddingTop: '76.25%',
-        width: '50%',
+        width: '75%',
     },
     cardContent: {
         flexGrow: 1,
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
             paddingLeft: 40
         },
     },
-    itemHeader: {
+    itemHeader:{
         position: 'relative'
     },
     iconWishList: {
@@ -180,22 +180,22 @@ const Content = () => {
                         <Card className={classes.card}>
                             <div className={classes.itemHeader}>
                                 <span className={classes.itemTag}>Món mới</span>
-                                <FavoriteIcon className={classes.iconWishList} style={{ cursor: 'pointer' }} onClick={onHandleWishList} />
+                                <FavoriteIcon className={classes.iconWishList} style={{cursor: 'pointer'}} onClick={onHandleWishList}/>
                             </div>
                             <CardMedia
                                 className={classes.cardMedia}
-                                image={productImg}
+                                image={dessertImg}
                                 title="Image title"
                             />
                             <CardContent className={classes.cardContent}>
                                 <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    Choco Coco
                                 </Typography>
                                 <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    Choco Coco
                                 </Typography>
                                 <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                    35.000 VNĐ
+                                    28.000 VNĐ
                                 </Typography>
                             </CardContent>
                             <CardActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
@@ -224,16 +224,16 @@ const Content = () => {
                                 <Grid item xs={12} md={6}>
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image={productImg}
+                                        image={dessertImg}
                                         title="Image title"
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
                                     <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 36, fontWeight: 'bold', color: "#0c713d" }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                        Choco Coco
                                     </Typography>
                                     <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                        Choco Coco
                                     </Typography>
 
                                     <div style={{ display: 'flex', marginTop: 30 }}>
@@ -260,7 +260,7 @@ const Content = () => {
                                             <b>Tổng tiền: </b>
                                         </Typography>
                                         <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                            35.000 VNĐ
+                                            28.000 VNĐ
                                         </Typography>
                                     </div>
                                 </Grid>

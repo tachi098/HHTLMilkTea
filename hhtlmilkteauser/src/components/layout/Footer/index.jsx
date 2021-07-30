@@ -3,7 +3,7 @@ import GoogleMap from "../../../common/GoogleMap"
 
 const Footer = () => {
     return (
-        <Grid container style={{paddingTop: 40, paddingBottom: 10, backgroundColor: '#416c48', color: 'white'}}>
+        <Grid container style={{paddingTop: 10, paddingBottom: 5, backgroundColor: '#416c48', color: 'white'}}>
             <Grid item xs={12} md={8} style={{paddingLeft: 20 + 'px'}}>
                 <Typography>
                     <b>Trụ sở chính: </b>

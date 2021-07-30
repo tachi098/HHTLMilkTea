@@ -1,7 +1,7 @@
 import React from "react"
 import { Breadcrumbs, Grid, Typography } from "@material-ui/core"
 import { Carousel } from "react-responsive-carousel";
-import banner1 from "./../../../assets/img/banner1.png"
+import banner from "./../../../assets/img/dessertBanner.jpg"
 import { Link } from "react-router-dom"
 import icon from "./../../../assets/img/icon_tealeaves.png"
 
@@ -12,7 +12,7 @@ const Header = () => {
             <Grid item md={12}>
                 <Carousel showThumbs={false} showStatus={false} showIndicators={false} >
                     <div>
-                        <img alt="Banner1" src={banner1} />
+                        <img alt="Banner1" src={banner} />
                     </div>
                 </Carousel>
             </Grid>
@@ -24,7 +24,7 @@ const Header = () => {
                     <Link color="inherit" to="/home" style={{ textDecoration: 'none', color: '#a3abb5' }} >
                         Trang chủ
                     </Link>
-                    <Typography color="textPrimary">Trà sữa</Typography>
+                    <Typography color="textPrimary">Tráng miệng</Typography>
                 </Breadcrumbs>
             </Grid>
 
@@ -38,7 +38,7 @@ const Header = () => {
                     padding: 0 + 'px' + 25 + 'px',
                     color: '#0C713D',
                     fontFamily: 'lora'
-                }}>Trà sữa</Typography>
+                }}>Tráng miệng</Typography>
             </Grid>
             <Grid item md={12} xs={12}>
                 <Typography style={{ display: 'flex', justifyContent: 'center' }}>
