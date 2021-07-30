@@ -9,7 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 import content1 from './../../../assets/img/content1.jpg';
 import content2 from './../../../assets/img/content2.jpg';
 import content3 from './../../../assets/img/content3.jpg';
-import { Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles({
     card: {
@@ -21,16 +21,27 @@ const useStyles = makeStyles({
     cardMedia: {
         width: 160,
     },
+    btnOrder: {
+        color: "#0c713d",
+        fontSize: 16,
+        border: '1px solid',
+        paddingRight: 10,
+        paddingLeft: 10,
+        '&:hover': {
+            backgroundColor: '#0c713d',
+            color: 'white'
+        }
+    }
 });
 
 const Content = () => {
     const classes = useStyles();
 
     return (
-        <div style={{ paddingLeft: 30 + 'px', paddingRight: 30 + 'px' }}>
+        <div style={{ paddingLeft: 30 + 'px', paddingRight: 30 + 'px', backgroundColor: '#ffffff' }}>
 
             {/* Content 1 */}
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={12} style={{ paddingTop: 40 + 'px' }}>
                 <Card className={classes.card} style={{ boxShadow: 'none' }}>
                     <div className={classes.cardDetails}>
                         <CardContent>
@@ -41,9 +52,9 @@ const Content = () => {
                                 Trải qua hơn 50 năm chắt chiu tinh hoa từ những búp trà xanh và hạt cà phê thượng hạng cùng mong muốn mang lại cho khách hàng những trải nghiệm giá trị nhất khi thưởng thức, Phúc Long liên tục là thương hiệu tiên phong với nhiều ý tưởng sáng tạo đi đầu trong ngành trà và cà phê.
                                 Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. Và chính kết nối dựa trên niềm tin, sự trung thực và tin yêu sẽ góp phần mang đến những nét đẹp trong văn hóa thưởng trà và cà phê ngày càng bay cao, vươn xa.
                             </Typography>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
+                            <Button size="small" color="primary" className={classes.btnOrder}>
                                 Xem thêm
-                            </Link>
+                            </Button>
                         </CardContent>
                     </div>
                     <Hidden xsDown>
@@ -53,7 +64,7 @@ const Content = () => {
             </Grid>
 
             {/* Content 2 */}
-            <Grid item xs={12} md={12} style={{ marginTop: 30 + 'px' }}>
+            <Grid item xs={12} md={12} style={{ paddingTop: 80 + 'px' }}>
                 <Card className={classes.card} style={{ boxShadow: 'none' }}>
                     <Hidden xsDown>
                         <CardMedia className={classes.cardMedia} image={content2} title="bannertrangchu" style={{ width: 500 + 'px' }} />
@@ -72,16 +83,16 @@ const Content = () => {
                                 Bình thể thao Phúc Long tiện lợi
                                 Móc khóa Barista Phúc Long xinh xắn
                             </Typography>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
+                            <Button size="small" color="primary" className={classes.btnOrder}>
                                 Xem thêm
-                            </Link>
+                            </Button>
                         </CardContent>
                     </div>
                 </Card>
             </Grid>
 
             {/* Content 3 */}
-            <Grid item xs={12} md={12} style={{ marginTop: 30 + 'px' }}>
+            <Grid item xs={12} md={12} style={{ paddingTop: 80 + 'px' }}>
                 <Card className={classes.card} style={{ boxShadow: 'none' }}>
                     <div className={classes.cardDetails}>
                         <CardContent>
@@ -98,9 +109,9 @@ const Content = () => {
                                 - Kênh đặt hàng Free Delivery 1800 6779.
                                 - Ứng dụng đặt hàng công nghệ.
                             </Typography>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
+                            <Button size="small" color="primary" className={classes.btnOrder}>
                                 Xem thêm
-                            </Link>
+                            </Button>
                         </CardContent>
                     </div>
                     <Hidden xsDown>
@@ -110,7 +121,7 @@ const Content = () => {
             </Grid>
 
             {/* Content 4 */}
-            <Grid item xs={12} md={12} style={{ marginTop: 30 + 'px' }}>
+            <Grid item xs={12} md={12} style={{ paddingTop: 80, paddingBottom: 80 }}>
                 <Card className={classes.card} style={{ boxShadow: 'none' }}>
                     <Hidden xsDown>
                         <CardMedia className={classes.cardMedia} image={content2} title="bannertrangchu" style={{ width: 500 + 'px' }} />
@@ -129,9 +140,9 @@ const Content = () => {
                                 Bình thể thao Phúc Long tiện lợi
                                 Móc khóa Barista Phúc Long xinh xắn
                             </Typography>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
+                            <Button size="small" color="primary" className={classes.btnOrder}>
                                 Xem thêm
-                            </Link>
+                            </Button>
                         </CardContent>
                     </div>
                 </Card>

@@ -12,14 +12,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import logo from "./../../../assets/img/Milktea.gif"
 import delivery from "./../../../assets/img/delivery.png"
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useHistory } from 'react-router-dom';
 
 const sections = [
     { title: 'TRANG CHỦ', url: '/home' },
     { title: 'TRÀ SỮA', url: '/milktea' },
     { title: 'TRÁNG MIỆNG', url: '/dessert' },
     { title: 'SẢN PHẨM', url: '/product' },
-    { title: 'KHUYẾN MÃI', url: '/saleoff' },
     { title: 'VỀ CHÚNG TÔI', url: '/about' },
     { title: 'THẺ', url: '/card' },
 ];
@@ -69,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
 
+    const history = useHistory();
     const classes = useStyles();
 
     const [left, setLeft] = useState(false);
@@ -95,9 +95,13 @@ const Header = () => {
         setAnchorElSearch(null);
     }
 
-    const toggleDrawer = () => (event) => {
+    const toggleDrawer = () => () => {
         setLeft(!left);
     };
+
+    const onHandelRedirectCart = () => {
+        history.push("/shoppingcart")
+    }
 
     const list = () => (
         <div
@@ -157,7 +161,7 @@ const Header = () => {
                             Không có sản phẩm nào
                         </MenuItem>
                         <MenuItem style={{ display: 'flex', justifyContent: 'center', backgroundColor: 'transparent' }}>
-                            <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
+                            <Button variant="outlined" size="small" style={{ color: "#416c48" }} onClick={onHandelRedirectCart}>
                                 Xem chi tiết
                             </Button>
                         </MenuItem>
@@ -187,7 +191,6 @@ const Header = () => {
                     aria-owns={anchorElSearch ? "simple-menu" : undefined}
                     aria-haspopup="true"
                     onClick={handleClickSearch}
-                    onMouseOver={handleClickSearch}
                 />
                 <Menu
                     id="simple-menu"
