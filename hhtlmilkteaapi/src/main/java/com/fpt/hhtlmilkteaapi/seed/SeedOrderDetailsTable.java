@@ -13,12 +13,14 @@ public class SeedOrderDetailsTable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeedOrderDetailsTable.class);
 
     private static IOrderDetailRepository orderDetailRepository;
+    private static IProductRepository productRepository;
 
     private static IOrderRepository orderRepository;
 
-    public SeedOrderDetailsTable(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository) {
+    public SeedOrderDetailsTable(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, IProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
+        this.productRepository = productRepository;
 
     }
 
@@ -27,8 +29,9 @@ public class SeedOrderDetailsTable {
         if (count == 0) {
             // Insert OrderDetails
             // Insert OrderDetail 1
+            Product product01 = productRepository.findById("P001").get();
             Order order01 = orderRepository.findById(1L).get();
-            OrderDetail orderDetail01 = new OrderDetail(1,1L, "1L, 2L", 2, "Giao hang nhanh", order01);
+            OrderDetail orderDetail01 = new OrderDetail(1,1L, "1L, 2L", 2,"Giao hang nhanh", order01, product01);
 
             // Insert Data
             orderDetailRepository.saveAll(Arrays.asList(orderDetail01));

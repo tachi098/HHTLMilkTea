@@ -1,13 +1,12 @@
 package com.fpt.hhtlmilkteaapi.payload.response;
 
 import com.fpt.hhtlmilkteaapi.entity.Spinner;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpinnerResponse {

@@ -1,15 +1,15 @@
 package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -36,4 +36,12 @@ public class OrderDetail implements Serializable {
     @JsonIgnore
     private Order orderId;
 
+    @ManyToOne
+    @JoinColumn(
+            name = "product_id",
+            referencedColumnName = "id",
+            nullable = false
+    )
+    @JsonIgnoreProperties("orderDetails")
+    private Product product;
 }

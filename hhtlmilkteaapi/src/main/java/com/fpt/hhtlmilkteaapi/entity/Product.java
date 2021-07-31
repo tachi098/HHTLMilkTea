@@ -2,19 +2,18 @@ package com.fpt.hhtlmilkteaapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -70,6 +69,12 @@ public class Product implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "additionoption_id")
     )
     private Set<AdditionOption> additionOptions;
+
+    @OneToMany(
+            mappedBy = "product"
+    )
+    @JsonIgnore
+    private Collection<OrderDetail> orderDetails;
 
     public Product(String id, String name, String title, String linkImage, String nameImage, long price,
                    Category categoryId, Set<SizeOption> sizeOptions, Set<AdditionOption> additionOptions) {
