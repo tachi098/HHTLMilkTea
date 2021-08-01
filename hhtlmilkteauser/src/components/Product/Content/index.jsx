@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     btnOrder: {
         color: "#0c713d",
         fontSize: 16,
-        border: '2px solid',
+        border: '1px solid',
         paddingRight: 10,
         paddingLeft: 10,
         '&:hover': {
