@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import Product from "./components/Product";
 import Checkout from "./components/Checkout";
 import ShoppingCart from "./components/ShoppingCart";
+import Account from "./components/Account";
 
 const App = () => {
     return (
@@ -25,6 +26,7 @@ const App = () => {
                             <Route path="/milktea" exact component={Milktea} />
                             <Route path="/dessert" exact component={Dessert} />
                             <Route path="/product" exact component={Product} />
+                            <Route path={["/account", "/account/history", "/account/voucher"]} exact component={Account}/>
                             <Route path="/signin" exact component={SignIn} />
                             <Route path="/signup" exact component={SignUp} />
                             <Route path="/checkout" exact component={Checkout} />

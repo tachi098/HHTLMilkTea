@@ -20,7 +20,7 @@ const sections = [
     { title: 'TRÁNG MIỆNG', url: '/dessert' },
     { title: 'SẢN PHẨM', url: '/product' },
     { title: 'VỀ CHÚNG TÔI', url: '/about' },
-    { title: 'THẺ', url: '/card' },
+    { title: 'PROFILE', url: '/account' },
 ];
 
 const useStyles = makeStyles((theme) => ({
