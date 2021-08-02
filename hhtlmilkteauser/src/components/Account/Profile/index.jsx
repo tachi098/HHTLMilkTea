@@ -29,6 +29,18 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         marginLeft: 50,
     },
+    upload: {
+        [theme.breakpoints.up('sm')]: {
+            display: 'flex',
+        },
+    },
+    btnUpload: {
+        [theme.breakpoints.up('sm')]: {
+            marginTop: 54,
+            marginLeft: 20,
+        },
+        marginTop: 10,
+    }
 }));
 
 
@@ -82,12 +94,20 @@ const Profile = () => {
                     </Grid>
                 </Grid>
                 <Grid item md={4} xs={12} sm={12} style={{ paddingLeft: 30, paddingTop: 20 }}>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item xs={12} sm={12} className={classes.upload}>
                         <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.large} />
-                        <TextField
-                            type="file"
-                            name="file"
-                        />
+                        <label htmlFor="upload-photo">
+                            <input
+                                style={{ display: 'none' }}
+                                id="upload-photo"
+                                name="upload-photo"
+                                type="file"
+                            />
+
+                            <Button color="secondary" variant="contained" component="span" className={classes.btnUpload}>
+                                Upload button
+                            </Button>
+                        </label>
                     </Grid>
                 </Grid>
             </Grid>

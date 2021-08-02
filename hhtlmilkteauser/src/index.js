@@ -4,9 +4,13 @@ import App from './App';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import reportWebVitals from './reportWebVitals';
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import store from "./store";
 
 ReactDOM.render(
-< App/>,
-document.getElementById('root'));
+    <Provider store={store}>
+        < App />
+    </Provider>,
+    document.getElementById('root'));
 
 reportWebVitals();

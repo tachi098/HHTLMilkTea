@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { AppBar, Badge, Menu, MenuItem } from '@material-ui/core';
+import { AppBar, Avatar, Badge, Menu, MenuItem } from '@material-ui/core';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -13,14 +13,16 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import logo from "./../../../assets/img/Milktea.gif"
 import delivery from "./../../../assets/img/delivery.png"
 import { Link, NavLink, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AuthLogoutAction } from './../../../store/actions/AuthAction'
 
 const sections = [
     { title: 'TRANG CHỦ', url: '/home' },
     { title: 'TRÀ SỮA', url: '/milktea' },
     { title: 'TRÁNG MIỆNG', url: '/dessert' },
     { title: 'SẢN PHẨM', url: '/product' },
+    { title: 'VÒNG QUAY MAY MẮN', url: '/spinner' },
     { title: 'VỀ CHÚNG TÔI', url: '/about' },
-    { title: 'PROFILE', url: '/account' },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -74,6 +76,10 @@ const Header = () => {
     const [left, setLeft] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElSearch, setAnchorElSearch] = useState(null);
+    const [anchorElAccount, setAnchorElAccount] = useState(null);
+
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     function handleClick(event) {
         if (anchorEl !== event.currentTarget) {
@@ -95,12 +101,28 @@ const Header = () => {
         setAnchorElSearch(null);
     }
 
+    function handleClickAccount(event) {
+        if (anchorElAccount !== event.currentTarget) {
+            setAnchorElAccount(event.currentTarget);
+        }
+    }
+
+    function handleCloseAccount() {
+        setAnchorElAccount(null);
+    }
+
     const toggleDrawer = () => () => {
         setLeft(!left);
     };
 
     const onHandelRedirectCart = () => {
         history.push("/shoppingcart")
+    }
+
+    const onHandleLogout = () => {
+        dispatch(AuthLogoutAction());
+        setAnchorElAccount(null);
+        history.push("/home");
     }
 
     const list = () => (
@@ -120,7 +142,6 @@ const Header = () => {
             </List>
         </div>
     );
-
     return (
         <AppBar style={{ backgroundColor: 'white' }}>
             <Toolbar className={classes.toolbar}>
@@ -167,11 +188,52 @@ const Header = () => {
                         </MenuItem>
                     </Menu>
 
-                    <Link to="/signin" style={{textDecoration: 'none'}}>
-                        <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
-                            Đăng nhập
-                        </Button>
-                    </Link>
+                    {
+                        auth.user !== null ? !Object.is(401, auth.user.error) ? (!auth.user.roles.includes("ROLE_ADMIN")) ? (
+                            <>
+                                <Button variant="outlined" size="small" style={{ color: "#416c48" }} onClick={handleClickAccount} >
+                                    <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginRight: 10 }} />
+                                    {auth.user.username}
+                                </Button>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorElAccount}
+                                    open={Boolean(anchorElAccount)}
+                                    onClose={handleCloseAccount}
+                                    MenuListProps={{ onMouseLeave: handleCloseAccount }}
+                                    style={{ marginTop: 30, marginLeft: -18, width: '350' }}
+                                >
+                                    <Link to="/account" style={{ textDecoration: 'none', color: 'black' }}>
+                                        <MenuItem>
+                                            Thông tin cá nhân
+                                        </MenuItem>
+                                    </Link>
+                                    <MenuItem onClick={onHandleLogout}>
+                                        Đăng xuất
+                                    </MenuItem>
+                                </Menu>
+                            </>
+                        ) : (
+                            <Link to="/signin" style={{ textDecoration: 'none' }}>
+                                <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
+                                    Đăng nhập
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link to="/signin" style={{ textDecoration: 'none' }}>
+                                <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
+                                    Đăng nhập
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link to="/signin" style={{ textDecoration: 'none' }}>
+                                <Button variant="outlined" size="small" style={{ color: "#416c48" }}>
+                                    Đăng nhập
+                                </Button>
+                            </Link>
+                        )
+                    }
+
                 </div>
             </Toolbar>
             <Toolbar component="nav" variant="dense" className={classes.toolbarSecondary}>

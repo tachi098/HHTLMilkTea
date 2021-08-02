@@ -38,8 +38,14 @@
   "devDependencies": {
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.2",
+    "@reduxjs/toolkit": "^1.6.1",
+    "axios": "^0.21.1",
+    "history": "^5.0.0",
+    "react-hook-form": "6.15.8",
+    "react-redux": "^7.2.4",
     "react-responsive-carousel": "^3.2.20",
     "react-router-dom": "^5.2.0",
-    "react-toastify": "^7.0.4"
+    "react-toastify": "^7.0.4",
+    "sass": "^1.37.0"
   }
 }

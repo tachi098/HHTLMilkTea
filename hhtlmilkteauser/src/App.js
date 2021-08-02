@@ -1,39 +1,79 @@
-import Home from "./components/Home";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import Milktea from "./components/Milktea";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
-import { CssBaseline } from "@material-ui/core";
+import { CircularProgress, CssBaseline } from "@material-ui/core";
 import ScrollOnTop from "./common/ScrollOnTop";
-import Dessert from "./components/Dessert";
 import { ToastContainer } from "react-toastify";
-import Product from "./components/Product";
-import Checkout from "./components/Checkout";
-import ShoppingCart from "./components/ShoppingCart";
-import Account from "./components/Account";
+import "./App.scss"
+import PrivateRoute from "./components/PrivateRoute";
+import React, { Suspense } from "react";
+
+const Home = React.lazy(() => import("./components/Home"));
+const Milktea = React.lazy(() => import("./components/Milktea"));
+const SignIn = React.lazy(() => import("./components/SignIn"));
+const SignUp = React.lazy(() => import("./components/SignUp"));
+const Dessert = React.lazy(() => import("./components/Dessert"));
+const Product = React.lazy(() => import("./components/Product"));
+const Checkout = React.lazy(() => import("./components/Checkout"));
+const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
+const Account = React.lazy(() => import("./components/Account"));
 
 const App = () => {
     return (
         <>
             <ToastContainer />
             <Router>
-                <DefaultLayout>
-                    <CssBaseline />
-                    <ScrollOnTop>
-                        <Switch>
-                            <Route path={["/", "/home"]} exact component={Home} />
-                            <Route path="/milktea" exact component={Milktea} />
-                            <Route path="/dessert" exact component={Dessert} />
-                            <Route path="/product" exact component={Product} />
-                            <Route path={["/account", "/account/history", "/account/voucher"]} exact component={Account}/>
-                            <Route path="/signin" exact component={SignIn} />
-                            <Route path="/signup" exact component={SignUp} />
-                            <Route path="/checkout" exact component={Checkout} />
-                            <Route path="/shoppingcart" exact component={ShoppingCart} />
-                        </Switch>
-                    </ScrollOnTop>
-                </DefaultLayout>
+                <Suspense
+                    fallback={
+                        <CircularProgress
+                            disableShrink
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                            }}
+                        />
+                    }
+                >
+                    <DefaultLayout>
+                        <CssBaseline />
+                        <ScrollOnTop>
+                            <Switch>
+                                <Route path={["/", "/home"]} exact >
+                                    <Home />
+                                </Route>
+                                <Route path={"/dessert"} exact >
+                                    <Dessert />
+                                </Route>
+                                <Route path={"/milktea"} exact >
+                                    <Milktea />
+                                </Route>
+                                <Route path={"/product"} exact >
+                                    <Product />
+                                </Route>
+                                <Route path={"/signin"} exact >
+                                    <SignIn />
+                                </Route>
+                                <Route path={"/signup"} exact >
+                                    <SignUp />
+                                </Route>
+                                <Route path={"/milktea"} exact >
+                                    <Milktea />
+                                </Route>
+
+                                <PrivateRoute path={["/account", "/account/history", "/account/voucher"]}>
+                                    <Account />
+                                </PrivateRoute>
+                                <PrivateRoute path={"/checkout"}>
+                                    <Checkout />
+                                </PrivateRoute>
+                                <PrivateRoute path={"/shoppingcart"}>
+                                    <ShoppingCart />
+                                </PrivateRoute>
+                            </Switch>
+                        </ScrollOnTop>
+                    </DefaultLayout>
+
+                </Suspense>
             </Router>
         </>
     )

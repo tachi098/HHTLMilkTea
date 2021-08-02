@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import PrivateRoute from "./components/PrivateRoute";
 import { CircularProgress } from "@material-ui/core";
+import "./App.css"
 
 const Spinner = React.lazy(() => import("./components/Spinner"));
 const Login = React.lazy(() => import("./components/Login"));
