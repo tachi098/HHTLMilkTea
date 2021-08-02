@@ -7,64 +7,68 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import PeopleIcon from "@material-ui/icons/People";
 import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import { Euro, FormatAlignCenter } from "@material-ui/icons";
-import { Divider } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { Divider } from "@material-ui/core";
 
-const mainListItems = (
-  <div>
-    <Link to="/dashboard" style={{ textDecoration: "none", color: "black" }}>
+
+const MainListItems = () => {
+
+  return (
+    <div>
+      <Link to="/dashboard" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <DashboardIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Trang chủ" />
+        </ListItem>
+      </Link>
       <ListItem button>
         <ListItemIcon>
-          <DashboardIcon />
+          <ShoppingCartIcon style={{ marginLeft: 5 }} />
         </ListItemIcon>
-        <ListItemText primary="Trang chủ" />
+        <ListItemText primary="Đơn hàng" />
       </ListItem>
-    </Link>
-    <ListItem button>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Đơn hàng" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <Euro />
-      </ListItemIcon>
-      <ListItemText primary="Sản phẩm" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Người dùng" />
-    </ListItem>
-    <Link to="/spinner" style={{ textDecoration: "none", color: "black" }}>
-      <ListItem>
-        <ListItemIcon>
-          <CardGiftcardIcon />
-        </ListItemIcon>
-        <ListItemText primary="Vòng Quay" />
-      </ListItem>
-    </Link>
-    <Divider />
-
-    <Link to="/form" style={{ textDecoration: "none", color: "black" }}>
       <ListItem button>
         <ListItemIcon>
-          <FormatAlignCenter />
+          <Euro style={{ marginLeft: 5 }} />
         </ListItemIcon>
-        <ListItemText primary="Form" />
+        <ListItemText primary="Sản phẩm" />
       </ListItem>
-    </Link>
-    <Link to="/table" style={{ textDecoration: "none", color: "black" }}>
       <ListItem button>
         <ListItemIcon>
-          <FormatAlignCenter />
+          <PeopleIcon style={{ marginLeft: 5 }} />
         </ListItemIcon>
-        <ListItemText primary="Table" />
+        <ListItemText primary="Người dùng" />
       </ListItem>
-    </Link>
-  </div>
-);
+      <Link to="/spinner" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem>
+          <ListItemIcon>
+            <CardGiftcardIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Vòng Quay" />
+        </ListItem>
+      </Link>
+      <Divider />
 
-export default mainListItems;
+      <Link to="/form" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <FormatAlignCenter style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Form" />
+        </ListItem>
+      </Link>
+      <Link to="/table" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <FormatAlignCenter style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Table" />
+        </ListItem>
+      </Link>
+    </div>
+  )
+}
+
+export default MainListItems;

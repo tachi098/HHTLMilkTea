@@ -20,13 +20,13 @@ const data = [
   createData('24:00', undefined),
 ];
 
- const Chart = () => {
+const Chart = () => {
   const theme = useTheme();
 
   return (
     <React.Fragment>
       <Title>Thống kê</Title>
-      <ResponsiveContainer>
+      <ResponsiveContainer style={{ width: '100%', height: '100%' }}>
         <LineChart
           data={data}
           margin={{

@@ -3,16 +3,27 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Badge from '@material-ui/core/Badge';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, IconButton, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import mainListItems from '../ListItem';
+import MainListItems from '../ListItem';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import Drawer from '@material-ui/core/Drawer';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import { Accordion, AccordionSummary, Button, } from "@material-ui/core";
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { AuthLogoutAction } from '../../../store/actions/AuthAction';
+
 
 const Navbar = () => {
+    const auth = useSelector((state) => state.auth);
+    const history = useHistory();
+    const dispatch = useDispatch();
+
     const drawerWidth = 240;
 
     const useStyles = makeStyles((theme) => ({
@@ -82,7 +93,12 @@ const Navbar = () => {
     };
     const handleDrawerClose = () => {
         setOpen(false);
-      };
+    };
+
+    const onHandleLogout = () => {
+        dispatch(AuthLogoutAction());
+        history.push("/login");
+    }
 
     return (
         <>
@@ -98,7 +114,7 @@ const Navbar = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                    HHTLMilktea
+                        HHTLMilktea
                     </Typography>
                     <IconButton color="inherit">
                         <Badge badgeContent={4} color="secondary">
@@ -120,7 +136,31 @@ const Navbar = () => {
                     </IconButton>
                 </div>
                 <Divider />
-                <List>{mainListItems}</List>
+                <List>
+                    {open ? (
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <div style={{ display: 'flex' }}>
+                                    <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
+
+                                    <Typography style={{ marginLeft: 20, marginTop: 10 }}>{auth.user.username}</Typography>
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Button color="primary" variant="contained" onClick={onHandleLogout} style={{ marginLeft: 50 }}>
+                                    Đăng xuất
+                                </Button>
+                            </AccordionDetails>
+                        </Accordion>
+                    ) : (
+                        <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginLeft: 14 }} />
+                    )}
+                    <MainListItems />
+                </List>
             </Drawer>
         </>
     )
