@@ -3,26 +3,36 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Badge from '@material-ui/core/Badge';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Avatar, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, IconButton, makeStyles, MenuItem, Typography, Menu } from '@material-ui/core';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useState } from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MainListItems from '../ListItem';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import Drawer from '@material-ui/core/Drawer';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { Accordion, AccordionSummary, Button, } from "@material-ui/core";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AuthLogoutAction } from '../../../store/actions/AuthAction';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 
 const Navbar = () => {
     const auth = useSelector((state) => state.auth);
     const history = useHistory();
     const dispatch = useDispatch();
+    const [anchorElLogout, setAnchorElLogout] = useState(null);
+
+
+    function handleClickLogout(event) {
+        if (anchorElLogout !== event.currentTarget) {
+            setAnchorElLogout(event.currentTarget);
+        }
+    }
+
+    function handleCloseLogout() {
+        setAnchorElLogout(null);
+    }
 
     const drawerWidth = 240;
 
@@ -137,29 +147,33 @@ const Navbar = () => {
                 </div>
                 <Divider />
                 <List>
-                    {open ? (
-                        <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <div style={{ display: 'flex' }}>
-                                    <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-
-                                    <Typography style={{ marginLeft: 20, marginTop: 10 }}>{auth.user.username}</Typography>
-                                </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Button color="primary" variant="contained" onClick={onHandleLogout} style={{ marginLeft: 50 }}>
-                                    Đăng xuất
-                                </Button>
-                            </AccordionDetails>
-                        </Accordion>
-                    ) : (
-                        <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginLeft: 14 }} />
-                    )}
                     <MainListItems />
+                    {open ? (
+                        <>
+                            <div
+                                style={{ display: 'flex', position: 'fixed', bottom: 0, paddingTop: 10, paddingLeft: 10, paddingBottom: 10, cursor: 'pointer' }}
+                                onClick={handleClickLogout}
+                            >
+                                <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
+                                <Typography style={{ marginLeft: 20, marginTop: 10 }}>{auth.user.fullName}</Typography>
+                                <ExpandLessIcon style={{ marginTop: 10, marginLeft: 10 }} />
+                            </div>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchorElLogout}
+                                open={Boolean(anchorElLogout)}
+                                onClose={handleCloseLogout}
+                                MenuListProps={{ onMouseLeave: handleCloseLogout }}
+                                style={{ marginTop: -40, marginLeft: 150 }}
+                            >
+                                <MenuItem onClick={onHandleLogout} style={{ backgroundColor: 'white' }}>
+                                    <Typography>Đăng xuất</Typography>
+                                </MenuItem>
+                            </Menu>
+                        </>
+                    ) : (
+                        <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" style={{ position: 'fixed', bottom: 0, marginLeft: 14, marginBottom: 10 }} />
+                    )}
                 </List>
             </Drawer>
         </>

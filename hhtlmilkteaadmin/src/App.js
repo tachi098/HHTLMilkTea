@@ -12,6 +12,7 @@ const Login = React.lazy(() => import("./components/Login"));
 const Form = React.lazy(() => import("./components/Something/Form"));
 const Dashboard = React.lazy(() => import("./components/Dashboard"));
 const SpanningTable = React.lazy(() => import("./components/Something/Table"));
+const Page404 = React.lazy(() => import("./components/Page404"));
 
 const App = () => {
   return (
@@ -45,6 +46,10 @@ const App = () => {
             </PrivateRoute>
             <PrivateRoute path={"/table"}>
               <SpanningTable />
+            </PrivateRoute>
+
+            <PrivateRoute path="/*">
+              <Page404 />
             </PrivateRoute>
           </Switch>
         </Suspense>

@@ -16,6 +16,7 @@ const Product = React.lazy(() => import("./components/Product"));
 const Checkout = React.lazy(() => import("./components/Checkout"));
 const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
 const Account = React.lazy(() => import("./components/Account"));
+const Page404 = React.lazy(() => import("./components/Page404"));
 
 const App = () => {
     return (
@@ -69,6 +70,10 @@ const App = () => {
                                 <PrivateRoute path={"/shoppingcart"}>
                                     <ShoppingCart />
                                 </PrivateRoute>
+
+                                <Route path="/*">
+                                    <Page404 />
+                                </Route>
                             </Switch>
                         </ScrollOnTop>
                     </DefaultLayout>
