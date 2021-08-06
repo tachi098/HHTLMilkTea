@@ -3,9 +3,6 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: "flex",
-    },
     title: {
         flexGrow: 1,
     },
@@ -24,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const DefaultLayout = ({ children }) => {
     const classes = useStyles();
-    return(
+    return (
         <div className={classes.root}>
             <Header />
             <main className={classes.content}>
@@ -32,7 +29,7 @@ const DefaultLayout = ({ children }) => {
                 <Container maxWidth="lg" className={classes.container}>
                     {children}
                 </Container>
-                <Footer/>
+                <Footer />
             </main>
         </div>
     )

@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { AppBar, Avatar, Badge, Menu, MenuItem } from '@material-ui/core';
+import { AppBar, Avatar, Badge, Menu, MenuItem, Typography } from '@material-ui/core';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -65,7 +65,15 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
-    }
+    },
+    small: {
+        width: theme.spacing(4),
+        height: theme.spacing(4),
+    },
+    title: {
+        color: 'red',
+        fontSize: 14
+    },
 }));
 
 const Header = () => {
@@ -192,8 +200,16 @@ const Header = () => {
                         auth.user !== null ? !Object.is(401, auth.user.error) ? (!auth.user.roles.includes("ROLE_ADMIN")) ? (
                             <>
                                 <Button variant="outlined" size="small" style={{ color: "#416c48" }} onClick={handleClickAccount} >
-                                    <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginRight: 10 }} />
-                                    {auth.user.username}
+                                    <div style={{ display: 'flex' }}>
+                                        <Avatar alt="Remy Sharp" className={classes.small} src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginRight: 10 }} />
+                                        <div>
+                                            {auth.user.fullName}
+                                            <Typography className={classes.title}>
+                                                Điểm: 1000
+                                            </Typography>
+                                        </div>
+                                    </div>
+
                                 </Button>
                                 <Menu
                                     id="simple-menu"

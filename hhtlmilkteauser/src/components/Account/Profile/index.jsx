@@ -29,17 +29,16 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         marginLeft: 50,
     },
-    upload: {
-        [theme.breakpoints.up('sm')]: {
-            display: 'flex',
-        },
-    },
     btnUpload: {
         [theme.breakpoints.up('sm')]: {
-            marginTop: 54,
+            marginTop: 20,
             marginLeft: 20,
         },
-        marginTop: 10,
+        marginTop: 10
+    },
+    upload: {
+        display: 'grid',
+        justifyItems: 'center'
     }
 }));
 
