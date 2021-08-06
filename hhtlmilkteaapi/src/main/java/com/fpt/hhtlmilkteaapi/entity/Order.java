@@ -36,6 +36,9 @@ public class Order implements Serializable {
     private String noteOrder;
 
     @ColumnDefault("0")
+    private long totalPrice;
+
+    @ColumnDefault("0")
     private long memberVip;
 
     @CreationTimestamp
@@ -62,7 +65,7 @@ public class Order implements Serializable {
     )
     private Collection<OrderDetail> orderDetails;
 
-    public Order(long id, String address, String phone, int payment, String noteOrder, long memberVip, User userId) {
+    public Order(long id, String address, String phone, int payment, String noteOrder, long memberVip, User userId, int totalPrice) {
         this.id = id;
         this.address = address;
         this.phone = phone;
@@ -70,5 +73,6 @@ public class Order implements Serializable {
         this.noteOrder = noteOrder;
         this.memberVip = memberVip;
         this.userId = userId;
+        this.totalPrice = totalPrice;
     }
 }

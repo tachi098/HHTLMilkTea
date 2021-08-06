@@ -31,7 +31,7 @@ public class SeedOrdersTable {
             // Insert Orders
             // Insert Order 1
             User user01 = userRepository.findById(2L).get();
-            Order order01 = new Order(1,"Binh Thanh, Ho Chi Minh", "0123456789", 0, "Không thêm đường", 50, user01);
+            Order order01 = new Order(1,"Binh Thanh, Ho Chi Minh", "0123456789", 0, "Không thêm đường", 50, user01, 50000);
 
             // Insert Data
             orderRepository.saveAll(Arrays.asList(order01));

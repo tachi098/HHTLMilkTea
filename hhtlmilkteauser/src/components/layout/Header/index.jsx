@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { AppBar, Avatar, Badge, Menu, MenuItem, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Badge, Menu, MenuItem, Typography, withStyles } from '@material-ui/core';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -15,6 +15,8 @@ import delivery from "./../../../assets/img/delivery.png"
 import { Link, NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthLogoutAction } from './../../../store/actions/AuthAction'
+import { UserFindByUsernameAction } from './../../../store/actions/UserAction'
+
 
 const sections = [
     { title: 'TRANG CHỦ', url: '/home' },
@@ -67,8 +69,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     small: {
-        width: theme.spacing(4),
-        height: theme.spacing(4),
+        width: theme.spacing(5),
+        height: theme.spacing(5),
     },
     title: {
         color: 'red',
@@ -76,18 +78,58 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const StyledBadge = withStyles((theme) => ({
+    badge: {
+        marginRight: 8,
+        backgroundColor: '#44b700',
+        color: '#44b700',
+        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+        '&::after': {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            animation: '$ripple 1.2s infinite ease-in-out',
+            border: '1px solid currentColor',
+            content: '""',
+        },
+    },
+    '@keyframes ripple': {
+        '0%': {
+            transform: 'scale(.8)',
+            opacity: 1,
+        },
+        '100%': {
+            transform: 'scale(2.4)',
+            opacity: 0,
+        },
+    },
+}))(Badge)
+
 const Header = () => {
 
     const history = useHistory();
     const classes = useStyles();
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     const [left, setLeft] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElSearch, setAnchorElSearch] = useState(null);
     const [anchorElAccount, setAnchorElAccount] = useState(null);
 
-    const auth = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { customer } = useSelector(
+        (state) => state.customer
+    );
+
+
+    useEffect(() => {
+        if (auth.user !== null) {
+            dispatch(UserFindByUsernameAction({ username: auth.user.username }));
+        }
+    }, [auth, dispatch]);
 
     function handleClick(event) {
         if (anchorEl !== event.currentTarget) {
@@ -150,6 +192,7 @@ const Header = () => {
             </List>
         </div>
     );
+
     return (
         <AppBar style={{ backgroundColor: 'white' }}>
             <Toolbar className={classes.toolbar}>
@@ -201,11 +244,20 @@ const Header = () => {
                             <>
                                 <Button variant="outlined" size="small" style={{ color: "#416c48" }} onClick={handleClickAccount} >
                                     <div style={{ display: 'flex' }}>
-                                        <Avatar alt="Remy Sharp" className={classes.small} src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginRight: 10 }} />
+                                        <StyledBadge
+                                            overlap="circular"
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'right',
+                                            }}
+                                            variant="dot"
+                                        >
+                                            <Avatar alt="Remy Sharp" className={classes.small} src="https://material-ui.com/static/images/avatar/1.jpg" style={{ marginRight: 10 }} />
+                                        </StyledBadge>
                                         <div>
-                                            {auth.user.fullName}
+                                            {customer ? customer.fullName : ""}
                                             <Typography className={classes.title}>
-                                                Điểm: 1000
+                                                Điểm: {customer ? customer.memberVip.mark : ""}
                                             </Typography>
                                         </div>
                                     </div>
