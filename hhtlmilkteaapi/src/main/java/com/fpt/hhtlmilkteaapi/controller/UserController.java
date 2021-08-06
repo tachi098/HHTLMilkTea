@@ -63,8 +63,8 @@ public class UserController {
         );
 
         Page<User> users = "".equals(keyword) ?
-                userRepository.findAll(pageable) :
-                userRepository.findUsersByFullNameLike("%" + keyword + "%", pageable);
+                userRepository.findUsersByUsernameNotLike("admin", pageable) :
+                userRepository.findUsersByUsernameNotLikeAndFullNameLike("admin", "%" + keyword + "%", pageable);
 
         return ResponseEntity.ok(users);
     }

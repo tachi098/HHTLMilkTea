@@ -38,7 +38,12 @@ public class CloudinaryService {
     }
 
     public Map delete(String id, Map<String, String> options) throws IOException {
-        Map result = cloudinary.uploader().destroy(id, options);
+        Map result = null;
+        try {
+            result = cloudinary.uploader().destroy(id, options);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return result;
     }
 

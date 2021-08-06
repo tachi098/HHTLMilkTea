@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import PrivateRoute from "./components/PrivateRoute";
 import { CircularProgress } from "@material-ui/core";
-import "./App.css"
+import "./App.css";
 
 const Spinner = React.lazy(() => import("./components/Spinner"));
 const Login = React.lazy(() => import("./components/Login"));
@@ -13,6 +13,7 @@ const Form = React.lazy(() => import("./components/Something/Form"));
 const Dashboard = React.lazy(() => import("./components/Dashboard"));
 const SpanningTable = React.lazy(() => import("./components/Something/Table"));
 const Page404 = React.lazy(() => import("./components/Page404"));
+const User = React.lazy(() => import("./components/User"));
 
 const App = () => {
   return (
@@ -37,6 +38,9 @@ const App = () => {
             </Route>
             <PrivateRoute path={"/dashboard"}>
               <Dashboard />
+            </PrivateRoute>
+            <PrivateRoute path={"/user"}>
+              <User />
             </PrivateRoute>
             <PrivateRoute path={"/spinner"}>
               <Spinner />

@@ -10,9 +10,7 @@ import { Euro, FormatAlignCenter } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Divider } from "@material-ui/core";
 
-
 const MainListItems = () => {
-
   return (
     <div>
       <Link to="/dashboard" style={{ textDecoration: "none", color: "black" }}>
@@ -35,12 +33,14 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Sản phẩm" />
       </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <PeopleIcon style={{ marginLeft: 5 }} />
-        </ListItemIcon>
-        <ListItemText primary="Người dùng" />
-      </ListItem>
+      <Link to="/user" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <PeopleIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Người dùng" />
+        </ListItem>
+      </Link>
       <Link to="/spinner" style={{ textDecoration: "none", color: "black" }}>
         <ListItem>
           <ListItemIcon>
@@ -68,7 +68,7 @@ const MainListItems = () => {
         </ListItem>
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export default MainListItems;
