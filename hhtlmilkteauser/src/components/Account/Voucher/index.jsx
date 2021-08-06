@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, Grid, makeStyles, Typography } from "@material-ui/core"
+import { Button, Card, CardContent, CardMedia, Grid, makeStyles, TextField, Typography } from "@material-ui/core"
 import React from "react"
 import voucher from "./../../../assets/img/voucher.jpg"
 
@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 20,
         paddingRight: 20,
         paddingBottom: 10,
-        borderBottom: '1px solid #ececec'
+        borderBottom: '1px solid #ececec',
+        display: 'flex',
     },
     root: {
         display: 'flex',
@@ -30,6 +31,13 @@ const useStyles = makeStyles((theme) => ({
     voucher: {
         paddingRight: 20,
         paddingBottom: 20
+    },
+    voucherContainer: {
+        marginLeft: '50%',
+        display: 'flex',
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: '10%',
+        },
     }
 }));
 
@@ -39,16 +47,34 @@ const Voucher = () => {
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h6">
-                    VOUCHER
-                </Typography>
-                <Typography className={classes.title}>
-                    Quản lý các voucher của bạn
-                </Typography>
+                <div>
+                    <Typography variant="h6">
+                        VOUCHER
+                    </Typography>
+                    <Typography className={classes.title}>
+                        Quản lý các voucher của bạn
+                    </Typography>
+                </div>
+
+                <div className={classes.voucherContainer}>
+                    <form>
+                        <TextField
+                            label="Mã voucher"
+                        />
+                        <Button
+                            size="small"
+                            color='primary'
+                            variant="contained"
+                            style={{ marginLeft: 10, marginTop: 20 }}
+                        >
+                            Xác nhận
+                        </Button>
+                    </form>
+                </div>
+
             </div>
 
-
-                <Grid container style={{ display: 'flex', padding: 20 }}>
+            <Grid container style={{ display: 'flex', padding: 20 }}>
                 {[...Array(12)].map((item, index) => (
                     <Grid key={index} item md={6} xs={12} sm={12} className={classes.voucher}>
                         <Card className={classes.root}>
@@ -70,7 +96,7 @@ const Voucher = () => {
                         </Card>
                     </Grid>
                 ))}
-                </Grid>
+            </Grid>
 
         </React.Fragment>
     )
