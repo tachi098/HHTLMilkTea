@@ -150,4 +150,11 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Data update successful"));
     }
 
+    @GetMapping("")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getUserByUsername(
+            @RequestParam(defaultValue = "1") String username){
+        User user = userRepository.findByUsername(username).get();
+        return ResponseEntity.ok(user);
+    }
 }

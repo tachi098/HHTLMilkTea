@@ -17,6 +17,7 @@ public class Constant {
             "/api/wishlist/**",
             "/api/code/**",
             "/api/spinner/**",
+            "/api/user/**",
     };
 
 }

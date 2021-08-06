@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     btnUpload: {
         [theme.breakpoints.up('sm')]: {
             marginTop: 20,
-            marginLeft: 20,
         },
         marginTop: 10
     },
@@ -104,7 +103,7 @@ const Profile = () => {
                             />
 
                             <Button color="secondary" variant="contained" component="span" className={classes.btnUpload}>
-                                Upload button
+                                Tải ảnh
                             </Button>
                         </label>
                     </Grid>
@@ -115,7 +114,7 @@ const Profile = () => {
                 color="primary"
                 className={classes.button}
             >
-                Thay đổi
+                Cập nhật
             </Button>
         </React.Fragment>
     )
