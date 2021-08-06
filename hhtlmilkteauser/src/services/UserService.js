@@ -1,10 +1,8 @@
 import api from "./../common/APIClient";
 
 class UserService {
-    finduser = (query) => {
-        return api.get("/user", {
-            params: query
-        });
+    finduser = (username) => {
+        return api.get(`/user/${username}`);
     };
 }
 
