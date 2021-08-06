@@ -130,7 +130,7 @@ const Header = () => {
 
   useEffect(() => {
     if (auth.user !== null) {
-      dispatch(UserFindByUsernameAction({ username: auth.user.username }));
+      dispatch(UserFindByUsernameAction(auth.user.username));
     }
   }, [auth, dispatch]);
 
@@ -307,9 +307,9 @@ const Header = () => {
                         />
                       </StyledBadge>
                       <div>
-                        {customer ? customer.fullName : ""}
+                        {customer && (customer.fullName ?? "")}
                         <Typography className={classes.title}>
-                          Điểm: {customer ? customer.memberVip.mark : ""}
+                          Điểm: {customer && (customer?.memberVip?.mark ?? "0")}
                         </Typography>
                       </div>
                     </div>

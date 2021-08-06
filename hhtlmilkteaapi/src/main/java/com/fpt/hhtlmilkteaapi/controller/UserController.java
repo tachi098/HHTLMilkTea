@@ -1,12 +1,18 @@
 package com.fpt.hhtlmilkteaapi.controller;
 
 import com.fpt.hhtlmilkteaapi.config.ERole;
+import com.fpt.hhtlmilkteaapi.entity.Product;
 import com.fpt.hhtlmilkteaapi.entity.Role;
 import com.fpt.hhtlmilkteaapi.entity.User;
+import com.fpt.hhtlmilkteaapi.entity.Wishlist;
 import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
+import com.fpt.hhtlmilkteaapi.payload.response.UserReponse;
+import com.fpt.hhtlmilkteaapi.payload.response.WishlistResponse;
+import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.repository.IRoleRepository;
 import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
+import com.fpt.hhtlmilkteaapi.repository.IWishlistRepository;
 import com.fpt.hhtlmilkteaapi.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -41,6 +45,12 @@ public class UserController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private IWishlistRepository wishlistRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @Value("${javadocfast.cloudinary.folder.avatar}")
     private String avatar;
@@ -150,11 +160,28 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Data update successful"));
     }
 
-    @GetMapping("")
+    @GetMapping("/{username}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getUserByUsername(
-            @RequestParam(defaultValue = "1") String username){
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username){
+
+        UserReponse userReponse = new UserReponse();
+        WishlistResponse wishlistResponse = new WishlistResponse();
+
         User user = userRepository.findByUsername(username).get();
-        return ResponseEntity.ok(user);
+
+        // Get all wishlist
+        List<Wishlist> wishlists = wishlistRepository.findAllByUserId(user.getId());
+        List<Product> products = new ArrayList<>();
+
+        for(Wishlist wl : wishlists) {
+            products.add(productRepository.findById(wl.getProductId()).get());
+        }
+
+        wishlistResponse.setProducts(products);
+        userReponse.setUser(user);
+        userReponse.setWishlistResponse(wishlistResponse);
+
+
+        return ResponseEntity.ok(userReponse);
     }
 }
