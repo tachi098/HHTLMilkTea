@@ -84,13 +84,37 @@ const Spinner = () => {
   const [error, setError] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const { spinners, segments, segColors, isLoading } = useSelector(
-    (state) => state.spinner
-  );
+
+  const spinner = useSelector((state) => state.spinner);
+
+  const [spinnersNew, setSpinnersNew] = useState([]);
+  const [segmentsNew, setSegmentsNew] = useState([]);
+  const [segColorsNew, setSegColorsNew] = useState([]);
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
 
   useEffect(() => {
     dispatch(SpinnerListAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    const { spinners, isLoading } = spinner;
+    const segments = [];
+    const segColors = [];
+
+    if (Array.isArray(spinners)) {
+      spinners.forEach((sp) => {
+        const { name, color } = sp;
+
+        segments.push(name);
+        segColors.push(color);
+      });
+    }
+
+    setSpinnersNew(spinners);
+    setSegmentsNew(segments);
+    setSegColorsNew(segColors);
+    setIsLoadingNew(isLoading);
+  }, [spinner]);
 
   const onFinished = (winner) => {
     console.log(winner);
@@ -106,6 +130,7 @@ const Spinner = () => {
 
   const handleOnDelete = (id) => {
     dispatch(SpinnerRemoveAction(id));
+    setIsLoadingNew(false);
     Notification.warn(SPINNER_NOTIFICATION_WARN);
   };
 
@@ -126,6 +151,7 @@ const Spinner = () => {
   };
 
   const handleOnSubmit = (data) => {
+    setIsLoadingNew(false);
     setError(true);
     if (!Object.is(data.name, "")) {
       dispatch(SpinnerSaveAction(data));
@@ -148,8 +174,8 @@ const Spinner = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {isLoading &&
-                  spinners.map((spinner, index) => (
+                {isLoadingNew &&
+                  spinnersNew.map((spinner, index) => (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{spinner.name}</TableCell>
@@ -236,18 +262,11 @@ const Spinner = () => {
         </Grid>
         <Grid item md={5} sm={12} xs={12} className={classes.flexCenter}>
           <div className={classes.positionRootSpin}>
-            <Button
-              variant="contained"
-              onClick={() => window.location.reload()}
-              className={classes.btnReload}
-            >
-              Nạp Lại
-            </Button>
             <div className={classes.positionWeel}>
-              {isLoading && (
+              {isLoadingNew && (
                 <WheelComponent
-                  segments={segments}
-                  segColors={segColors}
+                  segments={segmentsNew}
+                  segColors={segColorsNew}
                   onFinished={(winner) => onFinished(winner)}
                   primaryColor="black"
                   contrastColor="white"

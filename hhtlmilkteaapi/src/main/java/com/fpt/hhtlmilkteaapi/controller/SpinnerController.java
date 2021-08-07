@@ -26,21 +26,7 @@ public class SpinnerController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> list() {
         List<Spinner> spinners = spinnerRepository.findAll();
-
-        SpinnerResponse spinnerResponse = new SpinnerResponse();
-        spinnerResponse.setSpinners(spinners);
-
-        List<String> segments = new ArrayList<>();
-        List<String> segColors = new ArrayList<>();
-        for(Spinner spinner : spinners) {
-            segments.add(spinner.getName());
-            segColors.add(spinner.getColor());
-        }
-
-        spinnerResponse.setSegments(segments);
-        spinnerResponse.setSegColors(segColors);
-
-        return ResponseEntity.ok(spinnerResponse);
+        return ResponseEntity.ok(spinners);
     }
 
 

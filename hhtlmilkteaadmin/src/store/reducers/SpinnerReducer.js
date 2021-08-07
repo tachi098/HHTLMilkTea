@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   spinners: [],
-  segments: [],
-  segColors: [],
   isLoading: false,
 };
 
@@ -12,15 +10,11 @@ const spinnerSlice = createSlice({
   initialState,
   reducers: {
     findAll: (state, action) => {
-      state.spinners = action.payload.spinners;
-      state.segments = action.payload.segments;
-      state.segColors = action.payload.segColors;
+      state.spinners = action.payload;
       state.isLoading = true;
     },
     save: (state, action) => {
       state.spinners.push(action.payload);
-      state.segments.push(action.payload.name);
-      state.segColors.push(action.payload.color);
       state.isLoading = true;
     },
     remove: (state, action) => {
