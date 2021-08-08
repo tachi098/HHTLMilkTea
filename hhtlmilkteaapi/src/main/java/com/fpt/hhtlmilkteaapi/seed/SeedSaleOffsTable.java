@@ -29,8 +29,8 @@ public class SeedSaleOffsTable {
 
         if (count == 0) {
 
-            Product product01 = productRepository.findById("P001").get();
-            Product product02 = productRepository.findById("P002").get();
+            Product product01 = productRepository.findById("P0882021035821").get();
+            Product product02 = productRepository.findById("P0882021035822").get();
 
             SaleOff saleOff01 = new SaleOff(1,0.3, new Date(), product01);
             SaleOff saleOff02 = new SaleOff(2,0.15, new Date(), product02);

@@ -29,7 +29,7 @@ public class SeedOrderDetailsTable {
         if (count == 0) {
             // Insert OrderDetails
             // Insert OrderDetail 1
-            Product product01 = productRepository.findById("P001").get();
+            Product product01 = productRepository.findById("P0882021035821").get();
             Order order01 = orderRepository.findById(1L).get();
             OrderDetail orderDetail01 = new OrderDetail(1,1L, "1L, 2L", 2,"Giao hang nhanh", order01, product01);
 

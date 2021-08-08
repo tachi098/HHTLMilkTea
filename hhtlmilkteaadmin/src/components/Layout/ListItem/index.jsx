@@ -27,12 +27,16 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Đơn hàng" />
       </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <Euro style={{ marginLeft: 5 }} />
-        </ListItemIcon>
-        <ListItemText primary="Sản phẩm" />
-      </ListItem>
+
+      <Link to="/product" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <Euro style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Sản phẩm" />
+        </ListItem>
+      </Link>
+
       <Link to="/user" style={{ textDecoration: "none", color: "black" }}>
         <ListItem button>
           <ListItemIcon>
