@@ -15,7 +15,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name="product")
 public class Product implements Serializable {

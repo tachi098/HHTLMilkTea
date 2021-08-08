@@ -14,6 +14,8 @@ const Dashboard = React.lazy(() => import("./components/Dashboard"));
 const SpanningTable = React.lazy(() => import("./components/Something/Table"));
 const Page404 = React.lazy(() => import("./components/Page404"));
 const User = React.lazy(() => import("./components/User"));
+const Product = React.lazy(() => import("./components/Product"));
+const AddProduct = React.lazy(() => import("./components/Product/AddProduct"));
 
 const App = () => {
   return (
@@ -41,6 +43,12 @@ const App = () => {
             </PrivateRoute>
             <PrivateRoute path={"/user"}>
               <User />
+            </PrivateRoute>
+            <PrivateRoute exact path={"/product"}>
+              <Product />
+            </PrivateRoute>
+            <PrivateRoute path={"/product/add"}>
+              <AddProduct />
             </PrivateRoute>
             <PrivateRoute path={"/spinner"}>
               <Spinner />

@@ -30,12 +30,14 @@ public class SeedAddOptionsTable {
         if(count == 0) {
 
             // Insert AddOptions
-            AdditionOption addOption1 = new AdditionOption(1 , "Rau câu", 2500);
-            AdditionOption addOption2 = new AdditionOption(2 , "Thạch dừa", 5000);
-            AdditionOption addOption3 = new AdditionOption(3 , "sữa", 7000);
+            AdditionOption addOption1 = new AdditionOption(1 , "Đào thêm(3 Pcs)", 15000);
+            AdditionOption addOption2 = new AdditionOption(2 , "Sữa tươi(80 ml)", 10000);
+            AdditionOption addOption3 = new AdditionOption(3 , "Whipped cream", 15000);
+            AdditionOption addOption4 = new AdditionOption(4 , "Espresso shot", 25000);
+            AdditionOption addOption5 = new AdditionOption(5 , "Nhãn thêm(4 Pcs)", 15000);
 
             addOptionRepository.saveAll(Arrays.asList(
-                    addOption1, addOption2, addOption3
+                    addOption1, addOption2, addOption3, addOption4, addOption5
             ));
 
             LOGGER.info("AddOptions Table Seeded.");
