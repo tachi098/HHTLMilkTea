@@ -9,7 +9,7 @@ import { CategoryListAction } from "./../../../store/actions/CategoryAction"
 import { AdditionOptionListAction } from "./../../../store/actions/AdditionOptionAction"
 import { SizeOptionAction } from "./../../../store/actions/SizeOptionAction"
 import { updateProduct } from "./../../../store/actions/ProductAction"
-
+import Notification from "./../../../common/Notification"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,7 +110,10 @@ const EditProduct = () => {
         data.multipartFile = data.multipartFile[0] ? data.multipartFile[0] : null;
         setOpenBD(!open);
         setTimeout(() => {
-            dispatch(updateProduct(data)).then(res => history.push("/product"));
+            dispatch(updateProduct(data)).then(res => {
+                history.push("/product")
+                Notification.success("Đã cập nhập thành công!");
+            });
         }, 2000);
     };
 

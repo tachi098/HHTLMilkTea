@@ -15,16 +15,17 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ProductGetAll } from "../../store/actions/ProductAction";
+import { ProductGetAll, deleteProduct } from "../../store/actions/ProductAction";
 import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import Logo from "./../../assets/img/Milktea.gif";
 import { useHistory } from "react-router-dom";
-import { CreateOutlined, DeleteOutline, Visibility } from "@material-ui/icons";
+import { CreateOutlined, DeleteOutline, Replay, Visibility } from "@material-ui/icons";
 import { CategoryListAction } from "./../../store/actions/CategoryAction"
 import { AdditionOptionListAction } from "./../../store/actions/AdditionOptionAction"
 import { SizeOptionAction } from "./../../store/actions/SizeOptionAction"
-
+import { confirmAlert } from "react-confirm-alert";
+import Notification from "./../../common/Notification"
 
 const useStyles = makeStyles((theme) => ({
     btn: {
@@ -125,6 +126,25 @@ const Product = () => {
 
     const onhandleUpdate = (item) => {
         history.push("/product/edit", { product: item, addition: additionOptions, size: sizeOptions })
+    }
+
+    const onhandleDelete = (id) => {
+        confirmAlert({
+            title: "Thông báo",
+            message: "Bạn có chắc muốn cập nhật trạng thái?",
+            buttons: [
+                {
+                    label: "Có",
+                    onClick: () => {
+                        dispatch(deleteProduct(id))
+                        Notification.success("Đã cập nhập thành công!");
+                    },
+                },
+                {
+                    label: "Không",
+                },
+            ],
+        });
     }
 
     const fields = [
@@ -246,14 +266,19 @@ const Product = () => {
                                 <TableCell>{u.categoryId.name}</TableCell>
                                 <TableCell>
                                     {u.deletedAt
-                                        ? (<Chip label="Ngừng bán" />)
+                                        ? (<Chip label="Ngừng bán" style={{ backgroundColor: 'red', color: 'white' }} />)
                                         : (<Chip label="Hoạt động" style={{ backgroundColor: 'green', color: 'white' }} />)
                                     }
                                 </TableCell>
                                 <TableCell>
-                                    <Visibility style={{ color: 'grey', cursor: 'pointer', marginRight: 10 }} />
+                                    <Visibility style={{ color: 'grey', cursor: 'pointer', marginRight: 10 }} onClick={() => { history.push("product/detail", { product: u }) }} />
                                     <CreateOutlined style={{ color: '#3F51B5', cursor: 'pointer', marginRight: 10 }} onClick={() => onhandleUpdate(u)} />
-                                    <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+
+                                    {u.deletedAt
+                                        ? (<Replay style={{ cursor: 'pointer', color: 'green' }} onClick={() => onhandleDelete(u.id)} />)
+                                        : (<DeleteOutline style={{ color: 'red', cursor: 'pointer' }} onClick={() => onhandleDelete(u.id)} />)
+                                    }
+
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -7,7 +7,6 @@ import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.ProductRequest;
 import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.service.CloudinaryService;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -94,11 +93,11 @@ public class ProductController {
         Long price = productRequest.getPrice();
         Category category = objectMapper.readValue(productRequest.getCategoryId().toString(), Category.class);
         Set<SizeOption> sizeOptions = new HashSet<>();
-        if (productRequest.getSizeOptions() != null){
-            for (int i = 0; i < productRequest.getSizeOptions().size() ; i ++){
+        if (productRequest.getSizeOptions() != null) {
+            for (int i = 0; i < productRequest.getSizeOptions().size(); i++) {
                 sizeOptions.add(objectMapper.readValue(productRequest.getSizeOptions().get(i).toString(), SizeOption.class));
             }
-        }else{
+        } else {
             sizeOptions = null;
         }
 
@@ -107,7 +106,7 @@ public class ProductController {
             for (int i = 0; i < productRequest.getAdditionOptions().size(); i++) {
                 additionOptions.add(objectMapper.readValue(productRequest.getAdditionOptions().get(i).toString(), AdditionOption.class));
             }
-        }else{
+        } else {
             additionOptions = null;
         }
 
@@ -129,11 +128,11 @@ public class ProductController {
         Product product = productRepository.findById(id).get();
 
         Set<SizeOption> sizeOptions = new HashSet<>();
-        if (productRequest.getSizeOptions() != null){
-            for (int i = 0; i < productRequest.getSizeOptions().size() ; i ++){
+        if (productRequest.getSizeOptions() != null) {
+            for (int i = 0; i < productRequest.getSizeOptions().size(); i++) {
                 sizeOptions.add(objectMapper.readValue(productRequest.getSizeOptions().get(i).toString(), SizeOption.class));
             }
-        }else{
+        } else {
             sizeOptions = null;
         }
 
@@ -142,7 +141,7 @@ public class ProductController {
             for (int i = 0; i < productRequest.getAdditionOptions().size(); i++) {
                 additionOptions.add(objectMapper.readValue(productRequest.getAdditionOptions().get(i).toString(), AdditionOption.class));
             }
-        }else{
+        } else {
             additionOptions = null;
         }
 
@@ -154,7 +153,6 @@ public class ProductController {
 
         Category category = objectMapper.readValue(productRequest.getCategoryId().toString(), Category.class);
         product.setCategoryId(category);
-
 
 
         Map<String, String> options = new HashMap<>();
@@ -181,6 +179,19 @@ public class ProductController {
 
         productRepository.save(product);
 
+        return new ResponseEntity(product, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteProductById(@PathVariable String id) {
+        Product product = productRepository.findById(id).get();
+        if (product.getDeletedAt() == null) {
+            product.setDeletedAt(new Date());
+        } else {
+            product.setDeletedAt(null);
+        }
+        productRepository.save(product);
         return new ResponseEntity(product, HttpStatus.OK);
     }
 }
