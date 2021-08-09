@@ -21,5 +21,10 @@ export const SPINNER_LABLE = [
   "30000",
 ];
 
+/** User */
+export const USER_ALERT_TITLE = "THÔNG BÁO";
+export const USER_ALERT_MESSAGE = "Bạn có chắc muốn cập nhật trạng thái?";
+export const USER_NOTIFICATION_WARN = "Đã cập nhập thành công!";
+
 /** APIClient */
 export const BASE_URL = "http://localhost:8080/api";

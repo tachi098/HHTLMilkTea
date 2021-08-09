@@ -23,5 +23,6 @@ public class UserRequest {
     private MultipartFile avatar;
     private String email;
     private Set<String> roles;
+    private String status;
 
 }

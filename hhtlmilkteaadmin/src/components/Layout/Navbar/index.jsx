@@ -12,7 +12,7 @@ import {
   Menu,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import MainListItems from "../ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -23,12 +23,45 @@ import { useHistory } from "react-router-dom";
 import { AuthLogoutAction } from "../../../store/actions/AuthAction";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Logo from "./../../../assets/img/Milktea.gif";
+import { Client } from "@stomp/stompjs";
+
+const SOCKET_URL = "ws://localhost:8080/ws/message";
 
 const Navbar = () => {
   const auth = useSelector((state) => state.auth);
   const history = useHistory();
   const dispatch = useDispatch();
   const [anchorElLogout, setAnchorElLogout] = useState(null);
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    let onConnected = () => {
+      console.log("Connected!!");
+      client.subscribe("/message", function (msg) {
+        // console.log(msg);
+        if (msg.body) {
+          var jsonBody = JSON.parse(msg.body);
+          // console.log(jsonBody);
+          setData(jsonBody);
+        }
+      });
+    };
+
+    let onDisconnected = () => {
+      console.log("Disconnected!");
+    };
+
+    const client = new Client({
+      brokerURL: SOCKET_URL,
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      onConnect: onConnected,
+      onDisconnect: onDisconnected,
+    });
+
+    client.activate();
+  }, []);
 
   function handleClickLogout(event) {
     if (anchorElLogout !== event.currentTarget) {
@@ -145,7 +178,7 @@ const Navbar = () => {
             HHTLMilktea
           </Typography>
           <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
+            <Badge badgeContent={data?.length ?? 0} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>

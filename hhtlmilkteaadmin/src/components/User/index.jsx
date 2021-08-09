@@ -12,16 +12,25 @@ import {
   TableRow,
   TextField,
   makeStyles,
+  Chip,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { UserGetAll } from "../../store/actions/UserAction";
+import { UserGetAll, UserStatusAction } from "../../store/actions/UserAction";
 import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import Logo from "./../../assets/img/Milktea.gif";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Report from "./report";
+import { DeleteOutline, Replay, Visibility } from "@material-ui/icons";
+import { confirmAlert } from "react-confirm-alert";
+import {
+  USER_ALERT_MESSAGE,
+  USER_ALERT_TITLE,
+  USER_NOTIFICATION_WARN,
+} from "../../common/Constant";
+import Notification from "./../../common/Notification";
 
 const useStyles = makeStyles((theme) => ({
   btn: {
@@ -98,8 +107,50 @@ const User = () => {
     setPage(1);
   };
 
-  const handleDetails = (id) => {
-    console.log({ id });
+  const handleDetails = (username) => {
+    console.log({ username });
+  };
+
+  const handleOnDelete = (username) => {
+    dispatch(UserStatusAction({ username, status: "delete" }));
+    Notification.success(USER_NOTIFICATION_WARN);
+  };
+
+  const handleDelete = (username) => {
+    confirmAlert({
+      title: USER_ALERT_TITLE,
+      message: USER_ALERT_MESSAGE,
+      buttons: [
+        {
+          label: "Có",
+          onClick: () => handleOnDelete(username),
+        },
+        {
+          label: "Không",
+        },
+      ],
+    });
+  };
+
+  const handleOnReplay = (username) => {
+    dispatch(UserStatusAction({ username, status: "replay" }));
+    Notification.success(USER_NOTIFICATION_WARN);
+  };
+
+  const handleReplay = (username) => {
+    confirmAlert({
+      title: USER_ALERT_TITLE,
+      message: USER_ALERT_MESSAGE,
+      buttons: [
+        {
+          label: "Có",
+          onClick: () => handleOnReplay(username),
+        },
+        {
+          label: "Không",
+        },
+      ],
+    });
   };
 
   const fields = [
@@ -108,6 +159,7 @@ const User = () => {
     { name: "fullName", lable: "Họ & Tên", dir: "asc" },
     { name: "phone", lable: "Số Điện Thoại", dir: "asc" },
     { name: "email", lable: "Email", dir: "asc" },
+    { lable: "Trạng thái" },
     { lable: "Hành Động" },
   ];
 
@@ -217,14 +269,38 @@ const User = () => {
                 <TableCell>{u.phone}</TableCell>
                 <TableCell>{u.email}</TableCell>
                 <TableCell>
-                  <Button
-                    className={classes.btn}
-                    variant="contained"
-                    onClick={() => handleDetails(u.id)}
-                    color="primary"
-                  >
-                    Chi Tiết
-                  </Button>
+                  {u.deletedAt ? (
+                    <Chip
+                      label="Vi phạm"
+                      style={{ backgroundColor: "red", color: "white" }}
+                    />
+                  ) : (
+                    <Chip
+                      label="Hoạt động"
+                      style={{ backgroundColor: "green", color: "white" }}
+                    />
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Visibility
+                    style={{
+                      color: "grey",
+                      cursor: "pointer",
+                      marginRight: 10,
+                    }}
+                    onClick={() => handleDetails(u.username)}
+                  />
+                  {u.deletedAt ? (
+                    <Replay
+                      style={{ color: "green", cursor: "pointer" }}
+                      onClick={() => handleReplay(u.username)}
+                    />
+                  ) : (
+                    <DeleteOutline
+                      style={{ color: "red", cursor: "pointer" }}
+                      onClick={() => handleDelete(u.username)}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             ))}
