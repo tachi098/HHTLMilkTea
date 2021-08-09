@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { Link, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import { AuthLoginAction } from './../../../src/store/actions/AuthAction'
-import { FormHelperText, InputAdornment } from '@material-ui/core';
+import React, { useEffect, useState } from "react";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { AuthLoginAction } from "./../../../src/store/actions/AuthAction";
+import { FormHelperText, InputAdornment } from "@material-ui/core";
 import { AccountCircle, LockRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(6),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -80,10 +80,7 @@ const SignIn = () => {
         <Typography component="h1" variant="h5">
           Đăng nhập
         </Typography>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={classes.form}
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <FormHelperText
             style={{
               color: "red",
@@ -99,6 +96,7 @@ const SignIn = () => {
             fullWidth
             name="username"
             label="Tài khoản"
+            autoComplete="off"
             inputRef={register({ required: true })}
             InputProps={{
               startAdornment: (
@@ -121,6 +119,7 @@ const SignIn = () => {
             name="password"
             label="Mật khẩu"
             type="password"
+            autoComplete="current-password"
             inputRef={register({ required: true })}
             InputProps={{
               startAdornment: (
@@ -146,12 +145,12 @@ const SignIn = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="/forget" style={{ textDecoration: 'none' }}>
+              <Link to="/forget" style={{ textDecoration: "none" }}>
                 Quên mật khẩu
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/signup" style={{ textDecoration: 'none' }}>
+              <Link to="/signup" style={{ textDecoration: "none" }}>
                 Bạn chưa có tài khoản? Tạo tài khoản
               </Link>
             </Grid>
@@ -160,6 +159,6 @@ const SignIn = () => {
       </div>
     </Container>
   );
-}
+};
 
-export default SignIn
+export default SignIn;

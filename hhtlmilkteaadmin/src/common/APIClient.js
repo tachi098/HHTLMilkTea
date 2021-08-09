@@ -1,5 +1,4 @@
 import axios from "axios";
-import history from "./History";
 import { BASE_URL } from "./Constant";
 
 const api = axios.create({
@@ -34,13 +33,13 @@ api.interceptors.response.use(
 
     if (Object.is(401, error.response.status)) {
       localStorage.removeItem("user");
-      history.replace("/");
+      window.location.href = "/";
       return;
     }
 
     if (Object.is(403, error.response.status)) {
       localStorage.removeItem("user");
-      history.push("/");
+      window.location.href = "/";
       return;
     }
 

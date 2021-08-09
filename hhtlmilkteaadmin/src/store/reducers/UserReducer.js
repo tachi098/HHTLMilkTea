@@ -13,9 +13,15 @@ const UserSlice = createSlice({
       state.totalPages = action.payload.totalPages;
       state.users = action.payload.content;
     },
+    onStatus: (state, action) => {
+      const index = state.users.findIndex((u) =>
+        Object.is(u.username, action.payload.username)
+      );
+      state.users[index].deletedAt = action.payload.deletedAt;
+    },
   },
 });
 
 const { reducer, actions } = UserSlice;
-export const { getUsers } = actions;
+export const { getUsers, onStatus } = actions;
 export default reducer;

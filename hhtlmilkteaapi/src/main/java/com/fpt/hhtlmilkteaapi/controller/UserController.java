@@ -184,4 +184,24 @@ public class UserController {
 
         return ResponseEntity.ok(userReponse);
     }
+
+    @PutMapping("/status")
+    public ResponseEntity<?> updateStatus(@RequestBody UserRequest userRequest) {
+
+        // Find user by username
+        User user = userRepository.findByUsername(userRequest.getUsername()).get();
+
+        // Get status request
+        String status = userRequest.getStatus();
+
+        // Check status and process
+        if("delete".equals(status)) {
+            user.setDeletedAt(new Date());
+        } else if("replay".equals(status)) {
+            user.setDeletedAt(null);
+        }
+        userRepository.save(user);
+
+        return  ResponseEntity.ok(userRepository.save(user));
+    }
 }

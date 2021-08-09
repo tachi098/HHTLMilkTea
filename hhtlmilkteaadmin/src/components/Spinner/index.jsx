@@ -131,7 +131,7 @@ const Spinner = () => {
   const handleOnDelete = (id) => {
     dispatch(SpinnerRemoveAction(id));
     setIsLoadingNew(false);
-    Notification.warn(SPINNER_NOTIFICATION_WARN);
+    Notification.success(SPINNER_NOTIFICATION_WARN);
   };
 
   const handleDelete = (id) => {
