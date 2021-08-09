@@ -2,10 +2,12 @@ package com.fpt.hhtlmilkteaapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
+import com.fpt.hhtlmilkteaapi.payload.request.ProducUpdatetRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.ProductRequest;
 import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.service.CloudinaryService;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -110,6 +112,72 @@ public class ProductController {
         }
 
         Product product = new Product(id, name, title, linkImg, nameImg, price, category, sizeOptions, additionOptions);
+
+        productRepository.save(product);
+
+        return new ResponseEntity(product, HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateProduct(@ModelAttribute ProducUpdatetRequest productRequest) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String id = productRequest.getId();
+
+        Product product = productRepository.findById(id).get();
+
+        Set<SizeOption> sizeOptions = new HashSet<>();
+        if (productRequest.getSizeOptions() != null){
+            for (int i = 0; i < productRequest.getSizeOptions().size() ; i ++){
+                sizeOptions.add(objectMapper.readValue(productRequest.getSizeOptions().get(i).toString(), SizeOption.class));
+            }
+        }else{
+            sizeOptions = null;
+        }
+
+        Set<AdditionOption> additionOptions = new HashSet<>();
+        if (productRequest.getAdditionOptions() != null) {
+            for (int i = 0; i < productRequest.getAdditionOptions().size(); i++) {
+                additionOptions.add(objectMapper.readValue(productRequest.getAdditionOptions().get(i).toString(), AdditionOption.class));
+            }
+        }else{
+            additionOptions = null;
+        }
+
+        product.setName(productRequest.getName());
+        product.setTitle(productRequest.getTitle());
+        product.setPrice(productRequest.getPrice());
+        product.setSizeOptions(sizeOptions);
+        product.setAdditionOptions(additionOptions);
+
+        Category category = objectMapper.readValue(productRequest.getCategoryId().toString(), Category.class);
+        product.setCategoryId(category);
+
+
+
+        Map<String, String> options = new HashMap<>();
+        options.put("folder", image);
+
+        MultipartFile multipartFile = productRequest.getMultipartFile();
+        if (multipartFile != null) {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            if (bufferedImage == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Invalid image"));
+            }
+
+            Map result = cloudinaryService.upload(multipartFile, options);
+
+            if (multipartFile != null) {
+                String linkImg = result.get("url").toString();
+                String nameImg = result.get("public_id").toString();
+                product.setLinkImage(linkImg);
+                product.setNameImage(nameImg);
+            }
+        }
 
         productRepository.save(product);
 

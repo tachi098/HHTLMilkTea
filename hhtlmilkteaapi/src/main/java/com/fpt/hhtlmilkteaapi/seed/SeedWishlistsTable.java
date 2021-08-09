@@ -24,8 +24,8 @@ public class SeedWishlistsTable {
         long count = wishlistRepository.count();
         if (count == 0) {
             // Insert Wishlist
-            Wishlist wishlist01 = new Wishlist(1L,2L, "P001");
-            Wishlist wishlist02 = new Wishlist(2L,2L, "P002");
+            Wishlist wishlist01 = new Wishlist(1L,2L, "P0882021035821");
+            Wishlist wishlist02 = new Wishlist(2L,2L, "P0882021035821");
 
             // Insert Data
             wishlistRepository.saveAll(Arrays.asList(wishlist01, wishlist02));
