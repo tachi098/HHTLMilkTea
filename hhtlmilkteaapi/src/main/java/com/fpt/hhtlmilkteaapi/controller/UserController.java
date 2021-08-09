@@ -186,6 +186,7 @@ public class UserController {
     }
 
     @PutMapping("/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateStatus(@RequestBody UserRequest userRequest) {
 
         // Find user by username
