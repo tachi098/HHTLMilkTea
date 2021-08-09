@@ -9,6 +9,7 @@ import React from "react";
 import { ErrorOutline } from "@material-ui/icons"
 import { addProduct } from "./../../../store/actions/ProductAction"
 import { useHistory } from "react-router-dom";
+import Notification from "./../../../common/Notification"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -97,7 +98,10 @@ const AddProduct = () => {
         data.multipartFile = data.multipartFile[0];
         setOpenBD(!open);
         setTimeout(() => {
-            dispatch(addProduct(data)).then(res => history.push("/product"));
+            dispatch(addProduct(data)).then(res => {
+                history.push("/product")
+                Notification.success("Đã thêm sản phẩm thành công!");
+            });
         }, 2000);
     };
 

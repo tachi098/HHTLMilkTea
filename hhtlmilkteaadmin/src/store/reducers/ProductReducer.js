@@ -27,10 +27,17 @@ const ProductSlice = createSlice({
         existingProduct.categoryId = categoryId;
         existingProduct.linkImage = linkImage;
       }
-    }
+    },
+    productDelete(state, action) {
+      const { id, deletedAt } = action.payload;
+      const existingProduct = state.products.find((product) => product.id === id);
+      if (existingProduct) {
+        existingProduct.deletedAt = deletedAt;
+      }
+    },
   },
 });
 
 const { reducer, actions } = ProductSlice;
-export const { getProducts, productAdded, productUpdate } = actions;
+export const { getProducts, productAdded, productUpdate, productDelete } = actions;
 export default reducer;

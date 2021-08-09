@@ -10,6 +10,9 @@ class ProductService {
     update = (formData) => {
         return api.put("/product", formData);
     };
+    delete = (id) => {
+        return api.put(`/product/${id}`);
+    }
 }
 
 export default new ProductService();
