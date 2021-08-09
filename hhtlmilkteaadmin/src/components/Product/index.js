@@ -11,6 +11,7 @@ import {
     TableRow,
     TextField,
     makeStyles,
+    Chip,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +20,11 @@ import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import Logo from "./../../assets/img/Milktea.gif";
 import { useHistory } from "react-router-dom";
-import { CreateOutlined, DeleteOutline } from "@material-ui/icons";
+import { CreateOutlined, DeleteOutline, Visibility } from "@material-ui/icons";
+import { CategoryListAction } from "./../../store/actions/CategoryAction"
+import { AdditionOptionListAction } from "./../../store/actions/AdditionOptionAction"
+import { SizeOptionAction } from "./../../store/actions/SizeOptionAction"
+
 
 const useStyles = makeStyles((theme) => ({
     btn: {
@@ -70,6 +75,9 @@ const Product = () => {
     const [pageSize, setPageSize] = useState(3);
 
     useEffect(() => {
+        dispatch(CategoryListAction());
+        dispatch(AdditionOptionListAction());
+        dispatch(SizeOptionAction());
         dispatch(
             ProductGetAll({
                 page,
@@ -80,6 +88,14 @@ const Product = () => {
             })
         );
     }, [dispatch, page, valueToOrderBy, valueToSortDir, keyword, pageSize]);
+
+    const { additionOptions } = useSelector(
+        (state) => state.additionOption
+    );
+
+    const { sizeOptions } = useSelector(
+        (state) => state.sizeOption
+    );
 
     const handleRequestSort = (property) => {
         const isAscending =
@@ -107,12 +123,17 @@ const Product = () => {
         history.push("/product/add")
     }
 
+    const onhandleUpdate = (item) => {
+        history.push("/product/edit", { product: item, addition: additionOptions, size: sizeOptions })
+    }
+
     const fields = [
         { lable: "Hình Ảnh" },
         { name: "name", lable: "Tên sản phẩm", dir: "asc" },
         { name: "title", lable: "Chú thích", dir: "asc" },
         { name: "price", lable: "Giá", dir: "asc" },
         { name: "categoryId", lable: "Loại", dir: "asc" },
+        { lable: "Trạng thái" },
         { lable: "Hành Động" },
     ];
 
@@ -221,10 +242,17 @@ const Product = () => {
                                 </TableCell>
                                 <TableCell>{u.name}</TableCell>
                                 <TableCell>{u.title}</TableCell>
-                                <TableCell>{(u.price).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, '$&,')} VNĐ</TableCell>
+                                <TableCell>{(u.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
                                 <TableCell>{u.categoryId.name}</TableCell>
                                 <TableCell>
-                                    <CreateOutlined style={{ color: '#3F51B5', cursor: 'pointer', marginRight: 10, marginLeft: 5 }} />
+                                    {u.deletedAt
+                                        ? (<Chip label="Ngừng bán" />)
+                                        : (<Chip label="Hoạt động" style={{ backgroundColor: 'green', color: 'white' }} />)
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    <Visibility style={{ color: 'grey', cursor: 'pointer', marginRight: 10 }} />
+                                    <CreateOutlined style={{ color: '#3F51B5', cursor: 'pointer', marginRight: 10 }} onClick={() => onhandleUpdate(u)} />
                                     <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
                                 </TableCell>
                             </TableRow>

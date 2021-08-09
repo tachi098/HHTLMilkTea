@@ -1,14 +1,15 @@
-import { Button, FormControl, FormHelperText, Grid, InputLabel, ListItem, ListItemText, makeStyles, NativeSelect, TextField, Typography, ListItemIcon, Paper, List, Checkbox, Dialog, Chip, Backdrop, CircularProgress } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { Button, FormControl, FormHelperText, Grid, InputLabel, ListItem, ListItemText, makeStyles, TextField, Typography, ListItemIcon, Paper, List, Checkbox, Dialog, Chip, Backdrop, CircularProgress, NativeSelect } from "@material-ui/core";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CategoryListAction } from "./../../../store/actions/CategoryAction"
-import { AdditionOptionListAction } from "./../../../store/actions/AdditionOptionAction"
-import { SizeOptionAction } from "./../../../store/actions/SizeOptionAction"
 import { useForm } from "react-hook-form";
 import React from "react";
 import { ErrorOutline } from "@material-ui/icons"
-import { addProduct } from "./../../../store/actions/ProductAction"
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { CategoryListAction } from "./../../../store/actions/CategoryAction"
+import { AdditionOptionListAction } from "./../../../store/actions/AdditionOptionAction"
+import { SizeOptionAction } from "./../../../store/actions/SizeOptionAction"
+import { updateProduct } from "./../../../store/actions/ProductAction"
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,10 +59,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddProduct = () => {
+const EditProduct = () => {
     const classes = useStyles();
 
     const history = useHistory();
+
+    const location = useLocation();
+
+    const [product] = useState(location.state.product)
+
+    const [cate, setCate] = useState(product.categoryId.name)
+
 
     const {
         register,
@@ -74,6 +82,7 @@ const AddProduct = () => {
     const { categories } = useSelector(
         (state) => state.category
     );
+
     const { additionOptions } = useSelector(
         (state) => state.additionOption
     );
@@ -81,6 +90,10 @@ const AddProduct = () => {
     const { sizeOptions } = useSelector(
         (state) => state.sizeOption
     );
+
+    var addOptionLeft = location.state.addition;
+
+    var sizeOptionLeft = location.state.size;
 
     //get list category, addOption, sizeOption
     useEffect(() => {
@@ -94,10 +107,10 @@ const AddProduct = () => {
         data.categoryId = categories.find(c => c.name === data.categoryId);
         data.additionOptions = right;
         data.sizeOptions = rightSize;
-        data.multipartFile = data.multipartFile[0];
+        data.multipartFile = data.multipartFile[0] ? data.multipartFile[0] : null;
         setOpenBD(!open);
         setTimeout(() => {
-            dispatch(addProduct(data)).then(res => history.push("/product"));
+            dispatch(updateProduct(data)).then(res => history.push("/product"));
         }, 2000);
     };
 
@@ -114,7 +127,7 @@ const AddProduct = () => {
     const [open, setOpen] = useState(false);
     const [checked, setChecked] = useState([]);
     const [left, setLeft] = useState([]);
-    const [right, setRight] = useState([]);
+    const [right, setRight] = useState([...product.additionOptions]);
     const [addOpen, setaddOpen] = useState(0);
 
     const handleClose = () => {
@@ -162,14 +175,27 @@ const AddProduct = () => {
     const handleOpenAdd = () => {
         if (addOpen === 0) {
             setaddOpen(1);
-            setLeft(additionOptions);
+            for (let i = 0; i < product.additionOptions.length; i++) {
+                addOptionLeft = addOptionLeft.filter(a => a.name !== product.additionOptions[i].name);
+            }
+            setLeft(addOptionLeft);
         }
         setOpen(true);
     }
 
     const handleRemoveAdd = (id) => {
-        setRight(right.filter(e => e.id !== id));
-        setLeft([...left, additionOptions.find(e => e.id === id)]);
+        if (addOpen === 0) {
+            setaddOpen(1);
+            for (let i = 0; i < product.additionOptions.length; i++) {
+                addOptionLeft = addOptionLeft.filter(a => a.name !== product.additionOptions[i].name);
+            }
+            addOptionLeft.push(additionOptions.find(e => e.id === id));
+            setRight(right.filter(e => e.id !== id));
+            setLeft(addOptionLeft);
+        } else {
+            setRight(right.filter(e => e.id !== id));
+            setLeft([...left, additionOptions.find(e => e.id === id)]);
+        }
     }
 
     // Handle tranferlist sizeOption
@@ -181,7 +207,7 @@ const AddProduct = () => {
     };
 
     const [leftSize, setLeftSize] = useState([]);
-    const [rightSize, setRightSize] = useState([]);
+    const [rightSize, setRightSize] = useState(product.sizeOptions);
     const [addOpenSize, setaddOpenSize] = useState(0);
 
     const leftCheckedSize = intersection(checked, leftSize);
@@ -213,15 +239,30 @@ const AddProduct = () => {
     const handleOpenAddSize = () => {
         if (addOpenSize === 0) {
             setaddOpenSize(1);
-            setLeftSize(sizeOptions);
+            for (let i = 0; i < product.sizeOptions.length; i++) {
+                sizeOptionLeft = sizeOptionLeft.filter(a => a.name !== product.sizeOptions[i].name);
+            }
+            setLeftSize(sizeOptionLeft);
         }
         setOpenSize(true);
     }
 
     const handleRemoveSize = (id) => {
-        setRightSize(rightSize.filter(e => e.id !== id));
-        setLeftSize([...leftSize, sizeOptions.find(e => e.id === id)]);
+        if (addOpenSize === 0) {
+            setaddOpenSize(1);
+            for (let i = 0; i < product.sizeOptions.length; i++) {
+                sizeOptionLeft = sizeOptionLeft.filter(a => a.name !== product.sizeOptions[i].name);
+            }
+            setRightSize(rightSize.filter(e => e.id !== id));
+            sizeOptionLeft.push(sizeOptions.find(e => e.id === id));
+            setLeftSize(sizeOptionLeft);
+        } else {
+            setRightSize(rightSize.filter(e => e.id !== id));
+            setLeftSize([...leftSize, sizeOptions.find(e => e.id === id)]);
+        }
+
     }
+
 
     // Custom tranfer list
     const customList = (items) => (
@@ -268,22 +309,29 @@ const AddProduct = () => {
             <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
                     <Typography variant="h4">
-                        Thêm sản phẩm mới
+                        Cập nhật sản phẩm
                     </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={3}>
                             <Grid item md={8} xs={12}>
+                                <TextField
+                                    name="id"
+                                    inputRef={register()}
+                                    defaultValue={product.id}
+                                    style={{ display: 'none' }}
+                                />
                                 <TextField label="Nhập tên sản phẩm"
                                     style={{ marginTop: 10 }}
+                                    defaultValue={product.name}
                                     fullWidth
                                     name="name"
                                     inputRef={register({ required: true })} />
                                 {errors.name &&
                                     <FormHelperText style={{ color: 'red' }} id="component-error-text">Nhập tên sản phẩm</FormHelperText>
                                 }
-
                                 <TextField label="Nhập giá tiền"
                                     style={{ marginTop: 10 }}
+                                    defaultValue={product.price}
                                     fullWidth
                                     name="price"
                                     inputRef={register({ required: "Nhập giá sản phẩm", pattern: { value: /^[0-9]+$/i, message: "Giá không hợp lệ" } })}
@@ -293,6 +341,7 @@ const AddProduct = () => {
                                 }
                                 <TextField label="Nhập nội dung"
                                     style={{ marginTop: 10 }}
+                                    defaultValue={product.title}
                                     fullWidth
                                     name="title"
                                     inputRef={register({ required: true })}
@@ -303,7 +352,8 @@ const AddProduct = () => {
                                 <FormControl className={classes.formControl}>
                                     <InputLabel htmlFor="uncontrolled-native">Loại sản phẩm</InputLabel>
                                     <NativeSelect
-                                        defaultValue={0}
+                                        value={cate}
+                                        onChange={e => { setCate(e.target.value) }}
                                         name="categoryId"
                                         error={errors.categoryId?.message && true}
                                         inputRef={register({
@@ -377,7 +427,7 @@ const AddProduct = () => {
 
 
                             <Grid item md={4} xs={12}>
-                                <img alt="" src={img} className={classes.displayImg} width={250} height={300} />
+                                <img alt="" src={img ? img : product.linkImage} className={classes.displayImg} width={250} height={300} />
                                 <label htmlFor="upload-photo">
                                     <TextField id="upload-photo" type="file"
                                         style={{ display: 'none' }}
@@ -385,8 +435,8 @@ const AddProduct = () => {
                                         fullWidth
                                         name="multipartFile"
                                         inputRef={register({
-                                            required: "Ảnh không được để trống", validate: value => {
-                                                if (value[0].size >= 1048576) {
+                                            validate: value => {
+                                                if (value[0]?.size >= 1048576) {
                                                     return "kích thước hình ảnh quả lớn";
                                                 }
                                             }
@@ -539,12 +589,12 @@ const AddProduct = () => {
                             <CircularProgress color="inherit" />
                         </Backdrop>
 
-                        <Button type="submit" color="primary" variant="contained" style={{ marginTop: 20, marginLeft: '50%' }}>Tạo sản phẩm</Button>
+                        <Button type="submit" color="primary" variant="contained" style={{ marginTop: 20, marginLeft: '50%' }}>Cập nhật</Button>
                     </form>
                 </Grid>
             </Grid>
-        </div>
+        </div >
     )
 }
 
-export default AddProduct;
+export default EditProduct;

@@ -7,6 +7,9 @@ class ProductService {
     add = (formData) => {
         return api.post("/product", formData);
     };
+    update = (formData) => {
+        return api.put("/product", formData);
+    };
 }
 
 export default new ProductService();
