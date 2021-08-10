@@ -56,7 +56,10 @@ const Report = ({ users }) => (
         </View>
       ))}
       <View>
-        <hr style={{ marginTop: 50, height: 1, backgroundColor: "#000" }} />
+        <hr style={{ marginTop: 50, height: 1, backgroundColor: "#006E4E" }} />
+        <Text style={{ textAlign: "center", color: "#006E4E" }}>
+          HHTLMilktea
+        </Text>
       </View>
     </Page>
   </Document>

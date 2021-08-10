@@ -31,6 +31,7 @@ import {
   USER_NOTIFICATION_WARN,
 } from "../../common/Constant";
 import Notification from "./../../common/Notification";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   btn: {
@@ -64,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 const User = () => {
   const classes = useStyles();
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const { users, totalPages } = useSelector((state) => state.user);
   const [page, setPage] = useState(1);
@@ -105,10 +107,6 @@ const User = () => {
   const handlePageSize = (e) => {
     setPageSize(e.target.value);
     setPage(1);
-  };
-
-  const handleDetails = (username) => {
-    console.log({ username });
   };
 
   const handleOnDelete = (username) => {
@@ -159,7 +157,7 @@ const User = () => {
     { name: "fullName", lable: "Họ & Tên", dir: "asc" },
     { name: "phone", lable: "Số Điện Thoại", dir: "asc" },
     { name: "email", lable: "Email", dir: "asc" },
-    { lable: "Trạng thái" },
+    { lable: "Trạng Thái" },
     { lable: "Hành Động" },
   ];
 
@@ -288,7 +286,7 @@ const User = () => {
                       cursor: "pointer",
                       marginRight: 10,
                     }}
-                    onClick={() => handleDetails(u.username)}
+                    onClick={() => history.push("/user/detail", { user: u })}
                   />
                   {u.deletedAt ? (
                     <Replay

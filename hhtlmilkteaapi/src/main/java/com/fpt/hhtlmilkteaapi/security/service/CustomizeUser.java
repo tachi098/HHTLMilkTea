@@ -15,10 +15,10 @@ public class CustomizeUser extends User implements UserDetails {
 
     private Collection<? extends  GrantedAuthority> authorities;
 
-    public CustomizeUser(long id, String username, String fullName, Date birthday, String address, String postcode,
+    public CustomizeUser(long id, String username, String fullName, Date birthday, String address,
                          String phone, String linkImage, String nameImage, String email, String password, Date createdAt,
                          Date updatedAt, Collection<? extends GrantedAuthority> authorities) {
-        super(id, username, fullName, birthday, address, postcode, phone, linkImage, nameImage, email, password,
+        super(id, username, fullName, birthday, address, phone, linkImage, nameImage, email, password,
                 createdAt, updatedAt);
         this.authorities = authorities;
     }
@@ -33,7 +33,6 @@ public class CustomizeUser extends User implements UserDetails {
                 user.getFullName(),
                 user.getBirthday(),
                 user.getAddress(),
-                user.getPostcode(),
                 user.getPhone(),
                 user.getLinkImage(),
                 user.getNameImage(),

@@ -23,6 +23,7 @@ public class OrderDetail implements Serializable {
     private Long sizeOptionId;
     private String addOptionId;
     private int quantity;
+    private long priceCurrent;
 
     @Column(length = 1000)
     private String noteProduct;

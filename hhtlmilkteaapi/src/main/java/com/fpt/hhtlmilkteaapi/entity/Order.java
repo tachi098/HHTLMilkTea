@@ -23,14 +23,16 @@ import java.util.Set;
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id; // Sử dụng O + getTime()
 
     private String address;
     private String phone;
 
     @ColumnDefault("0")
-    private int payment;
+    private int payment; // 0: chưa có gì, 1: tiền mặt, 2: trực tuyến, 3: lỗi(nếu có)
+
+    @ColumnDefault("0")
+    private int status; // 0: chưa có gì hết, 1: chưa làm, 2: vận chuyển, 3: hoàn thành, 4: lỗi(nếu có)
 
     @Column(length = 1000)
     private String noteOrder;
@@ -65,11 +67,12 @@ public class Order implements Serializable {
     )
     private Collection<OrderDetail> orderDetails;
 
-    public Order(long id, String address, String phone, int payment, String noteOrder, long memberVip, User userId, int totalPrice) {
+    public Order(String id, String address, String phone, int payment, int status, String noteOrder, long memberVip, User userId, int totalPrice) {
         this.id = id;
         this.address = address;
         this.phone = phone;
         this.payment = payment;
+        this.status = status;
         this.noteOrder = noteOrder;
         this.memberVip = memberVip;
         this.userId = userId;

@@ -19,7 +19,6 @@ public class JwtResponse {
     private String fullName;
     private Date birthday; // 1995-10-29
     private String address;
-    private String postcode;
     private String phone;
     private String linkImage;
     private String nameImage;
@@ -29,7 +28,7 @@ public class JwtResponse {
     private Date updatedAt;
 
     public JwtResponse(String token, long jwtExpirationMs, long id, String username, String fullName,
-                       Date birthday, String address, String postcode, String phone, String linkImage,
+                       Date birthday, String address, String phone, String linkImage,
                        String nameImage, String email, List<String> roles, Date createdAt, Date updatedAt) {
         this.token = token;
         this.jwtExpirationMs = jwtExpirationMs;
@@ -38,7 +37,6 @@ public class JwtResponse {
         this.fullName = fullName;
         this.birthday = birthday;
         this.address = address;
-        this.postcode = postcode;
         this.phone = phone;
         this.linkImage = linkImage;
         this.nameImage = nameImage;

@@ -40,7 +40,6 @@ public class User implements Serializable {
     private Date birthday; // 1995-10-29
 
     private String address;
-    private String postcode;
     private String phone;
     private String linkImage;
     private String nameImage;
@@ -86,7 +85,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public User(long id, String username, String fullName, Date birthday, String address, String postcode,
+    public User(long id, String username, String fullName, Date birthday, String address,
                 String phone, String linkImage, String nameImage, String email, String password, Date createdAt,
                 Date updatedAt) {
         this.id = id;
@@ -94,7 +93,6 @@ public class User implements Serializable {
         this.fullName = fullName;
         this.birthday = birthday;
         this.address = address;
-        this.postcode = postcode;
         this.phone = phone;
         this.linkImage = linkImage;
         this.nameImage = nameImage;
@@ -104,13 +102,12 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public User(String username, String fullName, Date birthday, String address, String postcode,
+    public User(String username, String fullName, Date birthday, String address,
                 String phone, String linkImage, String nameImage, String email, String password, Set<Role> roles) {
         this.username = username;
         this.fullName = fullName;
         this.birthday = birthday;
         this.address = address;
-        this.postcode = postcode;
         this.phone = phone;
         this.linkImage = linkImage;
         this.nameImage = nameImage;
