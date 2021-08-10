@@ -5,6 +5,7 @@ import com.fpt.hhtlmilkteaapi.entity.Product;
 import com.fpt.hhtlmilkteaapi.entity.Role;
 import com.fpt.hhtlmilkteaapi.entity.User;
 import com.fpt.hhtlmilkteaapi.entity.Wishlist;
+import com.fpt.hhtlmilkteaapi.payload.request.ProfileRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.UserReponse;
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -203,5 +205,57 @@ public class UserController {
         userRepository.save(user);
 
         return  ResponseEntity.ok(userRepository.save(user));
+    }
+
+    @PutMapping("/updateProfile")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateProfile(@Valid @ModelAttribute ProfileRequest profileRequest) throws IOException {
+// Check Exits Username
+        if (!userRepository.existsByUsername(profileRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Unable to identify account"));
+        }
+
+        // Find User By Username
+        User user = userRepository.findByUsername(profileRequest.getUsername()).get();
+
+        // Set Propeties To Entity User To Update
+        user.setFullName(profileRequest.getFullName());
+        user.setBirthday(profileRequest.getBirthday());
+        user.setAddress(profileRequest.getAddress());
+        user.setPostcode(profileRequest.getPostcode());
+        user.setPhone(profileRequest.getPhone());
+        user.setEmail(profileRequest.getEmail());
+
+        // Check Image Avatar
+        MultipartFile multipartFile = profileRequest.getMultipartFile();
+
+        if (multipartFile != null) {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            if (bufferedImage == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Invalid image"));
+            }
+
+            // Folder To Save Avatar
+            options.put("folder", avatar);
+
+            if (user.getNameImage() != null) {
+                // Delete Old Avatar
+                cloudinaryService.delete(user.getNameImage(), options);
+            }
+
+            // Update New Avatar
+            Map result = cloudinaryService.upload(multipartFile, options);
+            user.setLinkImage(result.get("url").toString());
+            user.setNameImage(result.get("public_id").toString());
+        }
+
+        // Update row of table User in Database
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("Data update successful"));
     }
 }
