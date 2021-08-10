@@ -1,6 +1,6 @@
 import UserService from "../../services/UserService";
 import {
-  userbyusername
+  userbyusername, profileUpdate
 } from "../reducers/UserReducer";
 
 export const UserFindByUsernameAction = (query) => async (dispatch) => {
@@ -17,6 +17,9 @@ export const UserFindByUsernameAction = (query) => async (dispatch) => {
 
 export const updateProfile = (data) => async (dispatch) => {
   try {
+
+    console.log(data);
+
     const formData = new FormData();
     formData.append("username", data.username)
     if (data.multipartFile) {
@@ -27,13 +30,10 @@ export const updateProfile = (data) => async (dispatch) => {
     formData.append("address", data.address);
     formData.append("phone", data.phone);
     formData.append("email", data.email);
-    formData.append("postcode", data.postcode);
 
-
-    await UserService.update(formData);
-    //const res = await UserService.update(formData);
-
-    //dispatch(profileUpdate(res.data));
+    await UserService.update(formData)
+      .then(res => dispatch(profileUpdate(res.data)))
+      .catch(err => console.error(err));
   } catch (e) {
     return console.error(e);
   }

@@ -224,7 +224,6 @@ public class UserController {
         user.setFullName(profileRequest.getFullName());
         user.setBirthday(profileRequest.getBirthday());
         user.setAddress(profileRequest.getAddress());
-        user.setPostcode(profileRequest.getPostcode());
         user.setPhone(profileRequest.getPhone());
         user.setEmail(profileRequest.getEmail());
 
@@ -254,8 +253,8 @@ public class UserController {
         }
 
         // Update row of table User in Database
-        userRepository.save(user);
+//        userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("Data update successful"));
+        return ResponseEntity.ok(userRepository.save(user));
     }
 }

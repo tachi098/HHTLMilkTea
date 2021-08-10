@@ -23,6 +23,5 @@ public class ProfileRequest {
     private String address;
     private String phone;
     private String email;
-    private String postcode;
     private MultipartFile multipartFile;
 }
