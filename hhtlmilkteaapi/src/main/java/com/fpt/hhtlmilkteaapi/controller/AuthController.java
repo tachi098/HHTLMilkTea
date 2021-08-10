@@ -75,7 +75,6 @@ public class AuthController {
                         customizeUser.getFullName(),
                         customizeUser.getBirthday(),
                         customizeUser.getAddress(),
-                        customizeUser.getPostcode(),
                         customizeUser.getPhone(),
                         customizeUser.getLinkImage(),
                         customizeUser.getNameImage(),

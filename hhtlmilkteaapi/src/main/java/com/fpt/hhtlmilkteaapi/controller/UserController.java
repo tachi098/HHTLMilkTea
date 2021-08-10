@@ -97,7 +97,6 @@ public class UserController {
         user.setFullName(userRequest.getFullName());
         user.setBirthday(userRequest.getBirthday());
         user.setAddress(userRequest.getAddress());
-        user.setPostcode(userRequest.getPostcode());
         user.setPhone(userRequest.getPhone());
         user.setEmail(userRequest.getEmail());
 

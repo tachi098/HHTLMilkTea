@@ -1,302 +1,353 @@
 import {
-    Button,
-    FormControl,
-    Grid,
-    Paper,
-    Select,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
-    TextField,
-    makeStyles,
-    Chip,
+  Button,
+  FormControl,
+  Grid,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TextField,
+  makeStyles,
+  Chip,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ProductGetAll, deleteProduct } from "../../store/actions/ProductAction";
+import {
+  ProductGetAll,
+  deleteProduct,
+} from "../../store/actions/ProductAction";
 import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import Logo from "./../../assets/img/Milktea.gif";
 import { useHistory } from "react-router-dom";
-import { CreateOutlined, DeleteOutline, Replay, Visibility } from "@material-ui/icons";
-import { CategoryListAction } from "./../../store/actions/CategoryAction"
-import { AdditionOptionListAction } from "./../../store/actions/AdditionOptionAction"
-import { SizeOptionAction } from "./../../store/actions/SizeOptionAction"
+import {
+  CreateOutlined,
+  DeleteOutline,
+  Replay,
+  Visibility,
+} from "@material-ui/icons";
+import { CategoryListAction } from "./../../store/actions/CategoryAction";
+import { AdditionOptionListAction } from "./../../store/actions/AdditionOptionAction";
+import { SizeOptionAction } from "./../../store/actions/SizeOptionAction";
 import { confirmAlert } from "react-confirm-alert";
-import Notification from "./../../common/Notification"
+import Notification from "./../../common/Notification";
 
 const useStyles = makeStyles((theme) => ({
-    btn: {
-        width: 90.18,
-        height: 36,
+  btn: {
+    width: 90.18,
+    height: 36,
+  },
+  searchField: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
     },
-    searchField: {
-        [theme.breakpoints.down("sm")]: {
-            width: "100%",
-        },
-    },
-    btnSearch: {
-        width: 100,
-        height: 36,
-        marginTop: 16,
-        marginRight: 30,
+  },
+  btnSearch: {
+    width: 100,
+    height: 36,
+    marginTop: 16,
+    marginRight: 30,
 
-        [theme.breakpoints.down("sm")]: {
-            width: "100%",
-            marginBottom: 16,
-            marginRight: 0,
-        },
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      marginBottom: 16,
+      marginRight: 0,
     },
-    wrapForm: {
-        [theme.breakpoints.down("sm")]: {
-            flexDirection: "column-reverse",
-        },
+  },
+  wrapForm: {
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column-reverse",
     },
-    select: {
-        marginLeft: 30,
-        [theme.breakpoints.down("sm")]: {
-            marginLeft: 200
-        },
-    }
+  },
+  select: {
+    marginLeft: 30,
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: 200,
+    },
+  },
 }));
 
 const Product = () => {
-    const classes = useStyles();
-    const history = useHistory();
+  const classes = useStyles();
+  const history = useHistory();
 
-    const dispatch = useDispatch();
-    const { products, totalPages } = useSelector((state) => state.product);
-    const [page, setPage] = useState(1);
-    const [valueToOrderBy, setValueToOrderBy] = useState("id");
-    const [valueToSortDir, setValueToSortDir] = useState("asc");
-    const [keyword, setKeyword] = useState("");
-    const [name, setName] = useState("");
-    const [pageSize, setPageSize] = useState(3);
+  const dispatch = useDispatch();
+  const { products, totalPages } = useSelector((state) => state.product);
+  const [page, setPage] = useState(1);
+  const [valueToOrderBy, setValueToOrderBy] = useState("id");
+  const [valueToSortDir, setValueToSortDir] = useState("asc");
+  const [keyword, setKeyword] = useState("");
+  const [name, setName] = useState("");
+  const [pageSize, setPageSize] = useState(3);
 
-    useEffect(() => {
-        dispatch(CategoryListAction());
-        dispatch(AdditionOptionListAction());
-        dispatch(SizeOptionAction());
-        dispatch(
-            ProductGetAll({
-                page,
-                sortField: valueToOrderBy,
-                sortDir: valueToSortDir,
-                keyword,
-                pageSize,
-            })
-        );
-    }, [dispatch, page, valueToOrderBy, valueToSortDir, keyword, pageSize]);
-
-    const { additionOptions } = useSelector(
-        (state) => state.additionOption
+  useEffect(() => {
+    dispatch(CategoryListAction());
+    dispatch(AdditionOptionListAction());
+    dispatch(SizeOptionAction());
+    dispatch(
+      ProductGetAll({
+        page,
+        sortField: valueToOrderBy,
+        sortDir: valueToSortDir,
+        keyword,
+        pageSize,
+      })
     );
+  }, [dispatch, page, valueToOrderBy, valueToSortDir, keyword, pageSize]);
 
-    const { sizeOptions } = useSelector(
-        (state) => state.sizeOption
-    );
+  const { additionOptions } = useSelector((state) => state.additionOption);
 
-    const handleRequestSort = (property) => {
-        const isAscending =
-            Object.is(valueToOrderBy, property) && Object.is(valueToSortDir, "asc");
-        setValueToOrderBy(property);
-        setValueToSortDir(isAscending ? "desc" : "asc");
-    };
+  const { sizeOptions } = useSelector((state) => state.sizeOption);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        setKeyword(name);
-        setPage(1);
-    };
+  const handleRequestSort = (property) => {
+    const isAscending =
+      Object.is(valueToOrderBy, property) && Object.is(valueToSortDir, "asc");
+    setValueToOrderBy(property);
+    setValueToSortDir(isAscending ? "desc" : "asc");
+  };
 
-    const handlePage = (event, value) => {
-        setPage(value);
-    };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setKeyword(name);
+    setPage(1);
+  };
 
-    const handlePageSize = (e) => {
-        setPageSize(e.target.value);
-        setPage(1);
-    };
+  const handlePage = (event, value) => {
+    setPage(value);
+  };
 
-    const onHandleRedirect = () => {
-        history.push("/product/add")
-    }
+  const handlePageSize = (e) => {
+    setPageSize(e.target.value);
+    setPage(1);
+  };
 
-    const onhandleUpdate = (item) => {
-        history.push("/product/edit", { product: item, addition: additionOptions, size: sizeOptions })
-    }
+  const onHandleRedirect = () => {
+    history.push("/product/add");
+  };
 
-    const onhandleDelete = (id) => {
-        confirmAlert({
-            title: "Thông báo",
-            message: "Bạn có chắc muốn cập nhật trạng thái?",
-            buttons: [
-                {
-                    label: "Có",
-                    onClick: () => {
-                        dispatch(deleteProduct(id))
-                        Notification.success("Đã cập nhập thành công!");
-                    },
-                },
-                {
-                    label: "Không",
-                },
-            ],
-        });
-    }
+  const onhandleUpdate = (item) => {
+    history.push("/product/edit", {
+      product: item,
+      addition: additionOptions,
+      size: sizeOptions,
+    });
+  };
 
-    const fields = [
-        { lable: "Hình Ảnh" },
-        { name: "name", lable: "Tên sản phẩm", dir: "asc" },
-        { name: "title", lable: "Chú thích", dir: "asc" },
-        { name: "price", lable: "Giá", dir: "asc" },
-        { name: "categoryId", lable: "Loại", dir: "asc" },
-        { lable: "Trạng thái" },
-        { lable: "Hành Động" },
-    ];
+  const onhandleDelete = (id) => {
+    confirmAlert({
+      title: "Thông báo",
+      message: "Bạn có chắc muốn cập nhật trạng thái?",
+      buttons: [
+        {
+          label: "Có",
+          onClick: () => {
+            dispatch(deleteProduct(id));
+            Notification.success("Đã cập nhập thành công!");
+          },
+        },
+        {
+          label: "Không",
+        },
+      ],
+    });
+  };
 
-    return (
-        <div>
-            <Grid
-                container
-                style={{
-                    display: "flex",
-                }}
-                className={classes.wrapForm}
-            >
-                <Grid
-                    item
-                    md={9}
-                    xl={12}
-                    sm={12}
-                    style={{
-                        marginTop: 16,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                    }}
-                    className={classes.wrapForm}
-                >
-                    <form
-                        onSubmit={handleSearch}
-                        style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            flexDirection: "row-reverse",
-                            alignItems: "center",
-                        }}
-                        className={classes.form}
-                    >
-                        <TextField
-                            label="Tìm kiếm"
-                            margin="normal"
-                            onChange={(e) => setName(e.target.value)}
-                            className={classes.searchField}
-                        />
-                        <Button
-                            className={classes.btnSearch}
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                        >
-                            Tìm Kiếm
-                        </Button>
-                    </form>
-                </Grid>
+  const fields = [
+    { lable: "Hình Ảnh" },
+    { name: "name", lable: "Tên Sản Phẩm", dir: "asc" },
+    { name: "title", lable: "Chú Thích", dir: "asc" },
+    { name: "price", lable: "Giá", dir: "asc" },
+    { name: "categoryId", lable: "Loại", dir: "asc" },
+    { lable: "Trạng Thái" },
+    { lable: "Hành Động" },
+  ];
 
-                <Grid
-                    item
-                    md={3}
-                    xl={12}
-                    sm={12}
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        paddingTop: 16,
-                    }}
-                >
-                    <FormControl
-                        style={{
-                            marginTop: 16,
-                            marginLeft: 10,
-                            display: "flex",
-                            width: "100%",
-                            justifyContent: "flex-end",
-                            flexDirection: "row",
-                        }}
-                    >
-
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                            onClick={onHandleRedirect}
-                        >
-                            Thêm sản phẩm
-                        </Button>
-
-                        <Select native value={pageSize} onChange={handlePageSize} className={classes.select}>
-                            <option value={3}>3</option>
-                            <option value={5}>5</option>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-
-            <TableContainer component={Paper}>
-                <Table style={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHeader
-                        valueToOrderBy={valueToOrderBy}
-                        valueToSortDir={valueToSortDir}
-                        handleRequestSort={handleRequestSort}
-                        fields={fields}
-                    />
-                    <TableBody>
-                        {products.map((u) => (
-                            <TableRow key={u.id}>
-                                <TableCell component="th" scope="row">
-                                    <img alt="" width={60} height={60} src={u.linkImage ?? Logo} />
-                                </TableCell>
-                                <TableCell>{u.name}</TableCell>
-                                <TableCell>{u.title}</TableCell>
-                                <TableCell>{(u.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
-                                <TableCell>{u.categoryId.name}</TableCell>
-                                <TableCell>
-                                    {u.deletedAt
-                                        ? (<Chip label="Ngừng bán" style={{ backgroundColor: 'red', color: 'white' }} />)
-                                        : (<Chip label="Hoạt động" style={{ backgroundColor: 'green', color: 'white' }} />)
-                                    }
-                                </TableCell>
-                                <TableCell>
-                                    <Visibility style={{ color: 'grey', cursor: 'pointer', marginRight: 10 }} onClick={() => { history.push("product/detail", { product: u }) }} />
-                                    <CreateOutlined style={{ color: '#3F51B5', cursor: 'pointer', marginRight: 10 }} onClick={() => onhandleUpdate(u)} />
-
-                                    {u.deletedAt
-                                        ? (<Replay style={{ cursor: 'pointer', color: 'green' }} onClick={() => onhandleDelete(u.id)} />)
-                                        : (<DeleteOutline style={{ color: 'red', cursor: 'pointer' }} onClick={() => onhandleDelete(u.id)} />)
-                                    }
-
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Pagination
-                style={{ marginTop: 50 }}
-                color="primary"
-                shape="rounded"
-                count={totalPages}
-                page={page}
-                onChange={handlePage}
-                showFirstButton
-                showLastButton
+  return (
+    <div>
+      <Grid
+        container
+        style={{
+          display: "flex",
+        }}
+        className={classes.wrapForm}
+      >
+        <Grid
+          item
+          md={9}
+          xl={12}
+          sm={12}
+          style={{
+            marginTop: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+          className={classes.wrapForm}
+        >
+          <form
+            onSubmit={handleSearch}
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              flexDirection: "row-reverse",
+              alignItems: "center",
+            }}
+            className={classes.form}
+          >
+            <TextField
+              label="Tìm kiếm"
+              margin="normal"
+              onChange={(e) => setName(e.target.value)}
+              className={classes.searchField}
             />
-        </div>
-    );
+            <Button
+              className={classes.btnSearch}
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
+              Tìm Kiếm
+            </Button>
+          </form>
+        </Grid>
+
+        <Grid
+          item
+          md={3}
+          xl={12}
+          sm={12}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            paddingTop: 16,
+          }}
+        >
+          <FormControl
+            style={{
+              marginTop: 16,
+              marginLeft: 10,
+              display: "flex",
+              width: "100%",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              onClick={onHandleRedirect}
+            >
+              Thêm sản phẩm
+            </Button>
+
+            <Select
+              native
+              value={pageSize}
+              onChange={handlePageSize}
+              className={classes.select}
+            >
+              <option value={3}>3</option>
+              <option value={5}>5</option>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      <TableContainer component={Paper}>
+        <Table style={{ minWidth: 650 }} aria-label="simple table">
+          <TableHeader
+            valueToOrderBy={valueToOrderBy}
+            valueToSortDir={valueToSortDir}
+            handleRequestSort={handleRequestSort}
+            fields={fields}
+          />
+          <TableBody>
+            {products.map((u) => (
+              <TableRow key={u.id}>
+                <TableCell component="th" scope="row">
+                  <img
+                    alt=""
+                    width={60}
+                    height={60}
+                    src={u.linkImage ?? Logo}
+                  />
+                </TableCell>
+                <TableCell>{u.name}</TableCell>
+                <TableCell>{u.title}</TableCell>
+                <TableCell>
+                  {u.price.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </TableCell>
+                <TableCell>{u.categoryId.name}</TableCell>
+                <TableCell>
+                  {u.deletedAt ? (
+                    <Chip
+                      label="Ngừng bán"
+                      style={{ backgroundColor: "red", color: "white" }}
+                    />
+                  ) : (
+                    <Chip
+                      label="Hoạt động"
+                      style={{ backgroundColor: "green", color: "white" }}
+                    />
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Visibility
+                    style={{
+                      color: "grey",
+                      cursor: "pointer",
+                      marginRight: 10,
+                    }}
+                    onClick={() => {
+                      history.push("product/detail", { product: u });
+                    }}
+                  />
+                  <CreateOutlined
+                    style={{
+                      color: "#3F51B5",
+                      cursor: "pointer",
+                      marginRight: 10,
+                    }}
+                    onClick={() => onhandleUpdate(u)}
+                  />
+
+                  {u.deletedAt ? (
+                    <Replay
+                      style={{ cursor: "pointer", color: "green" }}
+                      onClick={() => onhandleDelete(u.id)}
+                    />
+                  ) : (
+                    <DeleteOutline
+                      style={{ color: "red", cursor: "pointer" }}
+                      onClick={() => onhandleDelete(u.id)}
+                    />
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Pagination
+        style={{ marginTop: 50 }}
+        color="primary"
+        shape="rounded"
+        count={totalPages}
+        page={page}
+        onChange={handlePage}
+        showFirstButton
+        showLastButton
+      />
+    </div>
+  );
 };
 
 export default Product;
