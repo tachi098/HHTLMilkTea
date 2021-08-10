@@ -6,6 +6,7 @@ import { useState } from "react";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Notification from "../../../common/Notification";
 
+
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
         paddingTop: theme.spacing(8),
@@ -118,6 +119,7 @@ const Content = () => {
     const onHandleWishList = () => {
         Notification.success("Đã thêm sản phẩm vào wishlist")
     }
+
 
     return (
         <Container className={classes.cardGrid} maxWidth="lg">

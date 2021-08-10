@@ -39,9 +39,9 @@ public class SeedSizeOptionsTable {
         if(count == 0) {
 
             // Insert SizeOptions
-            SizeOption sizeOption1 = new SizeOption(1 , "Nhỏ", 2500);
-            SizeOption sizeOption2 = new SizeOption(2 , "Vừa", 5000);
-            SizeOption sizeOption3 = new SizeOption(3 , "Lớn", 7000);
+            SizeOption sizeOption1 = new SizeOption(1 , "Supper small size", 10000);
+            SizeOption sizeOption2 = new SizeOption(2 , "Medium size", 20000);
+            SizeOption sizeOption3 = new SizeOption(3 , "Big size ice", 25000);
 
             sizeOptionRepository.saveAll(Arrays.asList(
                     sizeOption1, sizeOption2, sizeOption3
