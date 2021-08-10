@@ -1,10 +1,13 @@
-import { Grid, Button, Card, CardActions, CardContent, CardMedia, makeStyles, Typography, Container, FormControl, NativeSelect, TextField, Dialog, DialogContent, DialogActions, TextareaAutosize } from "@material-ui/core"
+import { Grid, Button, Card, CardActions, CardContent, CardMedia, makeStyles, Typography, Container, FormControl, NativeSelect, TextField, Dialog, DialogContent } from "@material-ui/core"
 import productImg from "./../../../assets/img/product.png"
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Notification from "./../../../common/Notification";
+import { useDispatch, useSelector } from "react-redux";
+import { ProductGetAll } from "./../../../store/actions/ProductAction"
+import popupBg from "./../../../assets/img/bg_popup.png"
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -27,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginTop: 20,
         paddingTop: '76.25%',
-        width: '50%',
+        width: '60%',
     },
     cardContent: {
         flexGrow: 1,
@@ -100,14 +103,83 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         fontSize: 9,
         fontWeight: 'bold'
-    }
+    },
+    descriptionCard: {
+        backgroundImage: `url(${popupBg})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+    },
+    notSelect: {
+        cursor: 'pointer',
+        color: "#0c713d",
+        fontSize: 16,
+        border: '1px solid',
+        paddingRight: 10,
+        paddingLeft: 10,
+        '&:hover': {
+            backgroundColor: '#0c713d',
+            color: 'white'
+        }
+    },
+    btnNotSelected: {
+        fontFamily: 'sans-serif',
+        cursor: 'pointer',
+        color: "#0c713d",
+        fontSize: 14,
+        border: '1px solid',
+        borderRadius: 5,
+        padding: 3,
+        marginTop: 5,
+        '&:hover': {
+            backgroundColor: '#0c713d',
+            color: 'white'
+        }
+    },
+    btnSelected: {
+        fontFamily: 'sans-serif',
+        cursor: 'pointer',
+        marginTop: 5,
+        fontSize: 14,
+        border: '1px solid',
+        borderRadius: 5,
+        padding: 3,
+        backgroundColor: '#0c713d',
+        color: 'white'
+    },
 }));
 
 const Content = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
 
-    const handleClickOpen = () => {
+    const { products, newProductId } = useSelector((state) => state.product);
+
+    const [valueToOrderBy, setValueToOrderBy] = useState("id");
+    const [valueToSortDir, setValueToSortDir] = useState("asc");
+    const [keyword, setKeyword] = useState("");
+    const [name, setName] = useState("")
+    const dispatch = useDispatch();
+
+    const [productSelect, setProductSelect] = useState("");
+
+    const [selectedSize, setSelectedSize] = useState();
+
+    const [selectedAdd, setSelectedAdd] = useState([]);
+
+    useEffect(() => {
+        dispatch(
+            ProductGetAll({
+                sortField: valueToOrderBy,
+                sortDir: valueToSortDir,
+                keyword,
+            })
+        );
+    }, [dispatch, valueToOrderBy, valueToSortDir, keyword]);
+
+    const handleClickOpen = (item) => {
+        setProductSelect(item);
+        setSelectedSize(item.sizeOptions[0].id);
         setOpen(true);
     };
 
@@ -119,9 +191,47 @@ const Content = () => {
         Notification.success("Đã thêm sản phẩm vào wishlist")
     }
 
+    const onHandleNameFilter = (e) => {
+        setKeyword("");
+        if ("default" !== e.target.value) {
+            setValueToSortDir(e.target.value);
+            setValueToOrderBy("name");
+        } else {
+            setValueToSortDir("asc");
+            setValueToOrderBy("id");
+        }
+    }
+
+    const onHandlePriceFilter = (e) => {
+        setKeyword("");
+        if ("default" !== e.target.value) {
+            setValueToSortDir(e.target.value);
+            setValueToOrderBy("price");
+        } else {
+            setValueToSortDir("asc");
+            setValueToOrderBy("id");
+        }
+    }
+
+    const onHandleSearchKeyword = e => {
+        e.preventDefault();
+        setKeyword(name)
+    }
+
+    const onHandleSelectSize = id => {
+        setSelectedSize(id)
+    }
+
+    const onHandleSelectAdd = id => {
+        if (!selectedAdd.includes(id)) {
+            setSelectedAdd([...selectedAdd, id]);
+        } else {
+            setSelectedAdd(selectedAdd.filter(elm => !Object.is(elm, id)));
+        }
+    }
+
     return (
         <Container className={classes.cardGrid} maxWidth="lg">
-
             {/* Start Filter Bar */}
             <Grid container style={{ flexGrow: 1, border: '2px solid #ececec', width: '100%', marginBottom: 30 }}>
                 <Grid item md={4} sm={12} className={classes.searchItem}>
@@ -130,13 +240,14 @@ const Content = () => {
                     </Typography>
                     <FormControl className={classes.formControl}>
                         <NativeSelect
+                            onChange={onHandlePriceFilter}
                             className={classes.selectEmpty}
                             name="price"
                             inputProps={{ 'aria-label': 'price' }}
                         >
-                            <option>Không chọn lựa</option>
-                            <option>Tăng dần</option>
-                            <option>Giảm dần</option>
+                            <option value="default">Không chọn lựa</option>
+                            <option value="asc">Tăng dần</option>
+                            <option value="desc">Giảm dần</option>
                         </NativeSelect>
                     </FormControl>
                 </Grid>
@@ -147,13 +258,14 @@ const Content = () => {
                     </Typography>
                     <FormControl className={classes.formControl}>
                         <NativeSelect
+                            onChange={onHandleNameFilter}
                             className={classes.selectEmpty}
                             name="name"
                             inputProps={{ 'aria-label': 'name' }}
                         >
-                            <option>Không chọn lựa</option>
-                            <option>Tăng dần</option>
-                            <option>Giảm dần</option>
+                            <option value="default">Không chọn lựa</option>
+                            <option value="asc">Tăng dần</option>
+                            <option value="desc">Giảm dần</option>
                         </NativeSelect>
                     </FormControl>
                 </Grid>
@@ -163,43 +275,43 @@ const Content = () => {
                         <b>Tìm kiếm: </b>
                     </Typography>
                     <div style={{ display: 'flex', marginTop: -21 }}>
-                        <form>
-                            <TextField label="Nhập tên sản phẩm" />
-                            <IconButton type="submit" className={classes.iconButton} aria-label="search">
-                                <SearchIcon />
-                            </IconButton>
-                        </form>
+                        <TextField label="Nhập tên sản phẩm" onChange={e => { setName(e.target.value) }} />
+                        <IconButton className={classes.iconButton} aria-label="search" onClick={onHandleSearchKeyword}>
+                            <SearchIcon />
+                        </IconButton>
                     </div>
                 </Grid>
             </Grid>
             {/* End Filter Bar */}
 
-            <Grid container spacing={3} style={{ marginTop: 20 }}>
-                {[...Array(12)].map((card, index) => (
-                    <Grid item key={index} xs={12} sm={6} md={3}>
+            <Grid container spacing={3} style={{ marginTop: 20, paddingRight: 30, paddingLeft: 30 }}>
+                {products.map((product, index) => (
+                    <Grid item key={product.id} xs={12} sm={6} md={3}>
                         <Card className={classes.card}>
                             <div className={classes.itemHeader}>
-                                <span className={classes.itemTag}>Món mới</span>
+                                {newProductId === product.id ? (
+                                    <span className={classes.itemTag}>Món mới</span>
+                                ) : ""}
                                 <FavoriteIcon className={classes.iconWishList} style={{ cursor: 'pointer' }} onClick={onHandleWishList} />
                             </div>
                             <CardMedia
                                 className={classes.cardMedia}
-                                image={productImg}
+                                image={product.linkImage}
                                 title="Image title"
                             />
                             <CardContent className={classes.cardContent}>
                                 <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    {product.name}
                                 </Typography>
                                 <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                    Phin Sữa Đá - Năng Lượng
+                                    {product.title}
                                 </Typography>
                                 <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                    35.000 VNĐ
+                                    {(product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                                 </Typography>
                             </CardContent>
                             <CardActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-                                <Button size="small" color="primary" className={classes.btnOrder} onClick={handleClickOpen}>
+                                <Button size="small" color="primary" className={classes.btnOrder} onClick={() => handleClickOpen(product)}>
                                     Đặt hàng
                                 </Button>
                             </CardActions>
@@ -218,63 +330,108 @@ const Content = () => {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <form>
-                    <DialogContent>
+                    <DialogContent className={classes.descriptionCard}>
                         <div id="alert-dialog-slide-description" style={{ display: 'flex' }}>
                             <Grid container>
                                 <Grid item xs={12} md={6}>
-                                    <CardMedia
-                                        className={classes.cardMedia}
-                                        image={productImg}
-                                        title="Image title"
-                                    />
+                                    {productSelect.linkImage
+                                        ? (
+                                            <CardMedia
+                                                className={classes.cardMedia}
+                                                image={productSelect.linkImage}
+                                                title="Image title"
+                                            />
+                                        )
+                                        : (
+                                            <CardMedia
+                                                className={classes.cardMedia}
+                                                image={productImg}
+                                                title="Image title"
+                                            />
+                                        )
+                                    }
                                 </Grid>
                                 <Grid item xs={12} md={6}>
-                                    <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 36, fontWeight: 'bold', color: "#0c713d" }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                    <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 36, fontWeight: 'bold', color: "#0c713d", fontFamily: 'sans-serif' }}>
+                                        {productSelect.name}
                                     </Typography>
                                     <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                        Phin Sữa Đá - Năng Lượng
+                                        {productSelect.title}
                                     </Typography>
 
-                                    <div style={{ display: 'flex', marginTop: 30 }}>
-                                        <Typography style={{ marginRight: 60 }}>
-                                            <b>Số lượng: </b>
-                                        </Typography>
-                                        {/* <TextField defaultValue={0} type="number" style={{ marginTop: 0 }} /> */}
-                                        <div style={{ display: 'flex', marginTop: -10 }}>
-                                            <button className={classes.btnCount}>-</button>
-                                            <p style={{ marginLeft: 20, marginRight: 20 }}>0</p>
-                                            <button className={classes.btnCount}>+</button>
+                                    <div style={{ height: 320, width: 400, overflowY: 'scroll' }}>
+
+                                        <div style={{ display: 'flex', marginTop: 30 }}>
+                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                <b>Kích thước: </b>
+                                            </Typography>
+                                            <div style={{ marginLeft: -42, marginTop: -10 }}>
+                                                {
+                                                    productSelect?.sizeOptions?.map((item) => (
+                                                        <div key={item.id} size="small" color="primary" className={selectedSize === item.id ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectSize(item.id) }}>
+                                                            {item.name}
+                                                        </div>
+                                                    )
+                                                    )
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', marginTop: 20 }}>
+                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                <b>Thêm: </b>
+                                            </Typography>
+                                            <div>
+                                                {
+                                                    productSelect?.additionOptions?.map((item) => (
+                                                        <div key={item.id} size="small" color="primary" className={selectedAdd.length > 0 && selectedAdd.includes(item.id) ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectAdd(item.id) }}>
+                                                            {item.name + " + " + (item.price ? item.price : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                                        </div>
+                                                    )
+                                                    )
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', marginTop: 30 }}>
+                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                <b>Số lượng: </b>
+                                            </Typography>
+                                            <div style={{ display: 'flex', marginTop: -10 }}>
+                                                <button className={classes.btnCount}>-</button>
+                                                <p style={{ marginLeft: 20, marginRight: 20 }}>0</p>
+                                                <button className={classes.btnCount}>+</button>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', marginTop: 10 }}>
+                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                <b>Ghi chú: </b>
+                                            </Typography>
+                                            <TextField multiline rowsmin={3} aria-label="minimum height" minRows={3} placeholder="" />
                                         </div>
                                     </div>
 
-                                    <div style={{ display: 'flex', marginTop: 10 }}>
-                                        <Typography style={{ marginRight: 70 }}>
-                                            <b>Ghi chú: </b>
-                                        </Typography>
-                                        <TextareaAutosize aria-label="minimum height" minRows={5} placeholder="" />
-                                    </div>
-
                                     <div style={{ display: 'flex', marginTop: 50 }}>
-                                        <Typography style={{ marginRight: 70 }}>
+                                        <Typography style={{ marginRight: 70, fontFamily: 'sans-serif' }}>
                                             <b>Tổng tiền: </b>
                                         </Typography>
                                         <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                            35.000 VNĐ
+                                            {(productSelect.price ? productSelect.price : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                                         </Typography>
                                     </div>
                                 </Grid>
                             </Grid>
                         </div>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20, marginTop: 20 }}>
+                            <Button size="small" color="primary" className={classes.btnOrder}>
+                                Đặt hàng
+                            </Button>
+                        </div>
                     </DialogContent>
-                    <DialogActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-                        <Button size="small" color="primary" className={classes.btnOrder} onClick={handleClickOpen}>
-                            Đặt hàng
-                        </Button>
-                    </DialogActions>
                 </form>
             </Dialog>
-        </Container>
+        </Container >
     )
 }
 

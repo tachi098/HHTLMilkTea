@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
 import com.fpt.hhtlmilkteaapi.payload.request.ProducUpdatetRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
-import com.fpt.hhtlmilkteaapi.payload.response.ProductRequest;
+import com.fpt.hhtlmilkteaapi.payload.request.ProductRequest;
+import com.fpt.hhtlmilkteaapi.payload.response.ProductResponse;
+import com.fpt.hhtlmilkteaapi.repository.ICategoryRepository;
 import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,6 +35,9 @@ public class ProductController {
 
     @Autowired
     private IProductRepository productRepository;
+
+    @Autowired
+    private ICategoryRepository categoryRepository;
 
     private Map<String, String> options = new HashMap<>();
 
@@ -43,7 +49,7 @@ public class ProductController {
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getUsers(
+    public ResponseEntity<?> getProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "id") String sortField,
@@ -193,5 +199,29 @@ public class ProductController {
         }
         productRepository.save(product);
         return new ResponseEntity(product, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getProducts(
+            @RequestParam(defaultValue = "Milktea") String cateName,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "") String keyword
+    ) {
+        ProductResponse productResponse = new ProductResponse();
+
+        List<Product> products = "asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
+
+        List<Product> productNew = productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, "id"));
+        String newProductId = productNew.get(0).getId();
+
+        if (!"".equals(keyword)){
+            products = products.stream().filter((item) -> item.getName().toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());
+        }
+
+        productResponse.setProduct(products);
+        productResponse.setNewProductId(newProductId);
+
+        return ResponseEntity.ok(productResponse);
     }
 }

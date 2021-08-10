@@ -50,23 +50,21 @@ public class SeedProductsTable {
             Set<AdditionOption> addOptions01 = new HashSet<>();
             AdditionOption addOption01 = addOptionRepository.findById(1L).get();
             AdditionOption addOption02 = addOptionRepository.findById(2L).get();
-            AdditionOption addOption03 = addOptionRepository.findById(3L).get();
             addOptions01.add(addOption01);
-            addOptions01.add(addOption02);
-            addOptions01.add(addOption03);
             Product product01 = new Product("P0882021035821","Trà Đào Đá Xay", "Peach Tea", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628410434/product/tradaoxay.png", "tradaoxay",
                     65000, category01, sizeOptions01, addOptions01);
 
             // Insert Product2
             Category category02 = categoryRepository.findById(2L).get();
             Product product02 = new Product("P0882021035822","Trà Vải Tươi Dầm", "Ice Shaken Lychee Tea", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628411118/product/travai.png", "travai",
-                    40000, category02, null, null);
+                    40000, category02, sizeOptions01, addOptions01);
 
             // Insert Product3
             Set<SizeOption> sizeOptions03 = new HashSet<>();
             SizeOption sizeOption03 = sizeOptionRepository.findById(3L).get();
             sizeOptions03.add(sizeOption03);
             Set<AdditionOption> addOptions03 = new HashSet<>();
+            AdditionOption addOption03 = addOptionRepository.findById(3L).get();
             addOptions03.add(addOption02);
             addOptions03.add(addOption03);
             Product product03 = new Product("P0882021035823","Trà Sữa Phúc Long", "Phuc Long Tea Latte", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628411720/product/phuclong.png", "phuclong",
@@ -110,12 +108,14 @@ public class SeedProductsTable {
                     30000, category02, sizeOptions05, addOptions06);
 
             //Insert Product 9
+            Set<SizeOption> sizeOptions06 = new HashSet<>();
+            sizeOptions06.add(sizeOption01);
+            sizeOptions06.add(sizeOption02);
             Set<AdditionOption> addOptions07 = new HashSet<>();
             addOptions07.add(addOption04);
             addOptions07.add(addOption02);
-            addOptions07.add(addOption03);
             Product product09 = new Product("P0882021035829","Cà Phê Latte", "Latte Coffee", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628412981/product/latte.png", "latte",
-                    50000, category01, sizeOptions05, addOptions07);
+                    50000, category01, sizeOptions06, addOptions07);
 
 
             // Insert Data
