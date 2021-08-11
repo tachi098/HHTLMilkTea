@@ -8,6 +8,8 @@ import Notification from "./../../../common/Notification";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductGetAll } from "./../../../store/actions/ProductAction"
 import popupBg from "./../../../assets/img/bg_popup.png"
+import { useForm } from "react-hook-form";
+import { CategoryListAction } from "../../../store/actions/CategoryAction";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -70,7 +72,8 @@ const useStyles = makeStyles((theme) => ({
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        fontSize: 24
+        fontSize: 24,
+        paddingTop: 5
     },
     searchItem: {
         display: 'flex',
@@ -155,11 +158,13 @@ const Content = () => {
 
     const { products, newProductId } = useSelector((state) => state.product);
 
+    const [valueCategory, setValueCategory] = useState("");
     const [valueToOrderBy, setValueToOrderBy] = useState("id");
     const [valueToSortDir, setValueToSortDir] = useState("asc");
     const [keyword, setKeyword] = useState("");
     const [name, setName] = useState("")
     const dispatch = useDispatch();
+    const { categories } = useSelector((state) => state.category);
 
     const [productSelect, setProductSelect] = useState("");
 
@@ -167,36 +172,57 @@ const Content = () => {
 
     const [selectedAdd, setSelectedAdd] = useState([]);
 
+    const [count, setCount] = useState(1);
+
+    const [currentPrice, setCurrentPrice] = useState(0);
+
+    const [note, setNote] = useState("");
+
+    const [size, setSize] = useState([]);
+
+    const {
+        handleSubmit,
+    } = useForm();
+
     useEffect(() => {
+        dispatch(CategoryListAction());
         dispatch(
             ProductGetAll({
+                cateName: valueCategory,
                 sortField: valueToOrderBy,
                 sortDir: valueToSortDir,
                 keyword,
             })
         );
-    }, [dispatch, valueToOrderBy, valueToSortDir, keyword]);
+    }, [dispatch, valueToOrderBy, valueToSortDir, keyword, valueCategory]);
 
     const handleClickOpen = (item) => {
         setProductSelect(item);
-        setSelectedSize(item.sizeOptions[0].id);
+        setCurrentPrice(item.price)
+        const items = [...item.sizeOptions];
+        setSize(items.sort((a, b) => a.id - b.id));
+        setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+        setCount(1);
+        setSelectedAdd([]);
+        setNote("");
     };
 
     const onHandleWishList = () => {
         Notification.success("Đã thêm sản phẩm vào wishlist")
     }
 
-    const onHandleNameFilter = (e) => {
+    const onHandleCateFilter = (e) => {
         setKeyword("");
         if ("default" !== e.target.value) {
-            setValueToSortDir(e.target.value);
-            setValueToOrderBy("name");
+            console.log(e.target.value);
+            setValueCategory(e.target.value);
         } else {
+            setValueCategory("");
             setValueToSortDir("asc");
             setValueToOrderBy("id");
         }
@@ -218,25 +244,77 @@ const Content = () => {
         setKeyword(name)
     }
 
-    const onHandleSelectSize = id => {
-        setSelectedSize(id)
+    const onHandleNote = e => {
+        setNote(e.target.value);
     }
 
-    const onHandleSelectAdd = id => {
-        if (!selectedAdd.includes(id)) {
-            setSelectedAdd([...selectedAdd, id]);
-        } else {
-            setSelectedAdd(selectedAdd.filter(elm => !Object.is(elm, id)));
+    const onHandleSelectSize = item => {
+        setSelectedSize(item)
+        var price = productSelect.price;
+        price += item.price;
+        price += selectedAdd.reduce((a, b) => a + (b['price'] || 0), 0)
+        setCurrentPrice(price);
+    }
+
+    const onHandleMinus = () => {
+        if (count > 1) {
+            setCount(count - 1)
         }
     }
+
+    const onHandlePlus = () => {
+        setCount(count + 1);
+    }
+
+    const onHandleSelectAdd = item => {
+        if (!selectedAdd.includes(item)) {
+            setSelectedAdd([...selectedAdd, item]);
+            setCurrentPrice(currentPrice + item.price)
+        } else {
+            setSelectedAdd(selectedAdd.filter(elm => !Object.is(elm, item)));
+            setCurrentPrice(currentPrice - item.price)
+        }
+    }
+
+    const onSubmit = (data) => {
+        data.product = productSelect;
+        data.sizeOptions = selectedSize;
+        data.quantity = count;
+        data.additionOptions = selectedAdd;
+        data.currentPrice = currentPrice;
+        data.note = note;
+        console.log(data)
+    };
 
     return (
         <Container className={classes.cardGrid} maxWidth="lg">
             {/* Start Filter Bar */}
             <Grid container style={{ flexGrow: 1, border: '2px solid #ececec', width: '100%', marginBottom: 30 }}>
+
                 <Grid item md={4} sm={12} className={classes.searchItem}>
                     <Typography style={{ marginRight: 10 }}>
-                        <b>So sánh theo giá </b>
+                        <b>Nhóm sản phẩm </b>
+                    </Typography>
+                    <FormControl className={classes.formControl}>
+                        <NativeSelect
+                            onChange={onHandleCateFilter}
+                            className={classes.selectEmpty}
+                            name="name"
+                            inputProps={{ 'aria-label': 'name' }}
+                        >
+                            <option value="default">Không chọn lựa</option>
+                            {
+                                categories.map((item) => (
+                                    <option key={item.id} value={item.name} hidden={(item.name === "Snack" || item.name === "Product") ? true : false}>{item.name}</option>
+                                ))
+                            }
+                        </NativeSelect>
+                    </FormControl>
+                </Grid>
+
+                <Grid item md={4} sm={12} className={classes.searchItem}>
+                    <Typography style={{ marginRight: 10 }}>
+                        <b>Theo giá </b>
                     </Typography>
                     <FormControl className={classes.formControl}>
                         <NativeSelect
@@ -244,24 +322,6 @@ const Content = () => {
                             className={classes.selectEmpty}
                             name="price"
                             inputProps={{ 'aria-label': 'price' }}
-                        >
-                            <option value="default">Không chọn lựa</option>
-                            <option value="asc">Tăng dần</option>
-                            <option value="desc">Giảm dần</option>
-                        </NativeSelect>
-                    </FormControl>
-                </Grid>
-
-                <Grid item md={4} sm={12} className={classes.searchItem}>
-                    <Typography style={{ marginRight: 10 }}>
-                        <b>So sánh theo tên </b>
-                    </Typography>
-                    <FormControl className={classes.formControl}>
-                        <NativeSelect
-                            onChange={onHandleNameFilter}
-                            className={classes.selectEmpty}
-                            name="name"
-                            inputProps={{ 'aria-label': 'name' }}
                         >
                             <option value="default">Không chọn lựa</option>
                             <option value="asc">Tăng dần</option>
@@ -329,7 +389,8 @@ const Content = () => {
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
             >
-                <form>
+
+                <form onSubmit={handleSubmit(onSubmit)} >
                     <DialogContent className={classes.descriptionCard}>
                         <div id="alert-dialog-slide-description" style={{ display: 'flex' }}>
                             <Grid container>
@@ -359,16 +420,16 @@ const Content = () => {
                                         {productSelect.title}
                                     </Typography>
 
-                                    <div style={{ height: 320, width: 400, overflowY: 'scroll' }}>
+                                    <div style={{ height: 300, width: 400, overflowY: 'scroll' }}>
 
-                                        <div style={{ display: 'flex', marginTop: 30 }}>
+                                        <div style={{ display: 'flex', marginTop: 40 }}>
                                             <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
                                                 <b>Kích thước: </b>
                                             </Typography>
                                             <div style={{ marginLeft: -42, marginTop: -10 }}>
                                                 {
-                                                    productSelect?.sizeOptions?.map((item) => (
-                                                        <div key={item.id} size="small" color="primary" className={selectedSize === item.id ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectSize(item.id) }}>
+                                                    size?.map((item) => (
+                                                        <div key={item.id} size="small" color="primary" className={selectedSize?.id === item.id ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectSize(item) }}>
                                                             {item.name}
                                                         </div>
                                                     )
@@ -377,30 +438,34 @@ const Content = () => {
                                             </div>
                                         </div>
 
-                                        <div style={{ display: 'flex', marginTop: 20 }}>
-                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
-                                                <b>Thêm: </b>
-                                            </Typography>
-                                            <div>
-                                                {
-                                                    productSelect?.additionOptions?.map((item) => (
-                                                        <div key={item.id} size="small" color="primary" className={selectedAdd.length > 0 && selectedAdd.includes(item.id) ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectAdd(item.id) }}>
-                                                            {item.name + " + " + (item.price ? item.price : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
-                                                        </div>
-                                                    )
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
+                                        {
+                                            productSelect?.additionOptions?.length > 0 && (
+                                                <div style={{ display: 'flex', marginTop: 20 }}>
+                                                    <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                        <b>Thêm: </b>
+                                                    </Typography>
+                                                    <div>
+                                                        {
+                                                            productSelect?.additionOptions?.map((item) => (
+                                                                <div key={item.id} size="small" color="primary" className={selectedAdd.length > 0 && selectedAdd.includes(item) ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectAdd(item) }}>
+                                                                    {item.name + " + " + (item.price ? item.price : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                                                </div>
+                                                            )
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
 
                                         <div style={{ display: 'flex', marginTop: 30 }}>
                                             <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
                                                 <b>Số lượng: </b>
                                             </Typography>
                                             <div style={{ display: 'flex', marginTop: -10 }}>
-                                                <button className={classes.btnCount}>-</button>
-                                                <p style={{ marginLeft: 20, marginRight: 20 }}>0</p>
-                                                <button className={classes.btnCount}>+</button>
+                                                <div className={classes.btnCount} onClick={onHandleMinus}>-</div>
+                                                <p style={{ marginLeft: 20, marginRight: 20 }}>{count}</p>
+                                                <div className={classes.btnCount} onClick={onHandlePlus}>+</div>
                                             </div>
                                         </div>
 
@@ -408,7 +473,7 @@ const Content = () => {
                                             <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
                                                 <b>Ghi chú: </b>
                                             </Typography>
-                                            <TextField multiline rowsmin={3} aria-label="minimum height" minRows={3} placeholder="" />
+                                            <TextField multiline rowsmin={3} aria-label="minimum height" minRows={3} placeholder="" onChange={onHandleNote} />
                                         </div>
                                     </div>
 
@@ -417,14 +482,14 @@ const Content = () => {
                                             <b>Tổng tiền: </b>
                                         </Typography>
                                         <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                            {(productSelect.price ? productSelect.price : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                            {(currentPrice ? currentPrice * count : 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                                         </Typography>
                                     </div>
                                 </Grid>
                             </Grid>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20, marginTop: 20 }}>
-                            <Button size="small" color="primary" className={classes.btnOrder}>
+                            <Button type="submit" size="small" color="primary" className={classes.btnOrder}>
                                 Đặt hàng
                             </Button>
                         </div>

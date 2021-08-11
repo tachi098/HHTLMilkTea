@@ -8,6 +8,7 @@ import com.fpt.hhtlmilkteaapi.payload.request.ProductRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.ProductResponse;
 import com.fpt.hhtlmilkteaapi.repository.ICategoryRepository;
 import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
+import com.fpt.hhtlmilkteaapi.repository.ISizeOptionRepository;
 import com.fpt.hhtlmilkteaapi.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,9 @@ public class ProductController {
 
     @Autowired
     private ICategoryRepository categoryRepository;
+
+    @Autowired
+    private ISizeOptionRepository sizeOptionRepository;
 
     private Map<String, String> options = new HashMap<>();
 
@@ -99,12 +103,12 @@ public class ProductController {
         Long price = productRequest.getPrice();
         Category category = objectMapper.readValue(productRequest.getCategoryId().toString(), Category.class);
         Set<SizeOption> sizeOptions = new HashSet<>();
+        sizeOptions.add(sizeOptionRepository.findById(1L).get());
+
         if (productRequest.getSizeOptions() != null) {
             for (int i = 0; i < productRequest.getSizeOptions().size(); i++) {
                 sizeOptions.add(objectMapper.readValue(productRequest.getSizeOptions().get(i).toString(), SizeOption.class));
             }
-        } else {
-            sizeOptions = null;
         }
 
         Set<AdditionOption> additionOptions = new HashSet<>();
@@ -203,17 +207,24 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<?> getProducts(
-            @RequestParam(defaultValue = "Milktea") String cateName,
+            @RequestParam(defaultValue = "") String cateName,
             @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "asc") String sortDir,
             @RequestParam(defaultValue = "") String keyword
     ) {
         ProductResponse productResponse = new ProductResponse();
+        List<Product> products;
+        List<Product> productNew;
+        if ("".equals(cateName)){
+            products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.ASC, sortField));
+            productNew = productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField));
 
-        List<Product> products = "asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
+        }else{
+            products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
+            productNew = productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, "id"));
+        }
 
-        List<Product> productNew = productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, "id"));
-        String newProductId = productNew.get(0).getId();
+        String newProductId = productNew.size() > 0 ? productNew.get(0).getId() : "";
 
         if (!"".equals(keyword)){
             products = products.stream().filter((item) -> item.getName().toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());

@@ -3,8 +3,8 @@ import GoogleMap from "../../../common/GoogleMap"
 
 const Footer = () => {
     return (
-        <Grid container style={{paddingTop: 10, paddingBottom: 5, backgroundColor: '#416c48', color: 'white'}}>
-            <Grid item xs={12} md={8} style={{paddingLeft: 20 + 'px'}}>
+        <Grid container style={{ paddingTop: 10, paddingBottom: 5, backgroundColor: '#416c48', color: 'white', minHeight: "calc(100vh - 577px)" }}>
+            <Grid item xs={12} md={8} style={{ paddingLeft: 20 + 'px' }}>
                 <Typography>
                     <b>Trụ sở chính: </b>
                     Công ty CP Phúc Long Heritage - ĐKKD: 0316 871719
@@ -28,8 +28,8 @@ const Footer = () => {
                 </Typography>
             </Grid>
 
-            <Grid item xs={12} md={4} style={{display: 'flex', justifyContent: 'center'}}>
-                <GoogleMap/>
+            <Grid item xs={12} md={4} style={{ display: 'flex', justifyContent: 'center' }}>
+                <GoogleMap />
             </Grid>
         </Grid>
     )
