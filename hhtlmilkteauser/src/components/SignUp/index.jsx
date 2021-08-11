@@ -47,7 +47,7 @@ const SignUp = () => {
   password.current = watch("password", "");
 
   useEffect(() => {
-    if (user?.token) {
+    if (user?.token && !user?.roles?.includes("ROLE_ADMIN")) {
       history.push("/home");
     }
   }, [history, user]);
@@ -62,6 +62,7 @@ const SignUp = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      {console.log({ user })}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
