@@ -10,9 +10,11 @@ import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthRegisterAction } from "./../../store/actions/AuthAction";
-import { FormHelperText } from "@material-ui/core";
+import { FormHelperText, InputAdornment } from "@material-ui/core";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { AccountCircle, LockRounded } from "@material-ui/icons";
+import EmailIcon from "@material-ui/icons/Email";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -103,6 +105,13 @@ const SignUp = () => {
                   },
                 })}
                 autoComplete="off"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
               />
               {errors.username?.message && (
                 <FormHelperText style={{ color: "red" }}>
@@ -127,6 +136,13 @@ const SignUp = () => {
                   },
                 })}
                 autoComplete="off"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               {errors.email?.message && (
                 <FormHelperText style={{ color: "red" }}>
@@ -156,6 +172,13 @@ const SignUp = () => {
                 label="Mật khẩu"
                 type="password"
                 autoComplete="current-password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockRounded />
+                    </InputAdornment>
+                  ),
+                }}
               />
               {errors.password?.message && (
                 <FormHelperText style={{ color: "red" }}>
@@ -176,6 +199,13 @@ const SignUp = () => {
                 label="Nhập lại mật khẩu"
                 type="password"
                 autoComplete="current-password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockRounded />
+                    </InputAdornment>
+                  ),
+                }}
               />
               {errors.rePassword?.message && (
                 <FormHelperText style={{ color: "red" }}>
