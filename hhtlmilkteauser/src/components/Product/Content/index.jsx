@@ -158,7 +158,7 @@ const Content = () => {
     const { products, newProductId } = useSelector((state) => state.product);
 
     const [valueToOrderBy, setValueToOrderBy] = useState("id");
-    const [valueToSortDir, setValueToSortDir] = useState("asc");
+    const [valueToSortDir, setValueToSortDir] = useState("desc");
     const [keyword, setKeyword] = useState("");
     const [name, setName] = useState("")
     const dispatch = useDispatch();
@@ -246,11 +246,7 @@ const Content = () => {
             <Grid container style={{ flexGrow: 1, border: '2px solid #ececec', width: '100%', marginBottom: 30 }}>
 
 
-                <Grid item md={4} sm={12} className={classes.searchItem}>
-
-                </Grid>
-
-                <Grid item md={4} sm={12} className={classes.searchItem}>
+                <Grid item md={6} sm={12} className={classes.searchItem}>
                     <Typography style={{ marginRight: 10 }}>
                         <b>Theo giá </b>
                     </Typography>
@@ -268,7 +264,7 @@ const Content = () => {
                     </FormControl>
                 </Grid>
 
-                <Grid item md={4} sm={12} className={classes.searchItem}>
+                <Grid item md={6} sm={12} className={classes.searchItem}>
                     <Typography style={{ marginRight: 10 }}>
                         <b>Tìm kiếm: </b>
                     </Typography>

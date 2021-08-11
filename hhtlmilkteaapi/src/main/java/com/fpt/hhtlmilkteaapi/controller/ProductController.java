@@ -209,19 +209,18 @@ public class ProductController {
     public ResponseEntity<?> getProducts(
             @RequestParam(defaultValue = "") String cateName,
             @RequestParam(defaultValue = "id") String sortField,
-            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "") String keyword
     ) {
         ProductResponse productResponse = new ProductResponse();
         List<Product> products;
-        List<Product> productNew;
+        List<Product> productNew = productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, "id"));
+
         if ("".equals(cateName)){
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.ASC, sortField));
-            productNew = productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField));
 
         }else{
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
-            productNew = productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, "id"));
         }
 
         String newProductId = productNew.size() > 0 ? productNew.get(0).getId() : "";

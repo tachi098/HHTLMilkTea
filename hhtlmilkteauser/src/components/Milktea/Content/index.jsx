@@ -160,7 +160,7 @@ const Content = () => {
 
     const [valueCategory, setValueCategory] = useState("");
     const [valueToOrderBy, setValueToOrderBy] = useState("id");
-    const [valueToSortDir, setValueToSortDir] = useState("asc");
+    const [valueToSortDir, setValueToSortDir] = useState("desc");
     const [keyword, setKeyword] = useState("");
     const [name, setName] = useState("")
     const dispatch = useDispatch();
@@ -219,11 +219,10 @@ const Content = () => {
     const onHandleCateFilter = (e) => {
         setKeyword("");
         if ("default" !== e.target.value) {
-            console.log(e.target.value);
             setValueCategory(e.target.value);
         } else {
             setValueCategory("");
-            setValueToSortDir("asc");
+            setValueToSortDir("desc");
             setValueToOrderBy("id");
         }
     }
