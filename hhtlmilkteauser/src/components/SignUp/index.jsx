@@ -1,29 +1,33 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { Link } from 'react-router-dom';
-
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import { Link, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthRegisterAction } from "./../../store/actions/AuthAction";
+import { FormHelperText } from "@material-ui/core";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(6),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -33,6 +37,26 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { register, handleSubmit, errors, watch } = useForm();
+  const { message, user } = useSelector((state) => state.auth);
+  const password = useRef({});
+  password.current = watch("password", "");
+
+  useEffect(() => {
+    if (user) {
+      history.push("/home");
+    }
+  }, [history, user]);
+
+  const onSubmit = (data) => {
+    AuthRegisterAction(data)(dispatch).then((res) => {
+      if (Object.is("Đăng ký thành công", res.message)) {
+        history.push("/signin");
+      }
+    });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -43,53 +67,121 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Đăng ký
         </Typography>
-        <form className={classes.form} noValidate>
+        {message && (
+          <Typography
+            component="span"
+            variant="h6"
+            style={{ color: "red", fontSize: 16 }}
+          >
+            {message}
+          </Typography>
+        )}
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="Họ"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
-                id="lastName"
-                label="Tên"
-                name="lastName"
-                autoComplete="lname"
+                label="Tài khoản"
+                name="username"
+                inputRef={register({
+                  required: {
+                    value: true,
+                    message: "Tài khoản không được để trống",
+                  },
+                  minLength: {
+                    value: 5,
+                    message: "Tài khoản không được nhỏ hơn 5 kí tự",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Tài khoản không được quá 20 kí tự",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9]+$/,
+                    message: "Tài khoản chp phép chữ cái và số",
+                  },
+                })}
+                autoComplete="off"
               />
+              {errors.username?.message && (
+                <FormHelperText style={{ color: "red" }}>
+                  {errors.username?.message}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
-                id="email"
                 label="Địa chỉ email"
                 name="email"
-                autoComplete="email"
+                inputRef={register({
+                  required: {
+                    value: true,
+                    message: "Email không được để trống",
+                  },
+                  pattern: {
+                    value: /^\w+@\w{2,}(\.\w{2,}){1,2}$/,
+                    message: "Email chưa đúng định dạng",
+                  },
+                })}
+                autoComplete="off"
               />
+              {errors.email?.message && (
+                <FormHelperText style={{ color: "red" }}>
+                  {errors.email?.message}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
                 name="password"
+                inputRef={register({
+                  required: {
+                    value: true,
+                    message: "Mật khẩu không được để trống",
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Mật khẩu không được nhỏ hơn 6 kí tự",
+                  },
+                  pattern: {
+                    value: /^[^\s]+$/,
+                    message: "Mật khẩu không được có khoảng trắng",
+                  },
+                })}
                 label="Mật khẩu"
                 type="password"
-                id="password"
                 autoComplete="current-password"
               />
+              {errors.password?.message && (
+                <FormHelperText style={{ color: "red" }}>
+                  {errors.password?.message}
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                name="rePassword"
+                inputRef={register({
+                  validate: (value) =>
+                    Object.is(value, password.current) ||
+                    "Mật khẩu nhập lại chưa đúng",
+                })}
+                label="Nhập lại mật khẩu"
+                type="password"
+                autoComplete="current-password"
+              />
+              {errors.rePassword?.message && (
+                <FormHelperText style={{ color: "red" }}>
+                  {errors.rePassword?.message}
+                </FormHelperText>
+              )}
             </Grid>
           </Grid>
           <Button
@@ -101,9 +193,14 @@ const SignUp = () => {
           >
             Đăng ký
           </Button>
-          <Grid container justifyContent="flex-end">
+          <Grid container justifyContent="space-between">
             <Grid item>
-              <Link to="/signin" style={{textDecoration: 'none'}}>
+              <Link to="/signin" style={{ textDecoration: "none" }}>
+                Quên tài khoản?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link to="/signin" style={{ textDecoration: "none" }}>
                 Bạn đã có tài khoản? Đăng nhập
               </Link>
             </Grid>
@@ -112,6 +209,6 @@ const SignUp = () => {
       </div>
     </Container>
   );
-}
+};
 
-export default SignUp
+export default SignUp;
