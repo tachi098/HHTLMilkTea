@@ -75,4 +75,9 @@ public class CategoryController {
         categoryRepository.save(category);
         return new ResponseEntity(category, HttpStatus.OK);
     }
+
+    @GetMapping("/fill")
+    public ResponseEntity<?> getCategoryFill() {
+        return ResponseEntity.ok(categoryRepository.findAll().stream().filter(c -> c.getDeletedAt() == null));
+    }
 }

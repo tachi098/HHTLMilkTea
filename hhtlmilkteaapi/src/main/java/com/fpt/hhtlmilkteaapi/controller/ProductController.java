@@ -38,9 +38,6 @@ public class ProductController {
     private IProductRepository productRepository;
 
     @Autowired
-    private ICategoryRepository categoryRepository;
-
-    @Autowired
     private ISizeOptionRepository sizeOptionRepository;
 
     private Map<String, String> options = new HashMap<>();
@@ -215,12 +212,14 @@ public class ProductController {
         ProductResponse productResponse = new ProductResponse();
         List<Product> products;
         List<Product> productNew = productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, "id"));
+        productNew.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
 
         if ("".equals(cateName)){
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.ASC, sortField));
-
+            products = products.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
         }else{
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
+            products = products.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
         }
 
         String newProductId = productNew.size() > 0 ? productNew.get(0).getId() : "";
