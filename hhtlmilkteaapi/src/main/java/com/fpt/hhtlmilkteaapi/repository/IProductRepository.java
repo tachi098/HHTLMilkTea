@@ -15,5 +15,5 @@ public interface IProductRepository extends JpaRepository<Product, String> {
     Page<Product> findProductsByNameLike(String keyword, Pageable pageable);
 
     List<Product> findProductsByCategoryId_Name(String name, Sort sort);
-    List<Product> findProductsByName(String keyword);
+    List<Product> findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike(String cate, String cate2, Sort sort);
 }

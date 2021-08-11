@@ -39,12 +39,13 @@ public class SeedSizeOptionsTable {
         if(count == 0) {
 
             // Insert SizeOptions
-            SizeOption sizeOption1 = new SizeOption(1 , "Supper small size", 10000);
+            SizeOption sizeOption1 = new SizeOption(1 , "Normal size", 0);
             SizeOption sizeOption2 = new SizeOption(2 , "Medium size", 20000);
             SizeOption sizeOption3 = new SizeOption(3 , "Big size ice", 25000);
+            SizeOption sizeOption4 = new SizeOption(4 , "Small size", 10000);
 
             sizeOptionRepository.saveAll(Arrays.asList(
-                    sizeOption1, sizeOption2, sizeOption3
+                    sizeOption1, sizeOption2, sizeOption3, sizeOption4
             ));
 
             LOGGER.info("SizeOptions Table Seeded.");
