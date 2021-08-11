@@ -47,7 +47,7 @@ const SignUp = () => {
   password.current = watch("password", "");
 
   useEffect(() => {
-    if (user) {
+    if (user.token) {
       history.push("/home");
     }
   }, [history, user]);

@@ -108,7 +108,7 @@ const SignIn = () => {
           />
           {errors.username && (
             <FormHelperText style={{ color: "red" }}>
-              Tài khoản chưa nhập
+              Tài khoản chưa được nhập
             </FormHelperText>
           )}
 
@@ -131,7 +131,7 @@ const SignIn = () => {
           />
           {errors.password && (
             <FormHelperText style={{ color: "red" }}>
-              Mật khẩu chưa nhập
+              Mật khẩu chưa được nhập
             </FormHelperText>
           )}
           <Button
