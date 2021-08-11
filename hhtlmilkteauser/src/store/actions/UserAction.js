@@ -18,8 +18,6 @@ export const UserFindByUsernameAction = (query) => async (dispatch) => {
 export const updateProfile = (data) => async (dispatch) => {
   try {
 
-    console.log(data);
-
     const formData = new FormData();
     formData.append("username", data.username)
     if (data.multipartFile) {

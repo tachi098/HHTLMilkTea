@@ -300,9 +300,9 @@ const Header = () => {
                         variant="dot"
                       >
                         <Avatar
-                          alt="Remy Sharp"
+                          alt="https://material-ui.com/static/images/avatar/1.jpg"
                           className={classes.small}
-                          src="https://material-ui.com/static/images/avatar/1.jpg"
+                          src={customer.linkImage}
                           style={{ marginRight: 10 }}
                         />
                       </StyledBadge>

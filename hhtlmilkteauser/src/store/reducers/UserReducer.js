@@ -14,7 +14,6 @@ const userSlice = createSlice({
       state.customer = action.payload.user;
     },
     profileUpdate: (state, action) => {
-      console.log({ action })
       state.customer = action.payload;
     }
   },

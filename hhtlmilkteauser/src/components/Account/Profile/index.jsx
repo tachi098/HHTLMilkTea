@@ -99,7 +99,6 @@ const Profile = () => {
 
     return (
         <React.Fragment>
-            {console.log(customer)}
             <div className={classes.header}>
                 <Typography variant="h6">
                     HỒ SƠ CỦA TÔI
@@ -110,6 +109,12 @@ const Profile = () => {
             </div>
             {customer && (
                 <form onSubmit={handleSubmit(onSubmit)}>
+                    <TextField
+                        name="username"
+                        inputRef={register()}
+                        defaultValue={customer.username}
+                        style={{ display: 'none' }}
+                    />
                     <Grid container className={classes.content}>
                         <Grid item md={8} xs={12} sm={12} style={{ paddingLeft: 20 }}>
                             <Grid item xs={12} sm={12}>
