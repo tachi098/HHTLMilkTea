@@ -300,14 +300,14 @@ const Header = () => {
                         variant="dot"
                       >
                         <Avatar
-                          alt="https://material-ui.com/static/images/avatar/1.jpg"
+                          alt="Avatar"
                           className={classes.small}
-                          src={customer.linkImage}
+                          src={customer.linkImage ?? logo}
                           style={{ marginRight: 10 }}
                         />
                       </StyledBadge>
                       <div>
-                        {customer && (customer.fullName ?? "")}
+                        {customer && (customer.fullName ?? customer.username)}
                         <Typography className={classes.title}>
                           Điểm: {customer && (customer?.memberVip?.mark ?? "0")}
                         </Typography>

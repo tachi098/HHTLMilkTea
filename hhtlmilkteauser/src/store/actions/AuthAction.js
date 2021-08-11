@@ -1,5 +1,5 @@
 import AuthService from "../../services/AuthService";
-import { login, logout } from "../reducers/AuthReducer";
+import { login, logout, register } from "../reducers/AuthReducer";
 
 export const AuthLoginAction = (data) => async (dispatch) => {
   try {
@@ -16,4 +16,14 @@ export const AuthLoginAction = (data) => async (dispatch) => {
 export const AuthLogoutAction = () => (dispatch) => {
   AuthService.logout();
   dispatch(logout());
+};
+
+export const AuthRegisterAction = (data) => async (dispatch) => {
+  try {
+    const res = await AuthService.register(data);
+    dispatch(register(res.data));
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
 };
