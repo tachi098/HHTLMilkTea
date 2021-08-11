@@ -7,6 +7,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import PeopleIcon from "@material-ui/icons/People";
 import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import { Euro, FormatAlignCenter } from "@material-ui/icons";
+import CategoryIcon from "@material-ui/icons/Category";
 import { Link } from "react-router-dom";
 import { Divider } from "@material-ui/core";
 
@@ -34,6 +35,15 @@ const MainListItems = () => {
             <Euro style={{ marginLeft: 5 }} />
           </ListItemIcon>
           <ListItemText primary="Sản phẩm" />
+        </ListItem>
+      </Link>
+
+      <Link to="/category" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <CategoryIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Loại Sản phẩm" />
         </ListItem>
       </Link>
 
