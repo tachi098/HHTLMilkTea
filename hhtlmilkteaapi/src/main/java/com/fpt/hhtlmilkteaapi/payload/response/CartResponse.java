@@ -13,4 +13,5 @@ import lombok.Setter;
 public class CartResponse {
     private Order order;
     private int quantity;
+    private long totalPrice;
 }

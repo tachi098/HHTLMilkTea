@@ -3,6 +3,7 @@ package com.fpt.hhtlmilkteaapi.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
+import com.fpt.hhtlmilkteaapi.payload.request.OrderQuantityRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.OrderRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.CartResponse;
 import com.fpt.hhtlmilkteaapi.repository.IOrderDetailRepository;
@@ -58,12 +59,19 @@ public class OrderController {
     public ResponseEntity<?> getOrder(@PathVariable long id) {
         CartResponse cartResponse = new CartResponse();
 
-        Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0);
+        Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0, Sort.by(Sort.Direction.DESC, "id"));
         if (order != null){
             int sum = 0;
             for(OrderDetail orderDetailnew: order.getOrderDetails()){
                 sum += orderDetailnew.getQuantity();
             }
+
+            long total = 0;
+            for (OrderDetail orderDetailnew : order.getOrderDetails()){
+                total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+            }
+
+            cartResponse.setTotalPrice(total);
             cartResponse.setOrder(order);
             cartResponse.setQuantity(sum);
         }
@@ -81,7 +89,7 @@ public class OrderController {
 
         long id = orderRequest.getUserId();
 
-        Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0);
+        Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0, Sort.by(Sort.Direction.DESC, "id"));
 
         User user = userRepository.findById(id).get();
         Product product = objectMapper.readValue(orderRequest.getProduct().toString(), Product.class);
@@ -119,6 +127,13 @@ public class OrderController {
                 for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
                     sum += orderDetailnew.getQuantity();
                 }
+
+                long total = 0;
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+                    total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                }
+
+                cartResponse.setTotalPrice(total);
                 cartResponse.setOrder(orderNew);
                 cartResponse.setQuantity(sum);
             } else {
@@ -132,6 +147,13 @@ public class OrderController {
                 for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
                     sum += orderDetailnew.getQuantity();
                 }
+
+                long total = 0;
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+                    total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                }
+
+                cartResponse.setTotalPrice(total);
                 cartResponse.setOrder(orderNew);
                 cartResponse.setQuantity(sum);
             }
@@ -148,6 +170,13 @@ public class OrderController {
             for (OrderDetail orderDetail : orderNew.getOrderDetails()) {
                 sum += orderDetail.getQuantity();
             }
+
+            long total = 0;
+            for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+                total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+            }
+
+            cartResponse.setTotalPrice(total);
             cartResponse.setOrder(orderNew);
             cartResponse.setQuantity(sum);
             return ResponseEntity.ok(cartResponse);
@@ -219,5 +248,70 @@ public class OrderController {
 
         return ResponseEntity.ok(orders);
 
+    }
+
+    @PutMapping("")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateQuantity(
+            @RequestBody OrderQuantityRequest orderQuantityRequest
+            ){
+        CartResponse cartResponse = new CartResponse();
+        OrderDetail orderDetail = orderDetailRepository.findById(orderQuantityRequest.getOrderDetailId()).get();
+        Order order = orderRepository.findById(orderDetail.getOrderId().getId()).get();
+
+        if (orderQuantityRequest.getAction().equals("plus")){
+            orderDetail.setQuantity(orderDetail.getQuantity() + 1);
+            orderDetailRepository.save(orderDetail);
+        }else{
+            if(orderDetail.getQuantity() == 1){
+                orderDetailRepository.delete(orderDetail);
+            }else{
+                orderDetail.setQuantity(orderDetail.getQuantity() - 1);
+                orderDetailRepository.save(orderDetail);
+            }
+        }
+        order.setOrderDetails(orderDetailRepository.findByOrderId_Id(order.getId()));
+
+        int sum = 0;
+        for (OrderDetail orderDetailnew : order.getOrderDetails()) {
+            sum += orderDetailnew.getQuantity();
+        }
+
+        long total = 0;
+        for (OrderDetail orderDetailnew : order.getOrderDetails()){
+            total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+        }
+
+        cartResponse.setTotalPrice(total);
+        cartResponse.setOrder(order);
+        cartResponse.setQuantity(sum);
+        return ResponseEntity.ok(cartResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateQuantity(@PathVariable long id){
+        CartResponse cartResponse = new CartResponse();
+        OrderDetail orderDetail = orderDetailRepository.findById(id).get();
+        Order order = orderRepository.findById(orderDetail.getOrderId().getId()).get();
+
+        orderDetailRepository.delete(orderDetail);
+
+        order.setOrderDetails(orderDetailRepository.findByOrderId_Id(order.getId()));
+
+        int sum = 0;
+        for (OrderDetail orderDetailnew : order.getOrderDetails()) {
+            sum += orderDetailnew.getQuantity();
+        }
+
+        long total = 0;
+        for (OrderDetail orderDetailnew : order.getOrderDetails()){
+            total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+        }
+
+        cartResponse.setTotalPrice(total);
+        cartResponse.setOrder(order);
+        cartResponse.setQuantity(sum);
+        return ResponseEntity.ok(cartResponse);
     }
 }

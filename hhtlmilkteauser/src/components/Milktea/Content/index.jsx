@@ -10,7 +10,6 @@ import { ProductGetAll } from "./../../../store/actions/ProductAction"
 import popupBg from "./../../../assets/img/bg_popup.png"
 import { useForm } from "react-hook-form";
 import { CategoryListAction } from "../../../store/actions/CategoryAction";
-import { useHistory } from "react-router-dom";
 import { OrderAddAction } from "../../../store/actions/OrderAction";
 
 const useStyles = makeStyles((theme) => ({
@@ -157,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
 const Content = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const history = useHistory();
 
     const { products, newProductId } = useSelector((state) => state.product);
 
@@ -210,7 +208,7 @@ const Content = () => {
             setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
             setOpen(true);
         } else {
-            history.push("/signin");
+            Notification.error("Vui lòng đăng nhập trước khi mua hàng!");
         }
     };
 
