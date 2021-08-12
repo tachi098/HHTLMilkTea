@@ -12,5 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface IOrderRepository extends JpaRepository<Order, String> {
+    Order findOrderByUserId_IdAndStatusLike(long id, int status);
     Page<Order> findAllByUserIdEqualsAndStatusIn(Optional<User> user, List<Integer> status, Pageable pageable);
 }

@@ -10,6 +10,8 @@ import { ProductGetAll } from "./../../../store/actions/ProductAction"
 import popupBg from "./../../../assets/img/bg_popup.png"
 import { useForm } from "react-hook-form";
 import { CategoryListAction } from "../../../store/actions/CategoryAction";
+import { useHistory } from "react-router-dom";
+import { OrderAddAction } from "../../../store/actions/OrderAction";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -155,6 +157,7 @@ const useStyles = makeStyles((theme) => ({
 const Content = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const history = useHistory();
 
     const { products, newProductId } = useSelector((state) => state.product);
 
@@ -180,6 +183,8 @@ const Content = () => {
 
     const [size, setSize] = useState([]);
 
+    const auth = useSelector((state) => state.auth);
+
     const {
         handleSubmit,
     } = useForm();
@@ -197,12 +202,16 @@ const Content = () => {
     }, [dispatch, valueToOrderBy, valueToSortDir, keyword, valueCategory]);
 
     const handleClickOpen = (item) => {
-        setProductSelect(item);
-        setCurrentPrice(item.price)
-        const items = [...item.sizeOptions];
-        setSize(items.sort((a, b) => a.id - b.id));
-        setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
-        setOpen(true);
+        if (auth.user) {
+            setProductSelect(item);
+            setCurrentPrice(item.price)
+            const items = [...item.sizeOptions];
+            setSize(items.sort((a, b) => a.id - b.id));
+            setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
+            setOpen(true);
+        } else {
+            history.push("/signin");
+        }
     };
 
     const handleClose = () => {
@@ -276,13 +285,26 @@ const Content = () => {
     }
 
     const onSubmit = (data) => {
-        data.product = productSelect;
-        data.sizeOptions = selectedSize;
+        data.product = JSON.stringify(productSelect);
+        data.userId = auth.user.id;
+        data.sizeOption = selectedSize.name;
         data.quantity = count;
-        data.additionOptions = selectedAdd;
-        data.currentPrice = currentPrice;
+
+        const result = selectedAdd.map(a => a.name).sort();
+        var temp = "";
+        for (let i = 0; i < result.length; i++) {
+            if (Object.is(i, 0)) {
+                temp = temp.concat(result[i]);
+            } else {
+                temp = temp.concat(", " + result[i]);
+            }
+        }
+
+        data.additionOption = temp;
+        data.priceCurrent = currentPrice;
         data.note = note;
-        console.log(data)
+        dispatch(OrderAddAction(data));
+        Notification.success("Đã thêm sản phẩm vào giỏ hàng")
     };
 
     return (
