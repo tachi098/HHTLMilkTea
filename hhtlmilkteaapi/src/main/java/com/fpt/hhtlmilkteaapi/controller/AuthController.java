@@ -4,6 +4,7 @@ package com.fpt.hhtlmilkteaapi.controller;
 import com.fpt.hhtlmilkteaapi.config.ERole;
 import com.fpt.hhtlmilkteaapi.entity.Role;
 import com.fpt.hhtlmilkteaapi.entity.User;
+import com.fpt.hhtlmilkteaapi.payload.request.AuthRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.LoginRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.SignupRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.JwtResponse;
@@ -14,6 +15,7 @@ import com.fpt.hhtlmilkteaapi.security.jwt.JwtUtils;
 import com.fpt.hhtlmilkteaapi.security.service.CustomizeUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -131,6 +133,28 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Đăng ký thành công"));
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<?> checkEmail(@PathVariable String email) {
+        if(!userRepository.existsByEmailAndEmailNotLike(email, "admin@gmail.com")) {
+            return ResponseEntity.ok(new MessageResponse("Email này chưa đăng ký"));
+        }
+        return ResponseEntity.ok(new MessageResponse("Email này đã đăng ký"));
+    }
+
+    @PostMapping("/reset-pass")
+    public ResponseEntity<?> updatePassword(@RequestBody AuthRequest authRequest) {
+
+        if(!userRepository.existsByEmail(authRequest.getEmail())) {
+            return ResponseEntity.ok(new MessageResponse("Không tìm thấy email này"));
+        }
+
+        User user = userRepository.findByEmail(authRequest.getEmail()).get();
+        user.setPassword(encoder.encode(authRequest.getPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 }

@@ -43,7 +43,7 @@ public class SeedUsersTable {
             roles01.add(roleUser01);
             User user01 = new User("admin", "Quản Trị Viên", format.parse("1995-10-29"),
                      "TP. Hồ Chí Minh", "0901858004", null, null,
-                    "kitajima2910@gmail.com",
+                    "admin@gmail.com",
                     new BCryptPasswordEncoder().encode("123456"), roles01);
 
             // Insert User 02

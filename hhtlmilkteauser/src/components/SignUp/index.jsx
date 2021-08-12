@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthRegisterAction } from "./../../store/actions/AuthAction";
 import { FormHelperText, InputAdornment } from "@material-ui/core";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { AccountCircle, LockRounded } from "@material-ui/icons";
 import EmailIcon from "@material-ui/icons/Email";
@@ -42,7 +42,8 @@ const SignUp = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { register, handleSubmit, errors, watch } = useForm();
-  const { message, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const [message, setMessage] = useState();
   const password = useRef({});
   password.current = watch("password", "");
 
@@ -54,15 +55,19 @@ const SignUp = () => {
 
   const onSubmit = (data) => {
     AuthRegisterAction(data)(dispatch).then((res) => {
+      if (!Object.is("Đăng ký thành công", res.message)) {
+        setMessage(res.message);
+        return;
+      }
       if (Object.is("Đăng ký thành công", res.message)) {
         history.push("/signin");
+        return;
       }
     });
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      {console.log({ user })}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -132,7 +137,7 @@ const SignUp = () => {
                     message: "Email không được để trống",
                   },
                   pattern: {
-                    value: /^\w+@\w{2,}(\.\w{2,}){1,2}$/,
+                    value: /^[\w.]+@\w{2,}(\.\w{2,}){1,2}$/,
                     message: "Email chưa đúng định dạng",
                   },
                 })}
@@ -226,8 +231,8 @@ const SignUp = () => {
           </Button>
           <Grid container justifyContent="space-between">
             <Grid item>
-              <Link to="/signin" style={{ textDecoration: "none" }}>
-                Quên tài khoản?
+              <Link to="/forget" style={{ textDecoration: "none" }}>
+                Quên mật khẩu?
               </Link>
             </Grid>
             <Grid item>

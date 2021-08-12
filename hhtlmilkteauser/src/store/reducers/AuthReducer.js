@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")),
-  message: "",
 };
 
 const authSlice = createSlice({
@@ -14,11 +13,6 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-    },
-    register: (state, action) => {
-      state.message = Object.is(action.payload.message, "Đăng ký thành công")
-        ? ""
-        : action.payload.message;
     },
   },
 });

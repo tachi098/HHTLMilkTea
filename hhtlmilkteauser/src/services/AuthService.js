@@ -12,6 +12,14 @@ class AuthService {
   logout = () => {
     localStorage.removeItem("user");
   };
+
+  checkEmail = (data) => {
+    return api.get(`/auth/${data.email}`);
+  };
+
+  updatePass = (data) => {
+    return api.post("/auth/reset-pass", data);
+  };
 }
 
 export default new AuthService();
