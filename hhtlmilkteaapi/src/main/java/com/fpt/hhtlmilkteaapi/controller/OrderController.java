@@ -83,7 +83,7 @@ public class OrderController {
 
         Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0);
 
-        User user =userRepository.findById(id).get();
+        User user = userRepository.findById(id).get();
         Product product = objectMapper.readValue(orderRequest.getProduct().toString(), Product.class);
         String note = orderRequest.getNote();
         String size = orderRequest.getSizeOption();
@@ -93,9 +93,9 @@ public class OrderController {
 
         // Kiểm tra oder
         Order orderNew;
-        if(order != null){
+        if (order != null) {
             orderNew = order;
-        }else{
+        } else {
             String orderId = "P" + formatter.format(new Date());
             orderNew = new Order(orderId, null, null, 0, 0, null, 0, user, 0);
             orderRepository.save(orderNew);
@@ -104,39 +104,39 @@ public class OrderController {
         //Tạo OrderDetail
         //Check neu orderdetail co product, add, size giong nhau thi cong quantity
 
-        if (orderNew.getOrderDetails() != null){
+        if (orderNew.getOrderDetails() != null) {
 
-           OrderDetail orderDetail = orderDetailRepository.findByOrderId_IdAndProduct_IdAndAddOptionIdLikeAndSizeOptionIdLike(orderNew.getId(), product.getId(), add, size);
+            OrderDetail orderDetail = orderDetailRepository.findByOrderId_IdAndProduct_IdAndAddOptionIdLikeAndSizeOptionIdLike(orderNew.getId(), product.getId(), add, size);
 
-           if (orderDetail != null){
-                    orderDetail.setQuantity(orderDetail.getQuantity() + quantity);
-                    orderDetail.setNoteProduct(note);
-                    orderDetailRepository.save(orderDetail);
-                    orderNew.setOrderDetails(orderDetailRepository.findByOrderId_Id(orderNew.getId()));
-                    orderRepository.save(orderNew);
+            if (orderDetail != null) {
+                orderDetail.setQuantity(orderDetail.getQuantity() + quantity);
+                orderDetail.setNoteProduct(note);
+                orderDetailRepository.save(orderDetail);
+                orderNew.setOrderDetails(orderDetailRepository.findByOrderId_Id(orderNew.getId()));
+                orderRepository.save(orderNew);
 
-                    int sum = 0;
-                    for(OrderDetail orderDetailnew: orderNew.getOrderDetails()){
-                        sum += orderDetailnew.getQuantity();
-                    }
-                    cartResponse.setOrder(orderNew);
-                    cartResponse.setQuantity(sum);
-           }else{
-                    OrderDetail orderDetailNew = new OrderDetail(size, add, quantity, currenPrice,
-                            note, orderNew, product);
-                    orderDetailRepository.save(orderDetailNew);
-                    orderNew.setOrderDetails(orderDetailRepository.findByOrderId_Id(orderNew.getId()));
-                    orderRepository.save(orderNew);
-
-                    int sum = 0;
-                    for(OrderDetail orderDetailnew: orderNew.getOrderDetails()){
-                        sum += orderDetailnew.getQuantity();
-                    }
-                    cartResponse.setOrder(orderNew);
-                    cartResponse.setQuantity(sum);
+                int sum = 0;
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
+                    sum += orderDetailnew.getQuantity();
                 }
+                cartResponse.setOrder(orderNew);
+                cartResponse.setQuantity(sum);
+            } else {
+                OrderDetail orderDetailNew = new OrderDetail(size, add, quantity, currenPrice,
+                        note, orderNew, product);
+                orderDetailRepository.save(orderDetailNew);
+                orderNew.setOrderDetails(orderDetailRepository.findByOrderId_Id(orderNew.getId()));
+                orderRepository.save(orderNew);
+
+                int sum = 0;
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
+                    sum += orderDetailnew.getQuantity();
+                }
+                cartResponse.setOrder(orderNew);
+                cartResponse.setQuantity(sum);
+            }
             return ResponseEntity.ok(cartResponse);
-        }else{
+        } else {
             OrderDetail orderDetailNew = new OrderDetail(size, add, quantity, currenPrice,
                     note, orderNew, product);
             orderDetailRepository.save(orderDetailNew);
@@ -145,13 +145,14 @@ public class OrderController {
             orderRepository.save(orderNew);
 
             int sum = 0;
-            for(OrderDetail orderDetail: orderNew.getOrderDetails()){
+            for (OrderDetail orderDetail : orderNew.getOrderDetails()) {
                 sum += orderDetail.getQuantity();
             }
             cartResponse.setOrder(orderNew);
             cartResponse.setQuantity(sum);
             return ResponseEntity.ok(cartResponse);
         }
+    }
 
     @GetMapping("/listProcess")
     @PreAuthorize("hasRole('USER')")
