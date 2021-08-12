@@ -6,6 +6,7 @@ import UserReducer from "./reducers/UserReducer";
 import ProductReducer from "./reducers/ProductReducer";
 import CategoryReducer from "./reducers/CategoryReducer";
 import OrderReducer from "./reducers/OrderReducer";
+import HistoryReducer from "./reducers/HistoryReducer";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,8 @@ const store = configureStore({
     product: ProductReducer,
     category: CategoryReducer,
     order: OrderReducer,
+    history: HistoryReducer,
+
   },
 });
 

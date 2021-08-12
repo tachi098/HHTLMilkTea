@@ -349,6 +349,12 @@ const Header = () => {
                     >
                       <MenuItem>Thông tin cá nhân</MenuItem>
                     </Link>
+                    <Link
+                      to="/account/history"
+                      style={{ textDecoration: "none", color: "black" }}
+                    >
+                      <MenuItem>Lịch sử mua hàng</MenuItem>
+                    </Link>
                     <MenuItem onClick={onHandleLogout}>Đăng xuất</MenuItem>
                   </Menu>
                 </>
