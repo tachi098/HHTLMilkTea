@@ -20,7 +20,7 @@ public class OrderDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private Long sizeOptionId;
+    private String sizeOptionId;
     private String addOptionId;
     private int quantity;
     private long priceCurrent;
@@ -45,4 +45,14 @@ public class OrderDetail implements Serializable {
     )
     @JsonIgnoreProperties("orderDetails")
     private Product product;
+
+    public OrderDetail(String sizeOptionId, String addOptionId, int quantity, long priceCurrent, String noteProduct, Order orderId, Product product) {
+        this.sizeOptionId = sizeOptionId;
+        this.addOptionId = addOptionId;
+        this.quantity = quantity;
+        this.priceCurrent = priceCurrent;
+        this.noteProduct = noteProduct;
+        this.orderId = orderId;
+        this.product = product;
+    }
 }

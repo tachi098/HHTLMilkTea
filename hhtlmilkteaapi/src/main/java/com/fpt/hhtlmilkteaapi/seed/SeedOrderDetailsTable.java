@@ -31,7 +31,7 @@ public class SeedOrderDetailsTable {
             // Insert OrderDetail 1
             Product product01 = productRepository.findById("P0882021035821").get();
             Order order01 = orderRepository.findById("O0882021035829").get();
-            OrderDetail orderDetail01 = new OrderDetail(1,1L, "1L, 2L", 2, product01.getPrice(),
+            OrderDetail orderDetail01 = new OrderDetail(1,"Nhỏ", "Đào thêm", 2, product01.getPrice(),
                     "Giao hang nhanh", order01, product01);
 
             // Insert Data

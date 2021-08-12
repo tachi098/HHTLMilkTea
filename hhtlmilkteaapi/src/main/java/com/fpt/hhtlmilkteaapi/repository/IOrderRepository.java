@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IOrderRepository extends JpaRepository<Order, String> {
+    Order findOrderByUserId_IdAndStatusLike(long id, int status);
 }

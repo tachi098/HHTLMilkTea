@@ -11,6 +11,7 @@ import {
   Badge,
   Menu,
   MenuItem,
+  MenuList,
   Typography,
   withStyles,
 } from "@material-ui/core";
@@ -24,6 +25,7 @@ import { Link, NavLink, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthLogoutAction } from "./../../../store/actions/AuthAction";
 import { UserFindByUsernameAction } from "./../../../store/actions/UserAction";
+import { OrderFindAction } from "../../../store/actions/OrderAction";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -127,10 +129,12 @@ const Header = () => {
   const [anchorElAccount, setAnchorElAccount] = useState(null);
 
   const { customer } = useSelector((state) => state.customer);
+  const { order, quantity } = useSelector((state) => state.order)
 
   useEffect(() => {
     if (auth.user !== null) {
       dispatch(UserFindByUsernameAction(auth.user.username));
+      dispatch(OrderFindAction(auth.user.id));
     }
   }, [auth, dispatch]);
 
@@ -200,6 +204,8 @@ const Header = () => {
     </div>
   );
 
+
+
   return (
     <AppBar style={{ backgroundColor: "white" }}>
       <Toolbar className={classes.toolbar}>
@@ -225,7 +231,7 @@ const Header = () => {
         />
         <img src={logo} alt="Milktea" width={50} loading="lazy" />
         <div>
-          <Badge badgeContent={4} color="secondary" style={{ marginRight: 20 }}>
+          <Badge badgeContent={auth.user !== null ? quantity : 0} color="secondary" style={{ marginRight: 20 }}>
             <ShoppingCartIcon
               style={{ color: "#416c48" }}
               aria-owns={anchorEl ? "simple-menu" : undefined}
@@ -252,16 +258,31 @@ const Header = () => {
             >
               Giỏ hàng của bạn
             </MenuItem>
-            <MenuItem
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                color: "red",
-                backgroundColor: "transparent",
-              }}
-            >
-              Không có sản phẩm nào
-            </MenuItem>
+            {(order?.orderDetails?.length > 0 && auth.user !== null) ? (
+              <MenuList style={{ overflowY: 'scroll', height: 300 }}>
+                {order?.orderDetails?.map((item) => (
+                  <MenuItem style={{ display: 'flex', backgroundColor: "transparent", paddingLeft: 20, paddingRight: 20 }} key={item.id}>
+                    <img alt={item.product.name} src={item.product.linkImage} width={50} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ color: '#416C48' }}>{item.product.name}(Số lượng: {item.quantity})</span>
+                      <span style={{ color: 'red', fontSize: 10 }}>{item.sizeOptionId}:{item.addOptionId}</span>
+                    </div>
+                  </MenuItem>
+                ))}
+              </MenuList>
+            )
+              : (
+                <MenuItem
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    color: "red",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  Không có sản phẩm nào
+                </MenuItem>
+              )}
             <MenuItem
               style={{
                 display: "flex",
@@ -402,10 +423,15 @@ const Header = () => {
           >
             <MenuItem>Tìm kiếm trà sữa</MenuItem>
           </Link>
-          <MenuItem>Tìm kiếm cà phê</MenuItem>
+          <Link
+            to="/product"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <MenuItem>Tìm kiếm sản phẩm</MenuItem>
+          </Link>
         </Menu>
       </Toolbar>
-    </AppBar>
+    </AppBar >
   );
 };
 
