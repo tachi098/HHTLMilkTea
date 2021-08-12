@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ProductGetAll } from "./../../../store/actions/ProductAction"
 import popupBg from "./../../../assets/img/bg_popup.png"
 import { useForm } from "react-hook-form";
+import { OrderAddAction } from "../../../store/actions/OrderAction";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -156,6 +157,7 @@ const Content = () => {
     const [open, setOpen] = useState(false);
 
     const { products, newProductId } = useSelector((state) => state.product);
+    const auth = useSelector((state) => state.auth);
 
     const [valueToOrderBy, setValueToOrderBy] = useState("id");
     const [valueToSortDir, setValueToSortDir] = useState("desc");
@@ -187,9 +189,13 @@ const Content = () => {
     }, [dispatch, valueToOrderBy, valueToSortDir, keyword]);
 
     const handleClickOpen = (item) => {
-        setProductSelect(item);
-        setCurrentPrice(item.price)
-        setOpen(true);
+        if (auth.user) {
+            setProductSelect(item);
+            setCurrentPrice(item.price)
+            setOpen(true);
+        } else {
+            Notification.error("Vui lòng đăng nhập trước khi mua hàng!");
+        }
     };
 
     const handleClose = () => {
@@ -233,11 +239,16 @@ const Content = () => {
     }
 
     const onSubmit = (data) => {
-        data.product = productSelect;
+        data.product = JSON.stringify(productSelect);
+        data.userId = auth.user.id;
         data.quantity = count;
-        data.currentPrice = currentPrice;
+        data.priceCurrent = currentPrice;
         data.note = note;
-        console.log(data)
+        data.additionOption = "";
+        data.sizeOption = "";
+
+        dispatch(OrderAddAction(data));
+        Notification.success("Đã thêm sản phẩm vào giỏ hàng")
     };
 
     return (

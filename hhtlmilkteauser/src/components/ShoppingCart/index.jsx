@@ -9,8 +9,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button, CssBaseline, Grid, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-
-const TAX_RATE = 0.07;
+import { useDispatch, useSelector } from 'react-redux';
+import { Add, DeleteOutline, Remove } from '@material-ui/icons';
+import { OrderDelteOrderDetail, OrderUpdateQuantity } from '../../store/actions/OrderAction';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -41,45 +42,36 @@ const useStyles = makeStyles((theme) => ({
             padding: theme.spacing(3),
         },
     },
+    btnCount: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        paddingTop: 14,
+        color: '#3250a8'
+    },
     button: {
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(1),
     },
 }));
 
-const ccyFormat = (num) => {
-    return `${num.toFixed(2)}`;
-}
-
-const priceRow = (qty, unit) => {
-    return qty * unit;
-}
-
-const createRow = (desc, qty, unit) => {
-    const price = priceRow(qty, unit);
-    return { desc, qty, unit, price };
-}
-
-const subtotal = (items) => {
-    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
-}
-
-const rows = [
-    createRow('Paperclips (Box)', 100, 1.15),
-    createRow('Paper (Case)', 10, 45.99),
-    createRow('Waste Basket', 2, 17.99),
-];
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
-
 const ShoppingCart = () => {
     const classes = useStyles();
     const history = useHistory();
+    const dispatch = useDispatch();
+    const { order, totalPrice } = useSelector((state) => state.order)
+
 
     const onHandleRedirectCheckout = () => {
         history.push("/checkout")
+    }
+
+    const onHandleUpdateQuantity = (orderDetailId, action) => {
+        dispatch(OrderUpdateQuantity({ orderDetailId, action }))
+    }
+
+    const onHandleDeleteOrderDetail = (id) => {
+        dispatch(OrderDelteOrderDetail(id));
     }
 
     return (
@@ -92,47 +84,51 @@ const ShoppingCart = () => {
                     </Typography>
 
                     <React.Fragment>
-                        <Grid container spacing={3}>
+                        <Grid container spacing={3} style={{ marginTop: 10 }}>
                             <Grid item xs={12} md={12}>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="spanning table">
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell align="center" colSpan={3}>
-                                                    <b>Thông tin</b>
-                                                </TableCell>
-                                                <TableCell align="right"><b>Tiền</b></TableCell>
-                                            </TableRow>
-                                            <TableRow>
+                                                <TableCell align="center"><b>Hình ảnh</b></TableCell>
                                                 <TableCell><b>Sản phẩm</b></TableCell>
-                                                <TableCell align="right"><b>Số lượng</b></TableCell>
-                                                <TableCell align="right"><b>Giá</b></TableCell>
-                                                <TableCell align="right"><b>Tổng</b></TableCell>
+                                                <TableCell align="left"><b>Số lượng</b></TableCell>
+                                                <TableCell align="center"><b>Giá</b></TableCell>
+                                                <TableCell align="center"><b>Tổng</b></TableCell>
+                                                <TableCell align="center"></TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {rows.map((row) => (
-                                                <TableRow key={row.desc}>
-                                                    <TableCell>{row.desc}</TableCell>
-                                                    <TableCell align="right">{row.qty}</TableCell>
-                                                    <TableCell align="right">{row.unit}</TableCell>
-                                                    <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+                                            {order?.orderDetails?.length > 0 ? order?.orderDetails?.map((item) => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell align="center">
+                                                        <img alt={item.product.name} src={item.product.linkImage} width={100} />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <p>{item.product.name}</p>
+                                                        <span style={{ fontSize: 12, color: 'red' }}>{item.sizeOptionId} {item.addOptionId !== "" && ": " + item.addOptionId}</span>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <div style={{ display: 'flex', marginTop: -10, marginLeft: -20 }}>
+                                                            <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "minus") }}><Remove /></div>
+                                                            <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
+                                                            <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell align="center">{(item.product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center">{(item.product.price * item.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center"><DeleteOutline style={{ color: 'red', cursor: 'pointer' }} onClick={() => { onHandleDeleteOrderDetail(item.id) }} /></TableCell>
                                                 </TableRow>
-                                            ))}
+                                            )) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={6} align="center"><b style={{ color: 'red' }}>Không có sản phẩm trong giỏ hàng</b></TableCell>
+                                                </TableRow>
+                                            )
+                                            }
 
                                             <TableRow>
-                                                <TableCell rowSpan={3} />
-                                                <TableCell colSpan={2}><b>Tổng</b></TableCell>
-                                                <TableCell align="right">{ccyFormat(invoiceSubtotal)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell><b>Giảm giá</b></TableCell>
-                                                <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-                                                <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell colSpan={2}><b>Tổng tiền thanh toán</b></TableCell>
-                                                <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+                                                <TableCell colSpan={5}><b>Tổng tiền thanh toán</b></TableCell>
+                                                <TableCell align="right"><b>{(totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>

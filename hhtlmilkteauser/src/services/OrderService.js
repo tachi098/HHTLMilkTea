@@ -7,6 +7,12 @@ class OrderService {
     find = (data) => {
         return api.get(`/order/${data}`);
     };
+    udpate = (data) => {
+        return api.put("/order", data)
+    }
+    delete = (id) => {
+        return api.delete(`/order/${id}`)
+    }
 }
 
 export default new OrderService();
