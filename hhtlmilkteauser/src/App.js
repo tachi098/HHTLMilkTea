@@ -17,6 +17,7 @@ const Checkout = React.lazy(() => import("./components/Checkout"));
 const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
 const Account = React.lazy(() => import("./components/Account"));
 const Page404 = React.lazy(() => import("./components/Page404"));
+const Forget = React.lazy(() => import("./components/Forget"));
 
 const App = () => {
   return (
@@ -56,6 +57,9 @@ const App = () => {
                 </Route>
                 <Route path={"/signup"} exact>
                   <SignUp />
+                </Route>
+                <Route path={"/forget"} exact>
+                  <Forget />
                 </Route>
                 <Route path={"/milktea"} exact>
                   <Milktea />
