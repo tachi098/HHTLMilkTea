@@ -25,6 +25,7 @@ const DetailProduct = React.lazy(() =>
 const Category = React.lazy(() => import("./components/Category"));
 const AddCategory = React.lazy(() => import("./components/Category/AddCategory"));
 const EditCategory = React.lazy(() => import("./components/Category/EditCategory"));
+const DetailCategory = React.lazy(() => import("./components/Category/DetailCategory"));
 
 const DetailUser = React.lazy(() => import("./components/User/DetailUser"));
 
@@ -76,11 +77,14 @@ const App = () => {
             <PrivateRoute exact path={"/category"}>
               <Category />
             </PrivateRoute>
-            <PrivateRoute exact path={"/category/add"}>
+            <PrivateRoute path={"/category/add"}>
               <AddCategory />
             </PrivateRoute>
-            <PrivateRoute exact path={"/category/edit"}>
+            <PrivateRoute path={"/category/edit"}>
               <EditCategory />
+            </PrivateRoute>
+            <PrivateRoute path={"/category/detail"}>
+              <DetailCategory />
             </PrivateRoute>
 
             <PrivateRoute path={"/spinner"}>

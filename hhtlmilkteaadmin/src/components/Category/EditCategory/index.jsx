@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import React from "react";
 import { CategoryUpdateAction } from "../../../store/actions/CategoryAction";
@@ -65,11 +65,15 @@ const useStyles = makeStyles((theme) => ({
 const EditCategory = () => {
   const classes = useStyles();
 
+  const [disabled, setDisabled] = useState(true);
+
   const history = useHistory();
 
   const location = useLocation();
 
   const [category] = useState(location.state.category);
+
+  const { categories } = useSelector((state) => state.category);
 
   const {
     register,
@@ -79,11 +83,29 @@ const EditCategory = () => {
 
   const dispatch = useDispatch();
 
+  const handleChangeName = (e) => {
+    setDisabled(true);
+    if (e.target.name !== categories.name) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  };
+
   // Update Category
   const onSubmit = (data) => {
-    dispatch(CategoryUpdateAction(data));
-    history.push("/category");
-    Notification.success("Đã cập nhật sản phẩm thành công!");
+    const foundName = categories.some((item) => {
+      return item.name === data.name;
+    });
+    if (foundName === true) {
+      setDisabled(true);
+      Notification.error("Tên loại sản phẩm đã tồn tại");
+      console.log(foundName);
+    } else {
+      dispatch(CategoryUpdateAction(data));
+      history.push("/category");
+      Notification.success("Đã cập nhật sản phẩm thành công!");
+    }
   };
 
   return (
@@ -106,6 +128,7 @@ const EditCategory = () => {
                   defaultValue={category.name}
                   fullWidth
                   name="name"
+                  onChange={handleChangeName}
                   inputRef={register({ required: true })}
                 />
                 {errors.name && (
@@ -120,6 +143,7 @@ const EditCategory = () => {
             </Grid>
 
             <Button
+              disabled={disabled}
               type="submit"
               color="primary"
               variant="contained"
