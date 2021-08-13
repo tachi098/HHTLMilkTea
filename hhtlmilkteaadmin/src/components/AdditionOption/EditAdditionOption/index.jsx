@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import React from "react";
-import { CategoryUpdateAction } from "../../../store/actions/CategoryAction";
+import { AdditionOptionUpdateAction } from "../../../store/actions/AdditionOptionAction";
 import { useHistory, useLocation } from "react-router-dom";
 import Notification from "./../../../common/Notification";
 
@@ -62,16 +62,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditCategory = () => {
+const EditAdditionOption = () => {
   const classes = useStyles();
 
   const history = useHistory();
 
   const location = useLocation();
 
-  const [category] = useState(location.state.category);
+  const [additionOption] = useState(location.state.additionOption);
 
-  const { categories } = useSelector((state) => state.category);
+  const { additionOptions } = useSelector((state) => state.additionOption);
 
   const {
     register,
@@ -82,23 +82,24 @@ const EditCategory = () => {
 
   const dispatch = useDispatch();
 
-  // Update Category
+  // Update Addition Option
   const onSubmit = (data) => {
-    const foundName = categories.some((item) => {
+    const foundName = additionOptions.some((item) => {
       return item.name === data.name;
     });
-    if (getValues("name") !== category.name) {
+
+    if (getValues("name") !== additionOption.name) {
       if (foundName === true) {
-        Notification.error("Tên loại sản phẩm đã tồn tại");
+        Notification.error("Tên Topping đã tồn tại");
       } else {
-        dispatch(CategoryUpdateAction(data));
-        history.push("/category");
-        Notification.success("Đã cập nhật sản phẩm thành công!");
+        dispatch(AdditionOptionUpdateAction(data));
+        history.push("/addition");
+        Notification.success("Đã cập nhật Topping thành công!");
       }
     } else {
-      dispatch(CategoryUpdateAction(data));
-      history.push("/category");
-      Notification.success("Đã cập nhật sản phẩm thành công!");
+      dispatch(AdditionOptionUpdateAction(data));
+      history.push("/addition");
+      Notification.success("Đã cập nhật Topping thành công!");
     }
   };
 
@@ -106,20 +107,20 @@ const EditCategory = () => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Typography variant="h4">Cập nhật loại sản phẩm</Typography>
+          <Typography variant="h4">Cập nhật Topping</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item md={8} xs={12}>
                 <TextField
                   name="id"
                   inputRef={register()}
-                  defaultValue={category.id}
+                  defaultValue={additionOption.id}
                   style={{ display: "none" }}
                 />
                 <TextField
-                  label="Nhập tên loại sản phẩm"
+                  label="Nhập tên Topping"
                   style={{ marginTop: 10 }}
-                  defaultValue={category.name}
+                  defaultValue={additionOption.name}
                   fullWidth
                   name="name"
                   inputRef={register({ required: true })}
@@ -129,7 +130,25 @@ const EditCategory = () => {
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Nhập tên loại sản phẩm
+                    Nhập tên Topping
+                  </FormHelperText>
+                )}
+
+                <TextField
+                  label="Nhập tên Topping"
+                  style={{ marginTop: 10 }}
+                  defaultValue={additionOption.price}
+                  fullWidth
+                  name="price"
+                  type="number"
+                  inputRef={register({ required: true })}
+                />
+                {errors.price && (
+                  <FormHelperText
+                    style={{ color: "red" }}
+                    id="component-error-text"
+                  >
+                    Nhập Giá Topping
                   </FormHelperText>
                 )}
               </Grid>
@@ -150,4 +169,4 @@ const EditCategory = () => {
   );
 };
 
-export default EditCategory;
+export default EditAdditionOption;
