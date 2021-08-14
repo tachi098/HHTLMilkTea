@@ -4,14 +4,14 @@ import { LocalShippingOutlined, DeleteOutline, Visibility } from "@material-ui/i
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useDispatch, useSelector } from "react-redux";
-import { HistoryListProcess, HistoryListSuccess, HistoryListFail } from "../../../store/actions/HistoryAction";
+import { OrderListProcess, OrderListSuccess, OrderListFail } from "../../store/actions/OrderAction";
 import { Pagination } from '@material-ui/lab';
-import TableHeader from "../../TableHeader";
+import TableHeader from "../TableHeader";
 import moment from "moment";
 import { useHistory } from "react-router";
 import { confirmAlert } from 'react-confirm-alert';
-import Notification from "./../../../common/Notification";
-import { OrderStatusUpdate } from "../../../store/actions/HistoryAction";
+import Notification from "./../../common/Notification";
+import { OrderStatusUpdate } from "../../store/actions/OrderAction";
 import BarCode from "react-barcode";
 
 const useStyles = makeStyles((theme) => ({
@@ -110,7 +110,7 @@ function TabPanel(props) {
     );
 }
 
-const History = () => {
+const Order = () => {
     const classes = useStyles();
     const [valueTab, setValueTab] = React.useState(0);
 
@@ -169,8 +169,7 @@ const History = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const { customer } = useSelector((state) => state.customer);
-    const { listProcess, totalPagesProcess, listSuccess, totalPagesSuccess, listFail, totalPagesFail } = useSelector((state) => state.history);
+    const { listProcess, totalPagesProcess, listSuccess, totalPagesSuccess, listFail, totalPagesFail } = useSelector((state) => state.order);
     const [pageProcess, setPageProcess] = useState(1);
     const [pageSuccess, setPageSuccess] = useState(1);
     const [pageFail, setPageFail] = useState(1);
@@ -185,33 +184,30 @@ const History = () => {
     const [pageSizeFail, setPageSizeFail] = useState(3);
     useEffect(() => {
         dispatch(
-            HistoryListProcess({
+            OrderListProcess({
                 page: pageProcess,
                 sortField: valueToOrderByProcess,
                 sortDir: valueToSortDirProcess,
-                id: customer.id,
                 pageSize: pageSizeProcess,
             })
         );
         dispatch(
-            HistoryListSuccess({
+            OrderListSuccess({
                 page: pageSuccess,
                 sortField: valueToOrderBySuccess,
                 sortDir: valueToSortDirSuccess,
-                id: customer.id,
                 pageSize: pageSizeSuccess,
             })
         );
         dispatch(
-            HistoryListFail({
+            OrderListFail({
                 page: pageFail,
                 sortField: valueToOrderByFail,
                 sortDir: valueToSortDirFail,
-                id: customer.id,
                 pageSize: pageSizeFail,
             })
         );
-    }, [dispatch, pageProcess, pageSuccess, pageFail, valueToOrderByProcess, valueToOrderBySuccess, valueToOrderByFail, valueToSortDirProcess, valueToSortDirSuccess, valueToSortDirFail, pageSizeProcess, pageSizeSuccess, pageSizeFail, customer.id]);
+    }, [dispatch, pageProcess, pageSuccess, pageFail, valueToOrderByProcess, valueToOrderBySuccess, valueToOrderByFail, valueToSortDirProcess, valueToSortDirSuccess, valueToSortDirFail, pageSizeProcess, pageSizeSuccess, pageSizeFail]);
 
     const handleRequestSortProcess = (property) => {
         const isAscending =
@@ -299,7 +295,7 @@ const History = () => {
                     ĐƠN HÀNG
                 </Typography>
                 <Typography className={classes.title}>
-                    Quản lý các đơn hàng của bạn
+                    Quản lý các đơn hàng
                 </Typography>
             </div>
 
@@ -402,7 +398,7 @@ const History = () => {
                                                                 cursor: "pointer",
                                                                 marginRight: 10,
                                                             }}
-                                                            onClick={() => history.push("/account/history/detail", { order: order })}
+                                                            onClick={() => history.push("/order/detail", { order: order })}
                                                         />
                                                         {order.status === 1 && order.payment === 1 && (
                                                             <DeleteOutline
@@ -517,7 +513,7 @@ const History = () => {
                                                                 cursor: "pointer",
                                                                 marginRight: 10,
                                                             }}
-                                                            onClick={() => history.push("/account/history/detail", { order: order })}
+                                                            onClick={() => history.push("/order/detail", { order: order })}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
@@ -624,7 +620,7 @@ const History = () => {
                                                                 cursor: "pointer",
                                                                 marginRight: 10,
                                                             }}
-                                                            onClick={() => history.push("/account/history/detail", { order: order })}
+                                                            onClick={() => history.push("/order/detail", { order: order })}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
@@ -651,7 +647,7 @@ const History = () => {
                 </div>
             </TabPanel>
         </React.Fragment >
-    )
-}
+    );
+};
 
-export default History
+export default Order;
