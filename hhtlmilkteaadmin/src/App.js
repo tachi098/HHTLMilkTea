@@ -31,6 +31,10 @@ const AdditionOption = React.lazy(() => import("./components/AdditionOption"));
 const CreateAdditionOption = React.lazy(() => import("./components/AdditionOption/CreateAdditionOption"));
 const EditAdditionOption = React.lazy(() => import("./components/AdditionOption/EditAdditionOption"));
 
+const SizeOption = React.lazy(() => import("./components/SizeOption"));
+const AddSizeOption = React.lazy(() => import("./components/SizeOption/AddSizeOption"));
+const EditSizeOption = React.lazy(() => import("./components/SizeOption/EditSizeOption"));
+
 const DetailUser = React.lazy(() => import("./components/User/DetailUser"));
 
 const App = () => {
@@ -99,6 +103,16 @@ const App = () => {
             </PrivateRoute>
             <PrivateRoute exact path={"/addition/edit"}>
               <EditAdditionOption />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={"/sizeoption"}>
+              <SizeOption />
+            </PrivateRoute>
+            <PrivateRoute exact path={"/sizeoption/add"}>
+              <AddSizeOption />
+            </PrivateRoute>
+            <PrivateRoute exact path={"/sizeoption/edit"}>
+              <EditSizeOption />
             </PrivateRoute>
 
             <PrivateRoute path={"/spinner"}>
