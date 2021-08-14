@@ -9514,6 +9514,11 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-wheel-of-prizes@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-wheel-of-prizes/-/react-wheel-of-prizes-1.0.8.tgz#dd2842935785eb217789674888f3403ff34320bc"
+  integrity sha512-DkSiIz0lmM7/0BbftjcA6vY+BSHg/pS5ADenQY75VPhbLLstRjOgE+wlPt6661ilMIYCUAyvABnCkw55hjvX8Q==
+
 react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"

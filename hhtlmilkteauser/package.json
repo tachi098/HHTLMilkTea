@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/lab": "^4.0.0-alpha.60",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -40,6 +39,7 @@
   "devDependencies": {
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.21.1",
     "emailjs-com": "^3.2.0",
@@ -52,6 +52,7 @@
     "react-responsive-carousel": "^3.2.20",
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
+    "react-wheel-of-prizes": "^1.0.8",
     "sass": "^1.37.0"
   }
 }

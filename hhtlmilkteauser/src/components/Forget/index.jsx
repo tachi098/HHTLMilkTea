@@ -63,7 +63,7 @@ const Forget = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [timeLeft, setTimeLeft] = useState(null);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState("");
   const [lock, setLock] = useState(false);
   const [lockButton, setLockButton] = useState(false);
   const [dataOld, setDataOld] = useState("");

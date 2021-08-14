@@ -18,6 +18,7 @@ const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
 const Account = React.lazy(() => import("./components/Account"));
 const Page404 = React.lazy(() => import("./components/Page404"));
 const Forget = React.lazy(() => import("./components/Forget"));
+const Spinner = React.lazy(() => import("./components/Spinner"));
 
 const App = () => {
   return (
@@ -60,6 +61,9 @@ const App = () => {
                 </Route>
                 <Route path={"/forget"} exact>
                   <Forget />
+                </Route>
+                <Route path={"/spinner"} exact>
+                  <Spinner />
                 </Route>
                 <Route path={"/milktea"} exact>
                   <Milktea />

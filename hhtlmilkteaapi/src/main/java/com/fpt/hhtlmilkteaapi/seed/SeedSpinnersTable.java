@@ -23,12 +23,12 @@ public class SeedSpinnersTable {
         if (count == 0) {
             // Insert Spinner
             Spinner spinner01 = new Spinner(1L,"Voucher", "#F0CF50");
-            Spinner spinner02 = new Spinner(2L,"10", "#EE4040");
+            Spinner spinner02 = new Spinner(2L,"1000", "#EE4040");
             Spinner spinner03 = new Spinner(3L,"May mắn lần sau", "#815CD1");
-            Spinner spinner04 = new Spinner(4L,"10", "#3DA5E0");
+            Spinner spinner04 = new Spinner(4L,"500", "#3DA5E0");
             Spinner spinner05 = new Spinner(5L,"Voucher", "#34A24F");
-            Spinner spinner06 = new Spinner(6L,"5", "#F9AA1F");
-            Spinner spinner07 = new Spinner(7L,"100", "#EC3F3F");
+            Spinner spinner06 = new Spinner(6L,"500", "#F9AA1F");
+            Spinner spinner07 = new Spinner(7L,"1500", "#EC3F3F");
             Spinner spinner08 = new Spinner(8L,"May mắn lần sau", "#FF9000");
 
             // Insert Data

@@ -49,18 +49,29 @@ const SignIn = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    dispatch(AuthLoginAction(data));
+    AuthLoginAction(data)(dispatch).then((res) => {
+      if (Object.is(401, res?.error)) {
+        setMessage("Tài khoản hoặc mật khẩu không đúng");
+        return;
+      }
+      if (res?.roles.includes("ROLE_ADMIN")) {
+        setMessage("Tài khoản hoặc mật khẩu không đúng");
+        return;
+      }
+      if (res?.roles.includes("ROLE_USER")) {
+        localStorage.setItem("user", JSON.stringify(auth.user));
+        history.push("/home");
+      }
+    });
   };
 
   useEffect(() => {
     if (auth.user) {
       if (Object.is(401, auth.user.error)) {
-        setMessage("Tài khoản hoặc mật khẩu không đúng");
         history.replace("/signin");
         return;
       }
       if (auth.user.roles.includes("ROLE_ADMIN")) {
-        setMessage("Tài khoản hoặc mật khẩu không đúng");
         history.replace("/signin");
         return;
       }
@@ -81,15 +92,17 @@ const SignIn = () => {
           Đăng nhập
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-          <FormHelperText
-            style={{
-              color: "red",
-              textAlign: "center",
-              textTransform: "uppercase",
-            }}
-          >
-            {message}
-          </FormHelperText>
+          {message && (
+            <FormHelperText
+              style={{
+                color: "red",
+                textAlign: "center",
+                textTransform: "uppercase",
+              }}
+            >
+              {message}
+            </FormHelperText>
+          )}
           <TextField
             variant="outlined"
             margin="normal"

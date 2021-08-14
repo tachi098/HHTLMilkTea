@@ -34,5 +34,7 @@ public class HhtlmilkteaapiApplication {
         SeedCodesTable.insertData();
         SeedVouchersTable.insertData();
         SeedSpinnersTable.insertData();
+
+        SeedWheelHistory.insertData();
     }
 }
