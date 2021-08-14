@@ -24,12 +24,14 @@ const MainListItems = () => {
           <ListItemText primary="Trang chủ" />
         </ListItem>
       </Link>
-      <ListItem button>
-        <ListItemIcon>
-          <ShoppingCartIcon style={{ marginLeft: 5 }} />
-        </ListItemIcon>
-        <ListItemText primary="Đơn hàng" />
-      </ListItem>
+      <Link to="/order" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <ShoppingCartIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Đơn hàng" />
+        </ListItem>
+      </Link>
 
       <Link to="/product" style={{ textDecoration: "none", color: "black" }}>
         <ListItem button>

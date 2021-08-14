@@ -1,4 +1,5 @@
 import DefaultLayout from "./components/layout/DefaultLayout";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CircularProgress, CssBaseline } from "@material-ui/core";
 import ScrollOnTop from "./common/ScrollOnTop";

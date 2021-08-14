@@ -5,6 +5,7 @@ import { Link, Route, Switch } from "react-router-dom";
 import Profile from "./Profile";
 import History from "./History";
 import Voucher from "./Voucher";
+import HistoryDetail from "./History/HistoryDetail";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -84,6 +85,7 @@ const Account = () => {
                     <Switch>
                         <Route path="/account" exact component={Profile} />
                         <Route path="/account/history" exact component={History} />
+                        <Route path="/account/history/detail" exact component={HistoryDetail} />
                         <Route path="/account/voucher" exact component={Voucher} />
                     </Switch>
                 </Grid>

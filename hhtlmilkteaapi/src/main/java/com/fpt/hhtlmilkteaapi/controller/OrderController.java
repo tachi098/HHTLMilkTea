@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
 import com.fpt.hhtlmilkteaapi.payload.request.OrderQuantityRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.OrderRequest;
+import com.fpt.hhtlmilkteaapi.payload.request.OrderStatusRequest;
+import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.CartResponse;
 import com.fpt.hhtlmilkteaapi.repository.IOrderDetailRepository;
 import com.fpt.hhtlmilkteaapi.repository.IOrderRepository;
@@ -190,13 +192,18 @@ public class OrderController {
             @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam long id
+            @RequestParam(defaultValue = "-1") long id
     ) {
 
         Pageable pageable = PageRequest.of(
                 page - 1, pageSize,
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
+
+        if(id == -1){
+            Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(1, 2), pageable);
+            return ResponseEntity.ok(orders);
+        }
 
         Optional<User> user =  userRepository.findById(id);
 
@@ -212,13 +219,18 @@ public class OrderController {
             @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam long id
+            @RequestParam(defaultValue = "-1") long id
     ) {
 
         Pageable pageable = PageRequest.of(
                 page - 1, pageSize,
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
+
+        if(id == -1){
+            Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(3), pageable);
+            return ResponseEntity.ok(orders);
+        }
 
         Optional<User> user =  userRepository.findById(id);
 
@@ -234,13 +246,18 @@ public class OrderController {
             @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam long id
+            @RequestParam(defaultValue = "-1") long id
     ) {
 
         Pageable pageable = PageRequest.of(
                 page - 1, pageSize,
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
+
+        if(id == -1){
+            Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(4), pageable);
+            return ResponseEntity.ok(orders);
+        }
 
         Optional<User> user =  userRepository.findById(id);
 
@@ -254,7 +271,7 @@ public class OrderController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateQuantity(
             @RequestBody OrderQuantityRequest orderQuantityRequest
-            ){
+    ){
         CartResponse cartResponse = new CartResponse();
         OrderDetail orderDetail = orderDetailRepository.findById(orderQuantityRequest.getOrderDetailId()).get();
         Order order = orderRepository.findById(orderDetail.getOrderId().getId()).get();
@@ -313,5 +330,23 @@ public class OrderController {
         cartResponse.setOrder(order);
         cartResponse.setQuantity(sum);
         return ResponseEntity.ok(cartResponse);
+    }
+
+    @PutMapping("/status")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateStatus(@RequestBody OrderStatusRequest orderStatusRequest) {
+
+        // Find user by username
+        Order order = orderRepository.findById(orderStatusRequest.getId()).get();
+
+        // Get status request
+        int status = orderStatusRequest.getStatus();
+
+        // Check status and process
+        order.setStatus(status);
+        order.setDeletedAt(new Date());
+        orderRepository.save(order);
+
+        return  ResponseEntity.ok(orderRepository.save(order));
     }
 }

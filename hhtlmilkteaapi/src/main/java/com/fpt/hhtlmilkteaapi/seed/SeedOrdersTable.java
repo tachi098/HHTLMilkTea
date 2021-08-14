@@ -37,7 +37,7 @@ public class SeedOrdersTable {
             //Insert Order 2
             Order order02 = new Order("O0882021035830","Binh Thanh, Ho Chi Minh", "0123456789", 1, 4, "Không thêm đường", 50, user01, 50000);
             //Insert Order 3
-            Order order03 = new Order("O0882021035831","Binh Thanh, Ho Chi Minh", "0123456789", 1, 1, "Không thêm đường", 50, user01, 50000);
+            Order order03 = new Order("O0882021035831","Binh Thanh, Ho Chi Minh", "0123456789", 1, 1, "Không thêm đường", 50, user01, 130000);
             //Insert Order 4
             Order order04 = new Order("O0882021035832","Binh Thanh, Ho Chi Minh", "0123456789", 2, 2, "Không thêm đường", 50, user01, 50000);
             //Insert Order 5

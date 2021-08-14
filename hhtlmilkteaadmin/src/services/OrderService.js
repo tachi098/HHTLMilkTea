@@ -1,6 +1,6 @@
 import api from "./../common/APIClient";
 
-class HistoryService {
+class OrderService {
     listProcess = (query) => {
         return api.get("/order/listProcess", { params: query });
     };
@@ -18,4 +18,4 @@ class HistoryService {
     };
 }
 
-export default new HistoryService();
+export default new OrderService();

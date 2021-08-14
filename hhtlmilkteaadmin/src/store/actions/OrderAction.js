@@ -1,9 +1,9 @@
-import { getListProcess, getListFail, getListSuccess, onStatus } from "./../reducers/HistoryReducer";
-import HistoryService from "./../../services/HistoryService";
+import { getListProcess, getListFail, getListSuccess, onStatus } from "./../reducers/OrderReducer";
+import OrderService from "./../../services/OrderService";
 
-export const HistoryListProcess = (query) => async (dispatch) => {
+export const OrderListProcess = (query) => async (dispatch) => {
     try {
-        await HistoryService.listProcess(query)
+        await OrderService.listProcess(query)
             .then((res) => dispatch(getListProcess(res.data)))
             .catch((err) => console.error(err));
     } catch (error) {
@@ -11,9 +11,9 @@ export const HistoryListProcess = (query) => async (dispatch) => {
     }
 };
 
-export const HistoryListSuccess = (query) => async (dispatch) => {
+export const OrderListSuccess = (query) => async (dispatch) => {
     try {
-        await HistoryService.listSuccess(query)
+        await OrderService.listSuccess(query)
             .then((res) => dispatch(getListSuccess(res.data)))
             .catch((err) => console.error(err));
     } catch (error) {
@@ -21,9 +21,9 @@ export const HistoryListSuccess = (query) => async (dispatch) => {
     }
 };
 
-export const HistoryListFail = (query) => async (dispatch) => {
+export const OrderListFail = (query) => async (dispatch) => {
     try {
-        await HistoryService.listFail(query)
+        await OrderService.listFail(query)
             .then((res) => dispatch(getListFail(res.data)))
             .catch((err) => console.error(err));
     } catch (error) {
@@ -33,7 +33,7 @@ export const HistoryListFail = (query) => async (dispatch) => {
 
 export const OrderStatusUpdate = (data) => async (dispatch) => {
     try {
-        await HistoryService.updateStatus(data)
+        await OrderService.updateStatus(data)
             .then((res) => dispatch(onStatus(res.data)))
             .catch((err) => console.error(err));
     } catch (error) {

@@ -36,6 +36,8 @@ const AddSizeOption = React.lazy(() => import("./components/SizeOption/AddSizeOp
 const EditSizeOption = React.lazy(() => import("./components/SizeOption/EditSizeOption"));
 
 const DetailUser = React.lazy(() => import("./components/User/DetailUser"));
+const Order = React.lazy(() => import("./components/Order"));
+const DetailOrder = React.lazy(() => import("./components/Order/DetailOrder"));
 
 const App = () => {
   return (
@@ -113,6 +115,13 @@ const App = () => {
             </PrivateRoute>
             <PrivateRoute exact path={"/sizeoption/edit"}>
               <EditSizeOption />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={"/order"}>
+              <Order />
+            </PrivateRoute>
+            <PrivateRoute exact path={"/order/detail"}>
+              <DetailOrder/>
             </PrivateRoute>
 
             <PrivateRoute path={"/spinner"}>
