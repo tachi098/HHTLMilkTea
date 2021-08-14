@@ -9,6 +9,7 @@ import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import { Euro, FormatAlignCenter } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import LoupeIcon from "@material-ui/icons/Loupe";
+import LocalDrinkIcon from "@material-ui/icons/LocalDrink";
 import { Link } from "react-router-dom";
 import { Divider } from "@material-ui/core";
 
@@ -54,6 +55,15 @@ const MainListItems = () => {
             <LoupeIcon style={{ marginLeft: 5 }} />
           </ListItemIcon>
           <ListItemText primary="Thêm Topping" />
+        </ListItem>
+      </Link>
+
+      <Link to="/sizeoption" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <LocalDrinkIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Thêm Size" />
         </ListItem>
       </Link>
 
