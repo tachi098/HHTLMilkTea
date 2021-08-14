@@ -3,11 +3,9 @@ import { login, logout } from "../reducers/AuthReducer";
 
 export const AuthLoginAction = (data) => async (dispatch) => {
   try {
-    await AuthService.login(data)
-      .then((response) =>
-        dispatch(login(response !== undefined ? response.data : { error: 401 }))
-      )
-      .catch((error) => console.error(error));
+    const res = await AuthService.login(data);
+    dispatch(login(res !== undefined ? res.data : { error: 401 }));
+    return res !== undefined ? res.data : { error: 401 };
   } catch (error) {
     console.error(error);
   }

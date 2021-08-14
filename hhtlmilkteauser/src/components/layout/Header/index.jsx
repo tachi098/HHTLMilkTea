@@ -205,8 +205,6 @@ const Header = () => {
     </div>
   );
 
-
-
   return (
     <AppBar style={{ backgroundColor: "white" }}>
       <Toolbar className={classes.toolbar}>
@@ -232,7 +230,11 @@ const Header = () => {
         />
         <img src={logo} alt="Milktea" width={50} loading="lazy" />
         <div>
-          <Badge badgeContent={auth.user !== null ? quantity : 0} color="secondary" style={{ marginRight: 20 }}>
+          <Badge
+            badgeContent={auth.user !== null ? quantity : 0}
+            color="secondary"
+            style={{ marginRight: 20 }}
+          >
             <ShoppingCartIcon
               style={{ color: "#416c48" }}
               aria-owns={anchorEl ? "simple-menu" : undefined}
@@ -269,31 +271,46 @@ const Header = () => {
             >
               Giỏ hàng của bạn
             </MenuItem>
-            {(order?.orderDetails?.length > 0 && auth.user !== null) ? (
-              <MenuList style={{ overflowY: 'scroll', height: 300 }}>
+            {order?.orderDetails?.length > 0 && auth.user !== null ? (
+              <MenuList style={{ overflowY: "scroll", height: 300 }}>
                 {order?.orderDetails?.map((item) => (
-                  <MenuItem style={{ display: 'flex', backgroundColor: "transparent", paddingLeft: 20, paddingRight: 20 }} key={item.id}>
-                    <img alt={item.product.name} src={item.product.linkImage} width={50} />
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ color: '#416C48' }}>{item.product.name}(Số lượng: {item.quantity})</span>
-                      <span style={{ color: 'red', fontSize: 10 }}>{item.sizeOptionId}:{item.addOptionId}</span>
+                  <MenuItem
+                    style={{
+                      display: "flex",
+                      backgroundColor: "transparent",
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                    }}
+                    key={item.id}
+                  >
+                    <img
+                      alt={item.product.name}
+                      src={item.product.linkImage}
+                      width={50}
+                    />
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <span style={{ color: "#416C48" }}>
+                        {item.product.name}(Số lượng: {item.quantity})
+                      </span>
+                      <span style={{ color: "red", fontSize: 10 }}>
+                        {item.sizeOptionId}:{item.addOptionId}
+                      </span>
                     </div>
                   </MenuItem>
                 ))}
               </MenuList>
-            )
-              : (
-                <MenuItem
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    color: "red",
-                    backgroundColor: "transparent",
-                  }}
-                >
-                  Không có sản phẩm nào
-                </MenuItem>
-              )}
+            ) : (
+              <MenuItem
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  color: "red",
+                  backgroundColor: "transparent",
+                }}
+              >
+                Không có sản phẩm nào
+              </MenuItem>
+            )}
             <MenuItem
               style={{
                 display: "flex",
@@ -334,7 +351,7 @@ const Header = () => {
                         <Avatar
                           alt="Avatar"
                           className={classes.small}
-                          src={customer.linkImage ?? logo}
+                          src={customer?.linkImage ?? logo}
                           style={{ marginRight: 10 }}
                         />
                       </StyledBadge>
@@ -448,7 +465,7 @@ const Header = () => {
           </Link>
         </Menu>
       </Toolbar>
-    </AppBar >
+    </AppBar>
   );
 };
 

@@ -43,7 +43,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit, errors, watch } = useForm();
   const { user } = useSelector((state) => state.auth);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState("");
   const password = useRef({});
   password.current = watch("password", "");
 
