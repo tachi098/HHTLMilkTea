@@ -128,7 +128,7 @@ const Forget = () => {
         setMessage("");
         setLock(true);
         setLockButton(true);
-        setTimeLeft(5);
+        setTimeLeft(10);
         localStorage.setItem("reset-pass", new Date().getTime());
 
         const emailGenerate = Object.is(dataOld, "")

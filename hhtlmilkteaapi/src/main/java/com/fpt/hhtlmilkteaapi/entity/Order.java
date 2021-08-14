@@ -43,6 +43,9 @@ public class Order implements Serializable {
     @ColumnDefault("0")
     private long memberVip;
 
+    @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
+    private int notification;
+
     @CreationTimestamp
     private Date createdAt;
 
