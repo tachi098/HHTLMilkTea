@@ -178,7 +178,9 @@ public class UserController {
             products.add(productRepository.findById(wl.getProductId()).get());
         }
 
+
         wishlistResponse.setProducts(products);
+        wishlistResponse.setQuantity(products.size());
         userReponse.setUser(user);
         userReponse.setWishlistResponse(wishlistResponse);
 

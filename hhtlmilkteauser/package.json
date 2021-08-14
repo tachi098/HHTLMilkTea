@@ -46,6 +46,7 @@
     "history": "^5.0.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
+    "react-barcode": "^1.4.0",
     "react-hook-form": "6.15.8",
     "react-moment": "^1.1.1",
     "react-redux": "^7.2.4",

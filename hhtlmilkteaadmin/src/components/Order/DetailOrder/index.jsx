@@ -11,9 +11,9 @@ import { useHistory, useLocation } from "react-router";
 import BarCode from "react-barcode";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { OrderStatusUpdate } from "../../../../store/actions/HistoryAction";
+import { OrderStatusUpdate } from "../../../store/actions/OrderAction";
 import { confirmAlert } from "react-confirm-alert";
-import Notification from "./../../../../common/Notification";
+import Notification from "./../../../common/Notification";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -103,7 +103,7 @@ const HistoryDetail = () => {
     const history = useHistory();
     const handleOnDelete = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 4 }));
-        history.push("/account/history/")
+        history.push("/order/")
         Notification.success("Đã hủy thành công");
     };
 
@@ -250,15 +250,13 @@ const HistoryDetail = () => {
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
-                                    onClick={() => history.push("/account/history")}
+                                    onClick={() => history.push("/order")}
                                 >
                                     Quay lại
                                 </Button>
                             </Grid>
                         </Grid>
                     </React.Fragment>
-
-
                 </Paper>
             </main>
         </React.Fragment>

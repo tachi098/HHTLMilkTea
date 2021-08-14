@@ -6,9 +6,11 @@ import CategoryReducer from "./reducers/CategoryReducer";
 import AdditionOptionReducer from "./reducers/AdditionOptionReducer";
 import SizeOptionReducer from "./reducers/SizeOptionReducer";
 import ProductReducer from "./reducers/ProductReducer";
+import OrderReducer from "./reducers/OrderReducer"
 
 const store = configureStore({
   reducer: {
+    order: OrderReducer,
     spinner: SpinnerReducer,
     auth: AuthReducer,
     user: UserReducer,

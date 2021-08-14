@@ -9,8 +9,8 @@ const initialState = {
     totalPagesFail: 1
 };
 
-const HistorySlice = createSlice({
-    name: "user",
+const OrderSlice = createSlice({
+    name: "order",
     initialState,
     reducers: {
         getListProcess: (state, action) => {
@@ -28,12 +28,13 @@ const HistorySlice = createSlice({
         onStatus: (state, action) => {
             const order = state.listProcess.find((o) => o.id === action.payload.id);
             order.status = action.payload.status;
+            console.log(order);
             state.listProcess = state.listProcess.filter((o) => o.id !== action.payload.id);
             state.listFail.push(order);
         },
     },
 });
 
-const { reducer, actions } = HistorySlice;
+const { reducer, actions } = OrderSlice;
 export const { getListProcess, getListSuccess, getListFail, onStatus } = actions;
 export default reducer;

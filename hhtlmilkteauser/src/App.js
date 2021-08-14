@@ -1,4 +1,5 @@
 import DefaultLayout from "./components/layout/DefaultLayout";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CircularProgress, CssBaseline } from "@material-ui/core";
 import ScrollOnTop from "./common/ScrollOnTop";
@@ -19,6 +20,7 @@ const Account = React.lazy(() => import("./components/Account"));
 const Page404 = React.lazy(() => import("./components/Page404"));
 const Forget = React.lazy(() => import("./components/Forget"));
 const Spinner = React.lazy(() => import("./components/Spinner"));
+const Wishlist = React.lazy(() => import("./components/Wishlist"));
 
 const App = () => {
   return (
@@ -77,8 +79,13 @@ const App = () => {
                 <PrivateRoute path={"/checkout"}>
                   <Checkout />
                 </PrivateRoute>
+
                 <PrivateRoute path={"/shoppingcart"}>
                   <ShoppingCart />
+                </PrivateRoute>
+
+                <PrivateRoute path={"/wishlist"}>
+                  <Wishlist />
                 </PrivateRoute>
 
                 <Route path="/*">
