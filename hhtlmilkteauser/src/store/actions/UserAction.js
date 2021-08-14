@@ -1,6 +1,7 @@
 import UserService from "../../services/UserService";
+import WishlistService from "../../services/WishlistService";
 import {
-  userbyusername, profileUpdate
+  userbyusername, profileUpdate, updateWishlist, deleteProductWishlist
 } from "../reducers/UserReducer";
 
 export const UserFindByUsernameAction = (query) => async (dispatch) => {
@@ -34,5 +35,29 @@ export const updateProfile = (data) => async (dispatch) => {
       .catch(err => console.error(err));
   } catch (e) {
     return console.error(e);
+  }
+};
+
+export const udpateWishlist = (data) => async (dispatch) => {
+  try {
+    await WishlistService.add(data)
+      .then((response) =>
+        dispatch(updateWishlist(response.data))
+      )
+      .catch((error) => console.error(error));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteWishlist = (data) => async (dispatch) => {
+  try {
+    await WishlistService.update(data)
+      .then((response) =>
+        dispatch(deleteProductWishlist(response.data))
+      )
+      .catch((error) => console.error(error));
+  } catch (error) {
+    console.error(error);
   }
 };

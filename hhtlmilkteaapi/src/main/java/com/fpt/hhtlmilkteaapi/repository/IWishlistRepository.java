@@ -11,4 +11,5 @@ public interface IWishlistRepository extends JpaRepository<Wishlist, Long> {
 
     List<Wishlist> findAllByUserId(long userId);
 
+    Wishlist findByProductIdAndUserId(String productId, long userId);
 }

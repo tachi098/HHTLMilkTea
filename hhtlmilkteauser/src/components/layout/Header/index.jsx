@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AuthLogoutAction } from "./../../../store/actions/AuthAction";
 import { UserFindByUsernameAction } from "./../../../store/actions/UserAction";
 import { OrderFindAction } from "../../../store/actions/OrderAction";
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -128,7 +129,7 @@ const Header = () => {
   const [anchorElSearch, setAnchorElSearch] = useState(null);
   const [anchorElAccount, setAnchorElAccount] = useState(null);
 
-  const { customer } = useSelector((state) => state.customer);
+  const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order)
 
   useEffect(() => {
@@ -240,6 +241,16 @@ const Header = () => {
               onMouseOver={handleClick}
             />
           </Badge>
+
+          <Badge badgeContent={auth.user !== null ? wishlist.quantity : 0} color="secondary" style={{ marginRight: 20 }}>
+            <FavoriteIcon
+              style={{ color: "#416c48", cursor: "pointer" }}
+              aria-owns={anchorEl ? "simple-menu" : undefined}
+              aria-haspopup="true"
+              onClick={() => history.push("/wishlist")}
+            />
+          </Badge>
+
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}

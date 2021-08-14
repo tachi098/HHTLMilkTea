@@ -3,7 +3,9 @@ import {
 } from "@reduxjs/toolkit";
 
 const initialState = {
-  customer: {}
+  customer: {},
+  wishlist: {},
+  error: {},
 };
 
 const userSlice = createSlice({
@@ -12,10 +14,17 @@ const userSlice = createSlice({
   reducers: {
     userbyusername: (state, action) => {
       state.customer = action.payload.user;
+      state.wishlist = action.payload.wishlistResponse;
     },
     profileUpdate: (state, action) => {
       state.customer = action.payload;
-    }
+    },
+    updateWishlist: (state, action) => {
+      state.wishlist = action.payload;
+    },
+    deleteProductWishlist: (state, action) => {
+      state.wishlist = action.payload;
+    },
   },
 });
 
@@ -25,6 +34,8 @@ const {
 } = userSlice;
 export const {
   userbyusername,
-  profileUpdate
+  profileUpdate,
+  updateWishlist,
+  deleteProductWishlist
 } = actions;
 export default reducer;

@@ -15,5 +15,5 @@ import java.util.List;
 public class WishlistResponse {
 
     private List<Product> products;
-
+    private int quantity;
 }
