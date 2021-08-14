@@ -3,19 +3,14 @@ package com.fpt.hhtlmilkteaapi.controller;
 import com.fpt.hhtlmilkteaapi.entity.*;
 import com.fpt.hhtlmilkteaapi.payload.request.WheelHistoryRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.WheelHistoryResponse;
-import com.fpt.hhtlmilkteaapi.repository.ICodeRepository;
-import com.fpt.hhtlmilkteaapi.repository.IMemberVipRepository;
-import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
-import com.fpt.hhtlmilkteaapi.repository.IWheelHistoryRepository;
+import com.fpt.hhtlmilkteaapi.payload.response.WishlistResponse;
+import com.fpt.hhtlmilkteaapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,6 +28,12 @@ public class WheelHistoryController {
 
     @Autowired
     private ICodeRepository codeRepository;
+
+    @Autowired
+    private IWishlistRepository wishlistRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('USER')")
@@ -83,6 +84,20 @@ public class WheelHistoryController {
         WheelHistoryResponse wheelHistoryResponse = new WheelHistoryResponse();
         wheelHistoryResponse.setUser(userRepository.findByUsername(historyRequest.getUsername()).get());
         wheelHistoryResponse.setWheelHistories(wheelHistories);
+
+
+        WishlistResponse wishlistResponse = new WishlistResponse();
+        // Get all wishlist
+        List<Wishlist> wishlists = wishlistRepository.findAllByUserId(historyRequest.getId());
+        List<Product> products = new ArrayList<>();
+
+        for(Wishlist wl : wishlists) {
+            products.add(productRepository.findById(wl.getProductId()).get());
+        }
+
+        wishlistResponse.setProducts(products);
+        wishlistResponse.setQuantity(products.size());
+        wheelHistoryResponse.setWishlistResponse(wishlistResponse);
 
         return ResponseEntity.ok(wheelHistoryResponse);
     }
