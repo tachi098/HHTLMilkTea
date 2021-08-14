@@ -93,6 +93,7 @@ const Spinner = () => {
 
     if (Object.is(winner, "Voucher")) {
       WheelCreateAction({
+        id: user.id,
         fullName: user.fullName,
         username: user.username,
         reward: "Nhận được mã Voucher",
@@ -101,6 +102,7 @@ const Spinner = () => {
       })(dispatch);
     } else if (!Object.is(winner, "Voucher")) {
       WheelCreateAction({
+        id: user.id,
         fullName: user.fullName,
         username: user.username,
         reward: `Nhận được ${winner} điểm`,

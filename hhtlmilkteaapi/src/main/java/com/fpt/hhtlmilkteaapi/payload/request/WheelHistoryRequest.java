@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class WheelHistoryRequest {
 
+    private long id;
     private String fullName;
     private String username;
     private String reward;

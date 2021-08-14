@@ -17,5 +17,6 @@ public class WheelHistoryResponse {
 
     private List<WheelHistory> wheelHistories;
     private User user;
+    private WishlistResponse wishlistResponse;
 
 }
