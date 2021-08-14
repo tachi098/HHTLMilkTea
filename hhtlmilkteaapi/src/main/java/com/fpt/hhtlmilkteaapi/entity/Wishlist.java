@@ -19,4 +19,9 @@ public class Wishlist implements Serializable {
 
     private long userId;
     private String productId;
+
+    public Wishlist(long userId, String productId) {
+        this.userId = userId;
+        this.productId = productId;
+    }
 }

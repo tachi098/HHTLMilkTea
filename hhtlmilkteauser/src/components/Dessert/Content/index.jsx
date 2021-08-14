@@ -10,6 +10,7 @@ import { ProductGetAll } from "./../../../store/actions/ProductAction"
 import popupBg from "./../../../assets/img/bg_popup.png"
 import { useForm } from "react-hook-form";
 import { OrderAddAction } from "../../../store/actions/OrderAction";
+import { udpateWishlist } from "../../../store/actions/UserAction";
 
 const useStyles = makeStyles((theme) => ({
     cardGrid: {
@@ -97,6 +98,13 @@ const useStyles = makeStyles((theme) => ({
             color: '#416c48',
         }
     },
+    iconWishListSelected: {
+        position: 'absolute',
+        marginLeft: '85%',
+        marginTop: '5%',
+        fontSize: 30,
+        color: '#416c48',
+    },
     itemTag: {
         backgroundColor: '#416c48',
         padding: '3px 18px',
@@ -173,6 +181,8 @@ const Content = () => {
 
     const [note, setNote] = useState("");
 
+    const { wishlist } = useSelector((state) => state.customer);
+
     const {
         handleSubmit,
     } = useForm();
@@ -204,8 +214,24 @@ const Content = () => {
         setNote("");
     };
 
-    const onHandleWishList = () => {
-        Notification.success("Đã thêm sản phẩm vào wishlist")
+    const onHandleWishList = (product) => {
+        if (auth.user) {
+            const userId = auth.user.id;
+            dispatch(udpateWishlist({ userId: userId, productId: product.id }));
+            Notification.success("Đã thêm sản phẩm vào wishlist");
+        } else {
+            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
+        }
+    }
+
+    const onHandleWishListSelected = (product) => {
+        if (auth.user) {
+            const userId = auth.user.id;
+            dispatch(udpateWishlist({ userId: userId, productId: product.id }));
+            Notification.warn("Đã xoá sản phẩm khỏi wishlist");
+        } else {
+            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
+        }
     }
 
     const onHandlePriceFilter = (e) => {
@@ -248,6 +274,7 @@ const Content = () => {
         data.sizeOption = "";
 
         dispatch(OrderAddAction(data));
+        setOpen(false);
         Notification.success("Đã thêm sản phẩm vào giỏ hàng")
     };
 
@@ -296,7 +323,11 @@ const Content = () => {
                                 {newProductId === product.id ? (
                                     <span className={classes.itemTag}>Món mới</span>
                                 ) : ""}
-                                <FavoriteIcon className={classes.iconWishList} style={{ cursor: 'pointer' }} onClick={onHandleWishList} />
+                                {
+                                    wishlist?.products?.length > 0 && wishlist?.products?.map(w => w.id).includes(product?.id) ?
+                                        (<FavoriteIcon className={classes.iconWishListSelected} style={{ cursor: 'pointer' }} onClick={() => onHandleWishListSelected(product)} />) :
+                                        (<FavoriteIcon className={classes.iconWishList} style={{ cursor: 'pointer' }} onClick={() => onHandleWishList(product)} />)
+                                }
                             </div>
                             <CardMedia
                                 className={classes.cardMedia}

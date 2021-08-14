@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useLocation, Redirect } from "react-router-dom";
 import BarCode from "react-barcode";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import Report from "./report";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,16 +74,21 @@ const DetailProduct = () => {
               </div>
             </Grid>
             <div className={classes.navButton}>
-              <Avatar
-                style={{
-                  cursor: "pointer",
-                  width: 50,
-                  height: 50,
-                  backgroundColor: "#FC8400",
-                }}
+              <PDFDownloadLink
+                document={<Report product={product} />}
+                fileName="report"
               >
-                <PictureAsPdfIcon style={{ fontSize: 30 }} />
-              </Avatar>
+                <Avatar
+                  style={{
+                    cursor: "pointer",
+                    width: 50,
+                    height: 50,
+                    backgroundColor: "#FC8400",
+                  }}
+                >
+                  <PictureAsPdfIcon style={{ fontSize: 30 }} />
+                </Avatar>
+              </PDFDownloadLink>
             </div>
           </Grid>
         </Grid>

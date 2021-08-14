@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     paper: {
+        minHeight: 400,
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
         padding: theme.spacing(2),
@@ -138,6 +139,7 @@ const ShoppingCart = () => {
                                     color="primary"
                                     className={classes.button}
                                     onClick={onHandleRedirectCheckout}
+                                    disabled={order?.orderDetails?.length > 0 ? false : true}
                                 >
                                     Đặt hàng
                                 </Button>

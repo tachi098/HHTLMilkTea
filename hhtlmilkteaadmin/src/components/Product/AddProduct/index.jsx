@@ -90,6 +90,9 @@ const AddProduct = () => {
         dispatch(SizeOptionAction());
     }, [dispatch]);
 
+    //state category
+    const [cateName, setCateName] = useState("default");
+
     // Create product
     const onSubmit = (data) => {
         data.categoryId = categories.find(c => c.name === data.categoryId);
@@ -267,6 +270,11 @@ const AddProduct = () => {
     //Backdrop
     const [openBD, setOpenBD] = React.useState(false);
 
+    //Category
+    const onHandleChangeCategory = (e) => {
+        setCateName(e.target.value);
+    }
+
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
@@ -307,6 +315,7 @@ const AddProduct = () => {
                                 <FormControl className={classes.formControl}>
                                     <InputLabel htmlFor="uncontrolled-native">Loại sản phẩm</InputLabel>
                                     <NativeSelect
+                                        onChange={onHandleChangeCategory}
                                         defaultValue={0}
                                         name="categoryId"
                                         error={errors.categoryId?.message && true}
@@ -350,7 +359,13 @@ const AddProduct = () => {
                                             }
                                         </div>
                                     </div>
-                                    <Button color="primary" variant="contained" onClick={(handleOpenAddSize)}>Thêm kích thước</Button>
+                                    <Button
+                                        disabled={(Object.is(cateName, "default") || Object.is(cateName, "Snack") || Object.is(cateName, "Product")) ? true : false}
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={(handleOpenAddSize)}>
+                                        Thêm kích thước
+                                    </Button>
                                 </div>
 
 
@@ -375,7 +390,14 @@ const AddProduct = () => {
                                             }
                                         </div>
                                     </div>
-                                    <Button color="primary" variant="contained" onClick={(handleOpenAdd)}>Thêm topping</Button>
+                                    <Button
+                                        disabled={(Object.is(cateName, "default") || Object.is(cateName, "Snack") || Object.is(cateName, "Product")) ? true : false}
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={(handleOpenAdd)}
+                                    >
+                                        Thêm topping
+                                    </Button>
                                 </div>
                             </Grid>
 

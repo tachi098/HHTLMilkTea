@@ -1,19 +1,63 @@
-import { Grid, Button, Card, CardActions, CardContent, CardMedia, makeStyles, Typography, Container, FormControl, NativeSelect, TextField, Dialog, DialogContent } from "@material-ui/core"
-import productImg from "./../../../assets/img/product.png"
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import { useEffect, useState } from "react";
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Notification from "./../../../common/Notification";
-import { useDispatch, useSelector } from "react-redux";
-import { ProductGetAll } from "./../../../store/actions/ProductAction"
-import popupBg from "./../../../assets/img/bg_popup.png"
-import { useForm } from "react-hook-form";
-import { CategoryListAction } from "../../../store/actions/CategoryAction";
-import { OrderAddAction } from "../../../store/actions/OrderAction";
-import { udpateWishlist } from "../../../store/actions/UserAction";
+import React, { useState } from 'react';
+import productImg from "./../../assets/img/product.png"
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { Button, CardMedia, CssBaseline, Dialog, DialogContent, Grid, TextField, Typography } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { DeleteOutline, ShoppingCartRounded } from '@material-ui/icons';
+import { deleteWishlist } from '../../store/actions/UserAction';
+import { OrderAddAction } from '../../store/actions/OrderAction';
+import { useForm } from 'react-hook-form';
+import popupBg from "./../../assets/img/bg_popup.png"
+import Notification from '../../common/Notification';
 
 const useStyles = makeStyles((theme) => ({
+    table: {
+        minWidth: 700,
+    },
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
+            width: 1000,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+        [theme.breakpoints.down('xs')]: {
+            width: 400,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    paper: {
+        minHeight: 400,
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+        padding: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+            marginTop: theme.spacing(6),
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(3),
+        },
+    },
+    btnCount: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        paddingTop: 14,
+        color: '#3250a8'
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
     cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
@@ -69,13 +113,6 @@ const useStyles = makeStyles((theme) => ({
         padding: 3,
         backgroundColor: '#1db4ff',
         outline: 'none',
-    },
-    btnCount: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        fontSize: 24,
-        paddingTop: 5
     },
     searchItem: {
         display: 'flex',
@@ -161,19 +198,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Content = () => {
+const Wishlist = () => {
     const classes = useStyles();
-    const [open, setOpen] = useState(false);
-
-    const { products, newProductId } = useSelector((state) => state.product);
-
-    const [valueCategory, setValueCategory] = useState("");
-    const [valueToOrderBy, setValueToOrderBy] = useState("id");
-    const [valueToSortDir, setValueToSortDir] = useState("desc");
-    const [keyword, setKeyword] = useState("");
-    const [name, setName] = useState("")
     const dispatch = useDispatch();
-    const { categories } = useSelector((state) => state.category);
+    const { wishlist } = useSelector((state) => state.customer)
+    const auth = useSelector((state) => state.auth);
+    const [open, setOpen] = useState(false);
 
     const [productSelect, setProductSelect] = useState("");
 
@@ -189,25 +219,9 @@ const Content = () => {
 
     const [size, setSize] = useState([]);
 
-    const auth = useSelector((state) => state.auth);
-
-    const { wishlist } = useSelector((state) => state.customer);
-
     const {
         handleSubmit,
     } = useForm();
-
-    useEffect(() => {
-        dispatch(CategoryListAction());
-        dispatch(
-            ProductGetAll({
-                cateName: valueCategory,
-                sortField: valueToOrderBy,
-                sortDir: valueToSortDir,
-                keyword,
-            })
-        );
-    }, [dispatch, valueToOrderBy, valueToSortDir, keyword, valueCategory]);
 
     const handleClickOpen = (item) => {
         if (auth.user) {
@@ -229,51 +243,8 @@ const Content = () => {
         setNote("");
     };
 
-    const onHandleWishList = (product) => {
-        if (auth.user) {
-            const userId = auth.user.id;
-            dispatch(udpateWishlist({ userId: userId, productId: product.id }));
-            Notification.success("Đã thêm sản phẩm vào wishlist");
-        } else {
-            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
-        }
-    }
-
-    const onHandleWishListSelected = (product) => {
-        if (auth.user) {
-            const userId = auth.user.id;
-            dispatch(udpateWishlist({ userId: userId, productId: product.id }));
-            Notification.warn("Đã xoá sản phẩm khỏi wishlist");
-        } else {
-            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
-        }
-    }
-
-    const onHandleCateFilter = (e) => {
-        setKeyword("");
-        if ("default" !== e.target.value) {
-            setValueCategory(e.target.value);
-        } else {
-            setValueCategory("");
-            setValueToSortDir("desc");
-            setValueToOrderBy("id");
-        }
-    }
-
-    const onHandlePriceFilter = (e) => {
-        setKeyword("");
-        if ("default" !== e.target.value) {
-            setValueToSortDir(e.target.value);
-            setValueToOrderBy("price");
-        } else {
-            setValueToSortDir("asc");
-            setValueToOrderBy("id");
-        }
-    }
-
-    const onHandleSearchKeyword = e => {
-        e.preventDefault();
-        setKeyword(name)
+    const onHandleDelete = (id) => {
+        dispatch(deleteWishlist({ userId: auth.user.id, productId: id }))
     }
 
     const onHandleNote = e => {
@@ -311,125 +282,85 @@ const Content = () => {
     const onSubmit = (data) => {
         data.product = JSON.stringify(productSelect);
         data.userId = auth.user.id;
-        data.sizeOption = selectedSize.name;
+        data.sizeOption = selectedSize?.name ? selectedSize.name : "";
         data.quantity = count;
 
-        const result = selectedAdd.map(a => a.name).sort();
-        var temp = "";
-        for (let i = 0; i < result.length; i++) {
-            if (Object.is(i, 0)) {
-                temp = temp.concat(result[i]);
-            } else {
-                temp = temp.concat(", " + result[i]);
+        if (selectedAdd?.length > 0) {
+            const result = selectedAdd.map(a => a.name).sort();
+            var temp = "";
+            for (let i = 0; i < result.length; i++) {
+                if (Object.is(i, 0)) {
+                    temp = temp.concat(result[i]);
+                } else {
+                    temp = temp.concat(", " + result[i]);
+                }
             }
+
+            data.additionOption = temp;
+        } else {
+            data.additionOption = ""
         }
 
-        data.additionOption = temp;
         data.priceCurrent = currentPrice;
         data.note = note;
         dispatch(OrderAddAction(data));
+        dispatch(deleteWishlist({ userId: auth.user.id, productId: productSelect.id }))
         setOpen(false);
         Notification.success("Đã thêm sản phẩm vào giỏ hàng")
     };
 
     return (
-        <Container className={classes.cardGrid} maxWidth="lg">
-            {/* Start Filter Bar */}
-            <Grid container style={{ flexGrow: 1, border: '2px solid #ececec', width: '100%', marginBottom: 30 }}>
-
-                <Grid item md={4} sm={12} className={classes.searchItem}>
-                    <Typography style={{ marginRight: 10 }}>
-                        <b>Nhóm sản phẩm </b>
+        <React.Fragment>
+            <CssBaseline />
+            <main className={classes.layout}>
+                <Paper className={classes.paper}>
+                    <Typography component="h1" variant="h4" align="center">
+                        Trang yêu thích
                     </Typography>
-                    <FormControl className={classes.formControl}>
-                        <NativeSelect
-                            onChange={onHandleCateFilter}
-                            className={classes.selectEmpty}
-                            name="name"
-                            inputProps={{ 'aria-label': 'name' }}
-                        >
-                            <option value="default">Không chọn lựa</option>
-                            {
-                                categories.map((item) => (
-                                    <option key={item.id} value={item.name} hidden={(item.name === "Snack" || item.name === "Product") ? true : false}>{item.name}</option>
-                                ))
-                            }
-                        </NativeSelect>
-                    </FormControl>
-                </Grid>
 
-                <Grid item md={4} sm={12} className={classes.searchItem}>
-                    <Typography style={{ marginRight: 10 }}>
-                        <b>Theo giá </b>
-                    </Typography>
-                    <FormControl className={classes.formControl}>
-                        <NativeSelect
-                            onChange={onHandlePriceFilter}
-                            className={classes.selectEmpty}
-                            name="price"
-                            inputProps={{ 'aria-label': 'price' }}
-                        >
-                            <option value="default">Không chọn lựa</option>
-                            <option value="asc">Tăng dần</option>
-                            <option value="desc">Giảm dần</option>
-                        </NativeSelect>
-                    </FormControl>
-                </Grid>
+                    <React.Fragment>
+                        <Grid container spacing={3} style={{ marginTop: 10 }}>
+                            <Grid item xs={12} md={12}>
+                                <TableContainer component={Paper}>
+                                    <Table className={classes.table} aria-label="spanning table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center"><b>Hình ảnh</b></TableCell>
+                                                <TableCell><b>Sản phẩm</b></TableCell>
+                                                <TableCell align="center"><b>Giá</b></TableCell>
+                                                <TableCell align="center"></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {wishlist?.products?.length > 0 ? wishlist?.products?.map((item) => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell align="center">
+                                                        <img alt={item.name} src={item.linkImage} width={100} />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <p>{item.name}</p>
+                                                    </TableCell>
+                                                    <TableCell align="center">{(item.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center">
+                                                        <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginLeft: 14 }} onClick={() => { onHandleDelete(item.id) }} />
+                                                        <ShoppingCartRounded onClick={() => handleClickOpen(item)} style={{ color: '#416c48', cursor: 'pointer' }} />
+                                                    </TableCell>
+                                                </TableRow>
+                                            )) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={6} align="center"><b style={{ color: 'red' }}>Không có sản phẩm trong yêu thích</b></TableCell>
+                                                </TableRow>
+                                            )
+                                            }
 
-                <Grid item md={4} sm={12} className={classes.searchItem}>
-                    <Typography style={{ marginRight: 10 }}>
-                        <b>Tìm kiếm: </b>
-                    </Typography>
-                    <div style={{ display: 'flex', marginTop: -21 }}>
-                        <TextField label="Nhập tên sản phẩm" onChange={e => { setName(e.target.value) }} />
-                        <IconButton className={classes.iconButton} aria-label="search" onClick={onHandleSearchKeyword}>
-                            <SearchIcon />
-                        </IconButton>
-                    </div>
-                </Grid>
-            </Grid>
-            {/* End Filter Bar */}
-
-            <Grid container spacing={3} style={{ marginTop: 20, paddingRight: 30, paddingLeft: 30 }}>
-                {products.map((product, index) => (
-                    <Grid item key={product.id} xs={12} sm={6} md={3}>
-                        <Card className={classes.card}>
-                            <div className={classes.itemHeader}>
-                                {newProductId === product.id ? (
-                                    <span className={classes.itemTag}>Món mới</span>
-                                ) : ""}
-                                {
-                                    wishlist?.products?.length > 0 && wishlist?.products?.map(w => w.id).includes(product?.id) ?
-                                        (<FavoriteIcon className={classes.iconWishListSelected} style={{ cursor: 'pointer' }} onClick={() => onHandleWishListSelected(product)} />) :
-                                        (<FavoriteIcon className={classes.iconWishList} style={{ cursor: 'pointer' }} onClick={() => onHandleWishList(product)} />)
-                                }
-
-                            </div>
-                            <CardMedia
-                                className={classes.cardMedia}
-                                image={product.linkImage}
-                                title="Image title"
-                            />
-                            <CardContent className={classes.cardContent}>
-                                <Typography gutterBottom variant="h5" component="h2" style={{ textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>
-                                    {product.name}
-                                </Typography>
-                                <Typography style={{ textAlign: "center", fontSize: 14 }}>
-                                    {product.title}
-                                </Typography>
-                                <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                    {(product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
-                                </Typography>
-                            </CardContent>
-                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-                                <Button size="small" color="primary" className={classes.btnOrder} onClick={() => handleClickOpen(product)}>
-                                    Đặt hàng
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+                        </Grid>
+                    </React.Fragment>
+                </Paper>
+            </main>
 
             <Dialog
                 open={open}
@@ -473,22 +404,25 @@ const Content = () => {
 
                                     <div style={{ height: 300, width: 400, overflowY: 'scroll' }}>
 
-                                        <div style={{ display: 'flex', marginTop: 40 }}>
-                                            <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
-                                                <b>Kích thước: </b>
-                                            </Typography>
-                                            <div style={{ marginLeft: -42, marginTop: -10 }}>
-                                                {
-                                                    size?.map((item) => (
-                                                        <div key={item.id} size="small" color="primary" className={selectedSize?.id === item.id ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectSize(item) }}>
-                                                            {item.name}
-                                                        </div>
-                                                    )
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
-
+                                        {
+                                            productSelect?.sizeOptions?.length > 0 && (
+                                                <div style={{ display: 'flex', marginTop: 40 }}>
+                                                    <Typography style={{ marginRight: 60, fontFamily: 'sans-serif' }}>
+                                                        <b>Kích thước: </b>
+                                                    </Typography>
+                                                    <div style={{ marginLeft: -42, marginTop: -10 }}>
+                                                        {
+                                                            size?.map((item) => (
+                                                                <div key={item.id} size="small" color="primary" className={selectedSize?.id === item.id ? classes.btnSelected : classes.btnNotSelected} onClick={() => { onHandleSelectSize(item) }}>
+                                                                    {item.name}
+                                                                </div>
+                                                            )
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
                                         {
                                             productSelect?.additionOptions?.length > 0 && (
                                                 <div style={{ display: 'flex', marginTop: 20 }}>
@@ -547,8 +481,8 @@ const Content = () => {
                     </DialogContent>
                 </form>
             </Dialog>
-        </Container >
-    )
+        </React.Fragment>
+    );
 }
 
-export default Content
+export default Wishlist

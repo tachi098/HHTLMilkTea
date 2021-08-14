@@ -18,6 +18,7 @@ const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
 const Account = React.lazy(() => import("./components/Account"));
 const Page404 = React.lazy(() => import("./components/Page404"));
 const Forget = React.lazy(() => import("./components/Forget"));
+const Wishlist = React.lazy(() => import("./components/Wishlist"));
 
 const App = () => {
   return (
@@ -73,8 +74,13 @@ const App = () => {
                 <PrivateRoute path={"/checkout"}>
                   <Checkout />
                 </PrivateRoute>
+
                 <PrivateRoute path={"/shoppingcart"}>
                   <ShoppingCart />
+                </PrivateRoute>
+
+                <PrivateRoute path={"/wishlist"}>
+                  <Wishlist />
                 </PrivateRoute>
 
                 <Route path="/*">

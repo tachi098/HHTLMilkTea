@@ -462,6 +462,7 @@ const EditProduct = () => {
                     </div>
                   </div>
                   <Button
+                    disabled={(Object.is(cate, "default") || Object.is(cate, "Snack") || Object.is(cate, "Product")) ? true : false}
                     color="primary"
                     variant="contained"
                     onClick={handleOpenAddSize}
@@ -500,6 +501,7 @@ const EditProduct = () => {
                     </div>
                   </div>
                   <Button
+                    disabled={(Object.is(cate, "default") || Object.is(cate, "Snack") || Object.is(cate, "Product")) ? true : false}
                     color="primary"
                     variant="contained"
                     onClick={handleOpenAdd}
