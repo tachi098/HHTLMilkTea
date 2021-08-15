@@ -19,6 +19,7 @@ public class Constant {
             "/api/spinner/**",
             "/api/user/**",
             "/ws/**",
+            "/api/wheel/**",
     };
 
 }
