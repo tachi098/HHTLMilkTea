@@ -36,7 +36,7 @@ public class WheelHistoryController {
     private IProductRepository productRepository;
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> list() {
 
         List<WheelHistory> wheelHistories = wheelHistoryRepository.findAll();

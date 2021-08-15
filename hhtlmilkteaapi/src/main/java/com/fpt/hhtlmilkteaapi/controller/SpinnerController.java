@@ -36,7 +36,7 @@ public class SpinnerController {
     private IUserRepository userRepository;
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> list() {
         List<Spinner> spinners = spinnerRepository.findAll();
         return ResponseEntity.ok(spinners);
