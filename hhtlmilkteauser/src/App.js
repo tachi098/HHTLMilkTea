@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.scss";
 import PrivateRoute from "./components/PrivateRoute";
 import React, { Suspense } from "react";
+import CheckAddress from "./components/CheckAddress";
 
 const Home = React.lazy(() => import("./components/Home"));
 const Milktea = React.lazy(() => import("./components/Milktea"));
@@ -14,15 +15,17 @@ const SignIn = React.lazy(() => import("./components/SignIn"));
 const SignUp = React.lazy(() => import("./components/SignUp"));
 const Dessert = React.lazy(() => import("./components/Dessert"));
 const Product = React.lazy(() => import("./components/Product"));
-const Checkout = React.lazy(() => import("./components/Checkout"));
 const ShoppingCart = React.lazy(() => import("./components/ShoppingCart"));
 const Account = React.lazy(() => import("./components/Account"));
 const Page404 = React.lazy(() => import("./components/Page404"));
 const Forget = React.lazy(() => import("./components/Forget"));
 const Spinner = React.lazy(() => import("./components/Spinner"));
 const Wishlist = React.lazy(() => import("./components/Wishlist"));
+const PaymentForm = React.lazy(() => import("./components/PaymentForm"));
+const ReturnMomo = React.lazy(() => import("./components/ReturnMomo"));
 
 const App = () => {
+
   return (
     <>
       <ToastContainer />
@@ -76,9 +79,6 @@ const App = () => {
                 >
                   <Account />
                 </PrivateRoute>
-                <PrivateRoute path={"/checkout"}>
-                  <Checkout />
-                </PrivateRoute>
 
                 <PrivateRoute path={"/shoppingcart"}>
                   <ShoppingCart />
@@ -88,9 +88,22 @@ const App = () => {
                   <Wishlist />
                 </PrivateRoute>
 
+                <PrivateRoute path={"/checkout"}>
+                  <CheckAddress />
+                </PrivateRoute>
+
+                <PrivateRoute path={"/payment"}>
+                  <PaymentForm />
+                </PrivateRoute>
+
+                <PrivateRoute path={"/checkoutresult"}>
+                  <ReturnMomo />
+                </PrivateRoute>
+
                 <Route path="/*">
                   <Page404 />
                 </Route>
+
               </Switch>
             </ScrollOnTop>
           </DefaultLayout>

@@ -8,7 +8,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button, CssBaseline, Grid, Typography } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Add, DeleteOutline, Remove } from '@material-ui/icons';
 import { OrderDelteOrderDetail, OrderUpdateQuantity } from '../../store/actions/OrderAction';
@@ -58,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
 
 const ShoppingCart = () => {
     const classes = useStyles();
-    const history = useHistory();
     const dispatch = useDispatch();
     const { order, totalPrice } = useSelector((state) => state.order)
 
 
     const onHandleRedirectCheckout = () => {
-        history.push("/checkout")
+        localStorage.setItem("check", "true")
+        window.location.href = "/checkout"
     }
 
     const onHandleUpdateQuantity = (orderDetailId, action) => {
@@ -86,7 +85,7 @@ const ShoppingCart = () => {
 
                     <React.Fragment>
                         <Grid container spacing={3} style={{ marginTop: 10 }}>
-                            <Grid item xs={12} md={12}>
+                            <Grid item sm={12} md={12}>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="spanning table">
                                         <TableHead>
@@ -116,8 +115,8 @@ const ShoppingCart = () => {
                                                             <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell align="center">{(item.product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
-                                                    <TableCell align="center">{(item.product.price * item.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center">{(item.priceCurrent).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center">{(item.priceCurrent * item.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
                                                     <TableCell align="center"><DeleteOutline style={{ color: 'red', cursor: 'pointer' }} onClick={() => { onHandleDeleteOrderDetail(item.id) }} /></TableCell>
                                                 </TableRow>
                                             )) : (

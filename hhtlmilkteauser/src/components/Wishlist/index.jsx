@@ -244,7 +244,8 @@ const Wishlist = () => {
     };
 
     const onHandleDelete = (id) => {
-        dispatch(deleteWishlist({ userId: auth.user.id, productId: id }))
+        dispatch(deleteWishlist({ userId: auth.user.id, productId: id }));
+        Notification.warn("Đã xoá sản phẩm khỏi yêu thích!")
     }
 
     const onHandleNote = e => {

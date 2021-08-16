@@ -41,6 +41,9 @@ public class Order implements Serializable {
     private long totalPrice;
 
     @ColumnDefault("0")
+    private int shipping;
+
+    @ColumnDefault("0")
     private long memberVip;
 
     @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
@@ -70,7 +73,7 @@ public class Order implements Serializable {
     )
     private Collection<OrderDetail> orderDetails;
 
-    public Order(String id, String address, String phone, int payment, int status, String noteOrder, long memberVip, User userId, int totalPrice) {
+    public Order(String id, String address, String phone, int payment, int status, String noteOrder, long memberVip, User userId, int totalPrice, int shipping) {
         this.id = id;
         this.address = address;
         this.phone = phone;
@@ -80,5 +83,6 @@ public class Order implements Serializable {
         this.memberVip = memberVip;
         this.userId = userId;
         this.totalPrice = totalPrice;
+        this.shipping = shipping;
     }
 }

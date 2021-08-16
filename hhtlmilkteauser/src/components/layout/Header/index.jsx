@@ -27,6 +27,7 @@ import { AuthLogoutAction } from "./../../../store/actions/AuthAction";
 import { UserFindByUsernameAction } from "./../../../store/actions/UserAction";
 import { OrderFindAction } from "../../../store/actions/OrderAction";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import Notification from "../../../common/Notification";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -183,6 +184,14 @@ const Header = () => {
     history.push("/home");
   };
 
+  const onHandleFavorite = () => {
+    if (auth.user) {
+      history.push("/wishlist");
+    } else {
+      Notification.error("Vui lòng đăng nhập !");
+    }
+  }
+
   const list = () => (
     <div
       role="presentation"
@@ -245,7 +254,7 @@ const Header = () => {
           </Badge>
 
           <Badge
-            badgeContent={auth.user !== null ? wishlist?.quantity : 0}
+            badgeContent={auth?.user !== null ? wishlist?.quantity : 0}
             color="secondary"
             style={{ marginRight: 20 }}
           >
@@ -253,7 +262,7 @@ const Header = () => {
               style={{ color: "#416c48", cursor: "pointer" }}
               aria-owns={anchorEl ? "simple-menu" : undefined}
               aria-haspopup="true"
-              onClick={() => history.push("/wishlist")}
+              onClick={onHandleFavorite}
             />
           </Badge>
 

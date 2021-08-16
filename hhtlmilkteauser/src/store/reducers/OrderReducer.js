@@ -32,6 +32,11 @@ const orderSlice = createSlice({
             state.quantity = action.payload.quantity;
             state.totalPrice = action.payload.totalPrice;
         },
+        checkoutSuccess: (state, action) => {
+            state.order = {};
+            state.quantity = 0;
+            state.totalPrice = 0;
+        },
     },
 });
 
@@ -44,5 +49,6 @@ export const {
     deleteOrderDetail,
     find,
     update,
+    checkoutSuccess
 } = actions;
 export default reducer;
