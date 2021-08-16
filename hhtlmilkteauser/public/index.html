@@ -9,16 +9,15 @@
     <meta name="description" content="Web site created using create-react-app" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/Milktea.jpg" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!-- <style>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
-    </style> -->
+    </style>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>
     <script defer
         src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key=AIzaSyAcQjrfAudzl6Ton7GA7D-gVqOINMFE7ns"
         type="text/javascript"></script>
-
 
     <title>HHTLMilktea</title>
 </head>
@@ -87,10 +86,19 @@
                 if (status === "OK") {
                   directionsDisplay.setMap(map);
                   directionsDisplay.setDirections(response);
+                  $('#result').html("");
+                  document.getElementById("btnSubmit").disabled = false;
+                  document.getElementById("btnSubmit").style.color = 'white';
+                  document.getElementById("btnSubmit").style.background = '#2454b5';
+                  document.getElementById("mapResult").style.display="grid";
                 } else {
                   directionsDisplay.setMap(null);
                   directionsDisplay.setDirections(null);
-                  alert("Điểm đến không hợp lệ vui lòng nhập lại");
+                  $('#result').html("Điểm đến không hợp lệ vui lòng nhập lại");
+                  document.getElementById("btnSubmit").disabled = true;
+                  document.getElementById("btnSubmit").style.color = 'black';
+                  document.getElementById("btnSubmit").style.background = 'gray';
+                  document.getElementById("mapResult").style.display="none";
                 }
               }
             );
@@ -119,9 +127,8 @@
               var origin = response.originAddresses[0];
               var destination = response.destinationAddresses[0];
               if (response.rows[0].elements[0].status === "ZERO_RESULTS") {
-                // $('#result').html("Sorry , not available to use this travel mode between " + origin + " and " +
-                //   destination);
-                alert("Điểm đến không hợp lệ vui lòng nhập lại");
+                $('#result').html("Điểm đến không hợp lệ vui lòng nhập lại");
+                // alert("Điểm đến không hợp lệ vui lòng nhập lại");
               } else {
                 var distance = response.rows[0].elements[0].distance;
                 var duration = response.rows[0].elements[0].duration;

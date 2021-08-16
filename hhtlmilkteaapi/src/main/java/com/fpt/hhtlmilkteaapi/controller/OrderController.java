@@ -359,7 +359,7 @@ public class OrderController {
         //get value
         String address = checkoutRequest.getAddress();
         String phone = checkoutRequest.getPhone();
-        int payment = checkoutRequest.getPayment() == "cod" ? 1 : 2;
+        int payment = "cod".equals(checkoutRequest.getPayment()) ? 1 : 2;
         int shipping = checkoutRequest.getShipping();
         String note = checkoutRequest.getNote();
 
@@ -378,10 +378,15 @@ public class OrderController {
 
         //Update memberVip
         User user = userRepository.findById(order.getUserId().getId()).get();
-        user.getMemberVip().setMark(user.getMemberVip().getMark() + (checkoutRequest.getTotalPrice()/100));
-        MemberVip memberVip = memberVipRepository.findByUser(user).get();
+        MemberVip memberVip = user.getMemberVip();
+        if(memberVip == null){
+            memberVip = new MemberVip(0, user);
+        }
         memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotalPrice()/100) - checkoutRequest.getMemberVip());
         memberVipRepository.save(memberVip);
+
+        user.setMemberVip(memberVip);
+        userRepository.save(user);
 
         MemberVipResponse memberVipResponse = new MemberVipResponse();
         memberVipResponse.setUser(user);

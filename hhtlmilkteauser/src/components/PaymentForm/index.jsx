@@ -102,7 +102,7 @@ const PaymentForm = () => {
     const onHandleMemberVip = (e) => {
         const reg = /^\d+$/;
         if (reg.test(e.target.value)) {
-            if (e.target.value <= customer.memberVip.mark) {
+            if (e.target.value <= customer?.memberVip?.mark) {
                 if (e.target.value >= 10000) {
                     setMemberVip(Math.floor(e.target.value / 1000) * 1000);
                     setErr("")
@@ -124,7 +124,7 @@ const PaymentForm = () => {
 
     return (
         <React.Fragment>
-            {Object.is(address, undefined) && <Redirect to="/checkout" />}
+            {Object.is(address, undefined) && <Redirect to="/shoppingcart" />}
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography variant="h4" gutterBottom style={{ textAlign: 'center', marginBottom: 30 }}>

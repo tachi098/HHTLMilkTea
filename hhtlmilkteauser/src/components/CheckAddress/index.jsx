@@ -1,4 +1,4 @@
-import { Button, FormHelperText, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
+import { FormHelperText, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 10,
         marginBottom: 10,
         padding: 10,
+        color: 'black',
         border: 'none',
         backgroundColor: 'gray',
         fontWeight: 'bold',
@@ -55,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('md')]: {
             marginLeft: 0
         }
+    },
+    hide: {
+        display: 'none'
     }
 }));
 
@@ -69,7 +73,7 @@ const CheckAddress = () => {
     } = useForm();
 
     const onSubmit = (data) => {
-        data.shippingPrice = document.getElementById('price_shipping').innerHTML;
+        data.shippingPrice = document.getElementById('price_shipping')?.innerHTML;
         data.to = to;
         history.push("/payment", { address: data })
     }
@@ -79,20 +83,18 @@ const CheckAddress = () => {
         "FPT Aptech HCM - Hệ Thống Đào Tạo Lập Trình Viên Quốc Tế (Since 1999), Cách Mạng Tháng Tám, Phường 11, District 3, Ho Chi Minh City, Vietnam"
     );
     const [to, setTo] = useState("");
-    const [check, setCheck] = useState(true);
 
     const adressChange = e => {
         setTo(e.target.value);
     }
 
     const onHandleCheckMap = () => {
-        setCheck(false);
         setTo(document.getElementById('destination').value);
     }
 
     return (
         <React.Fragment>
-
+            {console.log(document.getElementById('price_shipping')?.innerHTML)}
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography variant="h6" gutterBottom>
@@ -137,15 +139,15 @@ const CheckAddress = () => {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Button
+                                <button
                                     type="submit"
                                     style={{ marginTop: 10 }}
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={check}
+                                    id="btnSubmit"
+                                    className={classes.btnReloadMapDisable}
+                                    disabled={true}
                                 >
                                     Tiếp theo
-                                </Button>
+                                </button>
                             </form>
                         </Grid>
                         <Grid item md={7} sm={12}>
@@ -181,24 +183,24 @@ const CheckAddress = () => {
                                             </div>
                                         </form>
 
-
-                                        {Object.is(check, false) && (
-                                            <div id="result" className="hide">
-                                                <div>
-                                                    <label htmlFor="Kilometers">Khoảng cách: </label>&nbsp;
-                                                    <label id="in_kilo"></label>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="Duration">Thời gian giao hàng: </label>&nbsp;
-                                                    <label id="duration_text"></label>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="Price">Chi phí giao hàng: </label>&nbsp;
-                                                    <label id="price_shipping"></label>
-                                                    &nbsp;<label>VNĐ</label>
-                                                </div>
+                                        <div id="mapResult" style={{ display: 'none' }}>
+                                            <div>
+                                                <label htmlFor="Kilometers">Khoảng cách: </label>&nbsp;
+                                                <label id="in_kilo"></label>
                                             </div>
-                                        )}
+                                            <div>
+                                                <label htmlFor="Duration">Thời gian giao hàng: </label>&nbsp;
+                                                <label id="duration_text"></label>
+                                            </div>
+                                            <div>
+                                                <label htmlFor="Price">Chi phí giao hàng: </label>&nbsp;
+                                                <label id="price_shipping"></label>
+                                                &nbsp;<label>VNĐ</label>
+                                            </div>
+                                        </div>
+
+                                        <div id="result" className="hide">
+                                        </div>
 
                                         <div className="col-lg-6 col-12">
                                             <div id="map" style={{ height: "400px", width: "500px" }}></div>
