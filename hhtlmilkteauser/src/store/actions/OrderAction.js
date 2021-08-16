@@ -1,9 +1,11 @@
 import OrderService from "../../services/OrderService";
+import { profileuser } from "../reducers/UserReducer";
 import {
     add,
     find,
     update,
-    deleteOrderDetail
+    deleteOrderDetail,
+    checkoutSuccess
 } from "./../reducers/OrderReducer";
 
 export const OrderAddAction = (data) => async (dispatch) => {
@@ -41,6 +43,17 @@ export const OrderDelteOrderDetail = (id) => async (dispatch) => {
     try {
         await OrderService.delete(id)
             .then((response) => dispatch(deleteOrderDetail(response.data)))
+            .catch((error) => console.error(error));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const checkoutOrder = (data) => async (dispatch) => {
+    try {
+        await OrderService.checkout(data)
+            .then((response) => dispatch(profileuser(response.data)))
+            .then((response) => dispatch(checkoutSuccess(response.data)))
             .catch((error) => console.error(error));
     } catch (error) {
         console.error(error);

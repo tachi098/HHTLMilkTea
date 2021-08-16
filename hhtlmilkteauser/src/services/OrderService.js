@@ -13,6 +13,9 @@ class OrderService {
     delete = (id) => {
         return api.delete(`/order/${id}`)
     }
+    checkout = (data) => {
+        return api.put('/order/checkout', data)
+    }
 }
 
 export default new OrderService();

@@ -3,14 +3,10 @@ package com.fpt.hhtlmilkteaapi.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
-import com.fpt.hhtlmilkteaapi.payload.request.OrderQuantityRequest;
-import com.fpt.hhtlmilkteaapi.payload.request.OrderRequest;
-import com.fpt.hhtlmilkteaapi.payload.request.OrderStatusRequest;
-import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
+import com.fpt.hhtlmilkteaapi.payload.request.*;
 import com.fpt.hhtlmilkteaapi.payload.response.CartResponse;
-import com.fpt.hhtlmilkteaapi.repository.IOrderDetailRepository;
-import com.fpt.hhtlmilkteaapi.repository.IOrderRepository;
-import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
+import com.fpt.hhtlmilkteaapi.payload.response.MemberVipResponse;
+import com.fpt.hhtlmilkteaapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import com.fpt.hhtlmilkteaapi.entity.Order;
@@ -49,6 +45,9 @@ public class OrderController {
     @Autowired
     private IOrderDetailRepository orderDetailRepository;
 
+    @Autowired
+    private IMemberVipRepository memberVipRepository;
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getOrders() {
@@ -70,7 +69,7 @@ public class OrderController {
 
             long total = 0;
             for (OrderDetail orderDetailnew : order.getOrderDetails()){
-                total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
             }
 
             cartResponse.setTotalPrice(total);
@@ -107,7 +106,7 @@ public class OrderController {
             orderNew = order;
         } else {
             String orderId = "P" + formatter.format(new Date());
-            orderNew = new Order(orderId, null, null, 0, 0, null, 0, user, 0);
+            orderNew = new Order(orderId, null, null, 0, 0, null, 0, user, 0, 0);
             orderRepository.save(orderNew);
         }
 
@@ -132,7 +131,7 @@ public class OrderController {
 
                 long total = 0;
                 for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
-                    total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                    total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
                 }
 
                 cartResponse.setTotalPrice(total);
@@ -152,7 +151,7 @@ public class OrderController {
 
                 long total = 0;
                 for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
-                    total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                    total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
                 }
 
                 cartResponse.setTotalPrice(total);
@@ -175,7 +174,7 @@ public class OrderController {
 
             long total = 0;
             for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
-                total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+                total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
             }
 
             cartResponse.setTotalPrice(total);
@@ -296,7 +295,7 @@ public class OrderController {
 
         long total = 0;
         for (OrderDetail orderDetailnew : order.getOrderDetails()){
-            total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+            total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
         }
 
         cartResponse.setTotalPrice(total);
@@ -323,7 +322,7 @@ public class OrderController {
 
         long total = 0;
         for (OrderDetail orderDetailnew : order.getOrderDetails()){
-            total += (orderDetailnew.getProduct().getPrice() * orderDetailnew.getQuantity());
+            total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
         }
 
         cartResponse.setTotalPrice(total);
@@ -348,5 +347,45 @@ public class OrderController {
         orderRepository.save(order);
 
         return  ResponseEntity.ok(orderRepository.save(order));
+    }
+
+    @PutMapping("/checkout")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> checkout(@RequestBody CheckoutRequest checkoutRequest) {
+
+        //find order
+        Order order = orderRepository.findById(checkoutRequest.getOrderId()).get();
+
+        //get value
+        String address = checkoutRequest.getAddress();
+        String phone = checkoutRequest.getPhone();
+        int payment = checkoutRequest.getPayment() == "cod" ? 1 : 2;
+        int shipping = checkoutRequest.getShipping();
+        String note = checkoutRequest.getNote();
+
+        //Update order
+        order.setStatus(1);
+        order.setNotification(1);
+        order.setAddress(address);
+        order.setNoteOrder(note);
+        order.setPhone(phone);
+        order.setPayment(payment);
+        order.setTotalPrice(checkoutRequest.getTotalPrice());
+        order.setShipping(shipping);
+        order.setCreatedAt(new Date());
+        order.setMemberVip(checkoutRequest.getMemberVip());
+        orderRepository.save(order);
+
+        //Update memberVip
+        User user = userRepository.findById(order.getUserId().getId()).get();
+        user.getMemberVip().setMark(user.getMemberVip().getMark() + (checkoutRequest.getTotalPrice()/100));
+        MemberVip memberVip = memberVipRepository.findByUser(user).get();
+        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotalPrice()/100) - checkoutRequest.getMemberVip());
+        memberVipRepository.save(memberVip);
+
+        MemberVipResponse memberVipResponse = new MemberVipResponse();
+        memberVipResponse.setUser(user);
+
+        return  ResponseEntity.ok(memberVipResponse);
     }
 }

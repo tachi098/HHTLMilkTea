@@ -218,9 +218,9 @@ const Content = () => {
         if (auth.user) {
             const userId = auth.user.id;
             dispatch(udpateWishlist({ userId: userId, productId: product.id }));
-            Notification.success("Đã thêm sản phẩm vào wishlist");
+            Notification.success("Đã thêm sản phẩm vào yêu thích");
         } else {
-            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
+            Notification.error("Vui lòng đăng nhập!");
         }
     }
 
@@ -228,9 +228,9 @@ const Content = () => {
         if (auth.user) {
             const userId = auth.user.id;
             dispatch(udpateWishlist({ userId: userId, productId: product.id }));
-            Notification.warn("Đã xoá sản phẩm khỏi wishlist");
+            Notification.warn("Đã xoá sản phẩm vào yêu thích");
         } else {
-            Notification.error("Vui lòng đăng nhập trước khi wishlist!");
+            Notification.error("Vui lòng đăng nhập!");
         }
     }
 

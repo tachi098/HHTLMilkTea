@@ -25,6 +25,9 @@ const userSlice = createSlice({
     deleteProductWishlist: (state, action) => {
       state.wishlist = action.payload;
     },
+    profileuser: (state, action) => {
+      state.customer = action.payload.user;
+    },
   },
 });
 
@@ -36,6 +39,7 @@ export const {
   userbyusername,
   profileUpdate,
   updateWishlist,
-  deleteProductWishlist
+  deleteProductWishlist,
+  profileuser,
 } = actions;
 export default reducer;
