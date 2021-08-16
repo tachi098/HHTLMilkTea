@@ -20,6 +20,7 @@ public class Constant {
             "/api/user/**",
             "/ws/**",
             "/api/wheel/**",
+            "/api/voucher/**",
     };
 
 }

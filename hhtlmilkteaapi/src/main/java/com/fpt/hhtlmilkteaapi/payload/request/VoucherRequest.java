@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberVipRequest {
+public class VoucherRequest {
 
+    private String code;
     private long id;
     private String username;
 

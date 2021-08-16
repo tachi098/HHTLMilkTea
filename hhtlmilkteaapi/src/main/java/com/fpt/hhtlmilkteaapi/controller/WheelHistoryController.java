@@ -71,7 +71,7 @@ public class WheelHistoryController {
             Code code = new Code();
             code.setEndDate(calendar.getTime());
             code.setMark(historyRequest.getMark());
-            code.setName("Voucher");
+            code.setName("V" + new Date().getTime());
             code.setUsername(historyRequest.getUsername());
 
             codeRepository.save(code);

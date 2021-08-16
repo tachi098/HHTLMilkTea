@@ -1,17 +1,14 @@
 package com.fpt.hhtlmilkteaapi.controller;
 
-import com.fpt.hhtlmilkteaapi.entity.MemberVip;
-import com.fpt.hhtlmilkteaapi.entity.Spinner;
-import com.fpt.hhtlmilkteaapi.entity.User;
+import com.fpt.hhtlmilkteaapi.entity.*;
 import com.fpt.hhtlmilkteaapi.payload.request.MemberVipRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.SpinnerRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.UserRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.MemberVipResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.SpinnerResponse;
-import com.fpt.hhtlmilkteaapi.repository.IMemberVipRepository;
-import com.fpt.hhtlmilkteaapi.repository.ISpinnerRepository;
-import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
+import com.fpt.hhtlmilkteaapi.payload.response.WishlistResponse;
+import com.fpt.hhtlmilkteaapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +31,12 @@ public class SpinnerController {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IWishlistRepository wishlistRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @GetMapping("/list")
     @PreAuthorize("permitAll()")
@@ -73,6 +76,19 @@ public class SpinnerController {
 
         MemberVipResponse memberVipResponse = new MemberVipResponse();
         memberVipResponse.setUser(user);
+
+        // Get all wishlist of user by id
+        WishlistResponse wishlistResponse = new WishlistResponse();
+        List<Wishlist> wishlists = wishlistRepository.findAllByUserId(memberVipRequest.getId());
+        List<Product> products = new ArrayList<>();
+
+        for(Wishlist wl : wishlists) {
+            products.add(productRepository.findById(wl.getProductId()).get());
+        }
+
+        wishlistResponse.setProducts(products);
+        wishlistResponse.setQuantity(products.size());
+        memberVipResponse.setWishlistResponse(wishlistResponse);
 
         return ResponseEntity.ok(memberVipResponse);
     }
