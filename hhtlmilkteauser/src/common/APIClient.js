@@ -26,13 +26,14 @@ api.interceptors.response.use(
   },
   (error) => {
     if (!error.response) {
-      return new Promise((resolve, reject) => {
-        reject(error);
-      });
+      localStorage.removeItem("user");
+      window.location.href = "/";
+      return;
     }
 
     if (Object.is(401, error.response.status)) {
       localStorage.removeItem("user");
+      window.location.href = "/signin";
       return;
     }
 
@@ -41,10 +42,6 @@ api.interceptors.response.use(
       window.location.href = "/signin";
       return;
     }
-
-    return new Promise((resolve, reject) => {
-      reject(error);
-    });
   }
 );
 

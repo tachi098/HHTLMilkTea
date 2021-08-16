@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IVoucherRepository extends JpaRepository<Voucher, Long> {
+
+    Boolean existsByCodeName(String codeName); // Exception: used
+
 }

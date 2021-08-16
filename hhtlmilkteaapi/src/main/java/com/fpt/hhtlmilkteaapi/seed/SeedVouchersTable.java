@@ -25,8 +25,8 @@ public class SeedVouchersTable {
         long count = voucherRepository.count();
         if (count == 0) {
             // Insert Voucher
-            Voucher vourcher01 = new Voucher(1L,"Mã giám giá 1", "hoaipx", true);
-            Voucher vourcher02 = new Voucher(2L,"Mã giám giá 2", "hoaipx", false);
+            Voucher vourcher01 = new Voucher(1L,"Mã giám giá 1", "hoaipx");
+            Voucher vourcher02 = new Voucher(2L,"Mã giám giá 2", "hoaipx");
 
             // Insert Data
             voucherRepository.saveAll(Arrays.asList(vourcher01, vourcher02));

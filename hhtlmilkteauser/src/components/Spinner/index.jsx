@@ -86,6 +86,7 @@ const Spinner = () => {
   const onFinished = (winner) => {
     if (Object.is(winner, "May mắn lần sau")) {
       SpinnerUpdateMarkAction({
+        id: user.id,
         username: user.username,
       })(dispatch);
       return;
