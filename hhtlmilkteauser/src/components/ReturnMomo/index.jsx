@@ -47,11 +47,18 @@ const ReturnMomo = () => {
 
     useEffect(() => {
         const errorCode = new URLSearchParams(search).get('errorCode')
+        const payment = new URLSearchParams(search).get('payment')
+        const order = localStorage.getItem("order") !== null ? JSON.parse(localStorage.getItem("order")) : {};
+
+        const accessKey = new URLSearchParams(search).get('accessKey')
+        const amount = new URLSearchParams(search).get('amount')
+        const extraData = new URLSearchParams(search).get('extraData')
 
         if (Object.is(errorCode, "0")) {
-            const order = localStorage.getItem("order") !== null ? JSON.parse(localStorage.getItem("order")) : {};
-            dispatch(checkoutOrder(order));
-            localStorage.removeItem("order")
+            if (!Object.is(payment, "cod") && accessKey && amount && extraData && localStorage.getItem("order")) {
+                dispatch(checkoutOrder(order));
+                localStorage.removeItem("order")
+            }
             setMessage("success")
         } else {
             setMessage("fail")

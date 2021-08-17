@@ -18,4 +18,5 @@ public class CheckoutRequest {
     private String note;
     private int totalPrice;
     private int memberVip;
+    private int total;
 }

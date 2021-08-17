@@ -16,4 +16,5 @@ public interface IOrderRepository extends JpaRepository<Order, String> {
     Order findOrderByUserId_IdAndStatusLike(long id, int status, Sort sort);
     Page<Order> findAllByUserIdEqualsAndStatusIn(Optional<User> user, List<Integer> status, Pageable pageable);
     Page<Order> findAllByStatusIn(List<Integer> status, Pageable pageable);
+
 }

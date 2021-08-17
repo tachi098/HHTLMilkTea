@@ -1,8 +1,8 @@
 import { Badge, Button, FormHelperText, Grid, makeStyles, Paper, Table, TableBody, TableCell, TableRow, TextField, Typography } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { checkoutOrder } from "../../store/actions/OrderAction";
 import Momo from "../Momo";
 import { MonetizationOnOutlined } from "@material-ui/icons"
@@ -68,44 +68,66 @@ const PaymentForm = () => {
     const [mark, setMark] = useState(0)
     const [err, setErr] = useState("");
 
+    useEffect(() => {
+        const refresh = async () => {
+            if (! await order) {
+                window.location.href = "/";
+            }
+        }
+        refresh();
+        return () => refresh();
+    }, [order])
+
     const onSubmit = () => {
         const data = {
             address: address.to,
             phone: address.phone,
-            shipping: address.shippingPrice,
+            shipping: +address.shippingPrice,
             payment: "cod",
             orderId: order.id,
             note: address.note,
-            totalPrice: +address.shippingPrice + + totalPrice - (mark / 10),
-            memberVip: mark
+            totalPrice: +address.shippingPrice + +totalPrice - mark,
+            memberVip: mark,
+            total: +totalPrice
         }
         dispatch(checkoutOrder(data));
-        window.location.href = "/checkoutresult?errorCode=0"
+        window.location.href = "/checkoutresult?errorCode=0&payment=cod";
+
     }
 
     const handlerMomo = () => {
-        setOrderID(order.id + new Date().getTime());
-        setTotal(+address.shippingPrice + + totalPrice - (mark / 10))
+        setOrderID(order.id + "-" + new Date().getTime());
+        setTotal(+address.shippingPrice + + totalPrice - mark)
         localStorage.removeItem("order");
         localStorage.setItem("order", JSON.stringify({
             orderId: order.id,
-            totalPrice: +address.shippingPrice + + totalPrice - (mark / 10),
+            totalPrice: +address.shippingPrice + +totalPrice - mark,
             memberVip: mark,
             address: address.to,
             phone: address.phone,
-            shipping: address.shippingPrice,
+            shipping: +address.shippingPrice,
             payment: "momo",
             note: address.note,
+            total: +totalPrice
         }))
     }
 
     const onHandleMemberVip = (e) => {
+        setMemberVip(e.target.value);
+    }
+
+    const onHandleMarkChange = () => {
         const reg = /^\d+$/;
-        if (reg.test(e.target.value)) {
-            if (e.target.value <= customer?.memberVip?.mark) {
-                if (e.target.value >= 10000) {
-                    setMemberVip(Math.floor(e.target.value / 1000) * 1000);
-                    setErr("")
+        if (reg.test(memberVip)) {
+            if (memberVip <= customer?.memberVip?.mark) {
+                if (memberVip >= 10000) {
+                    if (memberVip >= (+address.shippingPrice + +totalPrice)) {
+                        setMark(+address.shippingPrice + +totalPrice)
+                        setErr("")
+                    } else {
+                        setMark(Math.floor(memberVip / 1000) * 1000);
+                        setErr("")
+                    }
                 } else {
                     setErr("Điểm đổi tối thiểu 10000")
                 }
@@ -117,14 +139,9 @@ const PaymentForm = () => {
         }
     }
 
-    const onHandleMarkChange = () => {
-        setMark(memberVip);
-        setMemberVip(0);
-    }
-
     return (
         <React.Fragment>
-            {Object.is(address, undefined) && <Redirect to="/shoppingcart" />}
+            {Object.is(address, undefined) && (window.location.href = "/shoppingcart")}
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography variant="h4" gutterBottom style={{ textAlign: 'center', marginBottom: 30 }}>
@@ -203,10 +220,10 @@ const PaymentForm = () => {
                             <b>Phí vận chuyển: </b>{(+address?.shippingPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                         </Typography>
                         <Typography variant="body1" gutterBottom>
-                            <b>Giảm giá: </b>{(mark / 10).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                            <b>Giảm giá: </b>{(mark).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })} (làm tròn)
                         </Typography>
                         <Typography variant="h6" gutterBottom>
-                            <b>Tổng tiền: </b>{(+address?.shippingPrice + + totalPrice - (mark / 10)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                            <b>Tổng tiền: </b>{(+address?.shippingPrice + + totalPrice - (mark)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                         </Typography>
                     </Grid>
 

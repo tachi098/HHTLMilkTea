@@ -6,6 +6,7 @@ import com.fpt.hhtlmilkteaapi.entity.*;
 import com.fpt.hhtlmilkteaapi.payload.request.*;
 import com.fpt.hhtlmilkteaapi.payload.response.CartResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.MemberVipResponse;
+import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -105,7 +106,7 @@ public class OrderController {
         if (order != null) {
             orderNew = order;
         } else {
-            String orderId = "P" + formatter.format(new Date());
+            String orderId = "O" + formatter.format(new Date());
             orderNew = new Order(orderId, null, null, 0, 0, null, 0, user, 0, 0);
             orderRepository.save(orderNew);
         }
@@ -353,6 +354,10 @@ public class OrderController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest checkoutRequest) {
 
+        if(!orderRepository.existsById(checkoutRequest.getOrderId())) {
+            return ResponseEntity.ok(new MessageResponse("Bad Request"));
+        }
+
         //find order
         Order order = orderRepository.findById(checkoutRequest.getOrderId()).get();
 
@@ -382,7 +387,7 @@ public class OrderController {
         if(memberVip == null){
             memberVip = new MemberVip(0, user);
         }
-        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotalPrice()/100) - checkoutRequest.getMemberVip());
+        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotal()/100) - checkoutRequest.getMemberVip());
         memberVipRepository.save(memberVip);
 
         user.setMemberVip(memberVip);

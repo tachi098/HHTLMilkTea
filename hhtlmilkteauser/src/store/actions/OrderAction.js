@@ -51,10 +51,13 @@ export const OrderDelteOrderDetail = (id) => async (dispatch) => {
 
 export const checkoutOrder = (data) => async (dispatch) => {
     try {
-        await OrderService.checkout(data)
-            .then((response) => dispatch(profileuser(response.data)))
-            .then((response) => dispatch(checkoutSuccess(response.data)))
-            .catch((error) => console.error(error));
+
+        // alert(JSON.stringify(data));
+
+        const res = await OrderService.checkout(data)
+        dispatch(checkoutSuccess(res.data))
+        dispatch(profileuser(res.data))
+        return res;
     } catch (error) {
         console.error(error);
     }

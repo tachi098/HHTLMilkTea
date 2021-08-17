@@ -64,6 +64,7 @@ const ShoppingCart = () => {
     const onHandleRedirectCheckout = () => {
         localStorage.setItem("check", "true")
         window.location.href = "/checkout"
+        localStorage.setItem("map", "refresh");
     }
 
     const onHandleUpdateQuantity = (orderDetailId, action) => {

@@ -1,7 +1,8 @@
 import { FormHelperText, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 
@@ -65,6 +66,8 @@ const useStyles = makeStyles((theme) => ({
 const CheckAddress = () => {
     const classes = useStyles();
     const history = useHistory();
+    const { order } = useSelector((state) => state.order)
+
 
     const {
         register,
@@ -72,9 +75,19 @@ const CheckAddress = () => {
         formState: { errors },
     } = useForm();
 
+    useEffect(() => {
+        if (!localStorage.getItem("map")) {
+            localStorage.setItem("map", "refresh");
+            window.location.href = "/checkout"
+        } if (!order) {
+            window.location.href = "/"
+        }
+    }, [order])
+
     const onSubmit = (data) => {
         data.shippingPrice = document.getElementById('price_shipping')?.innerHTML;
         data.to = to;
+        localStorage.removeItem("map");
         history.push("/payment", { address: data })
     }
 
@@ -94,7 +107,6 @@ const CheckAddress = () => {
 
     return (
         <React.Fragment>
-            {console.log(document.getElementById('price_shipping')?.innerHTML)}
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography variant="h6" gutterBottom>
