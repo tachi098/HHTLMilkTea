@@ -33,6 +33,7 @@ public class SeedOrdersTable {
             // Insert Order 1
             User user01 = userRepository.findById(2L).get();
             Order order01 = new Order("O0882021035829","Binh Thanh, Ho Chi Minh", "0123456789", 0, 0, "Không thêm đường", 50, user01, 50000, 15000);
+            order01.setTeam(true);
 
             //Insert Order 2
             Order order02 = new Order("O0882021035830","Binh Thanh, Ho Chi Minh", "0123456789", 1, 4, "Không thêm đường", 50, user01, 50000, 15000);

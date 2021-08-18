@@ -36,5 +36,8 @@ public class HhtlmilkteaapiApplication {
         SeedSpinnersTable.insertData();
 
         SeedWheelHistory.insertData();
+
+        SeedGroupMemberTable.insertData();
+        SeedGroupOrderDetailsTable.insertData();
     }
 }

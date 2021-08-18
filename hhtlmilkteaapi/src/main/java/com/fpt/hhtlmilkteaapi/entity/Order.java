@@ -46,6 +46,9 @@ public class Order implements Serializable {
     @ColumnDefault("0")
     private long memberVip;
 
+    @ColumnDefault("false")
+    private boolean team;
+
     @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
     private int notification;
 
@@ -72,6 +75,13 @@ public class Order implements Serializable {
             cascade = CascadeType.ALL
     )
     private Collection<OrderDetail> orderDetails;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "order",
+            cascade = CascadeType.ALL
+    )
+    private Collection<GroupMember> groupMembers;
 
     public Order(String id, String address, String phone, int payment, int status, String noteOrder, long memberVip, User userId, int totalPrice, int shipping) {
         this.id = id;
