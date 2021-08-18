@@ -33,7 +33,7 @@ api.interceptors.response.use(
 
     if (Object.is(401, error.response.status)) {
       localStorage.removeItem("user");
-      window.location.href = "/signin";
+      // window.location.href = "/signin";
       return;
     }
 

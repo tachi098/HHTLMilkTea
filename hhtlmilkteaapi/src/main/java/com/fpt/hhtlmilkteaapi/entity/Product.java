@@ -75,6 +75,12 @@ public class Product implements Serializable {
     @JsonIgnore
     private Collection<OrderDetail> orderDetails;
 
+    @OneToMany(
+            mappedBy = "product"
+    )
+    @JsonIgnore
+    private Collection<GroupOrderDetails> groupOrderDetails;
+
     public Product(String id, String name, String title, String linkImage, String nameImage, long price,
                    Category categoryId, Set<SizeOption> sizeOptions, Set<AdditionOption> additionOptions) {
         this.id = id;

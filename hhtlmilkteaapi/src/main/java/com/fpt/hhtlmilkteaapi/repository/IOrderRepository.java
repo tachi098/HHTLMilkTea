@@ -17,4 +17,5 @@ public interface IOrderRepository extends JpaRepository<Order, String> {
     Page<Order> findAllByUserIdEqualsAndStatusIn(Optional<User> user, List<Integer> status, Pageable pageable);
     Page<Order> findAllByStatusIn(List<Integer> status, Pageable pageable);
 
+    Optional<Order> findByUserIdAndStatusAndTeam(User userId, int status, boolean team);
 }

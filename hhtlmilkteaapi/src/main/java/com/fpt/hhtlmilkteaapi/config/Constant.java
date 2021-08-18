@@ -21,6 +21,8 @@ public class Constant {
             "/ws/**",
             "/api/wheel/**",
             "/api/voucher/**",
+            "/shared/**",
+            "/api/grouporder/**",
     };
 
 }
