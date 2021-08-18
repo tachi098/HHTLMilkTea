@@ -201,7 +201,7 @@ const Content = () => {
     const handleClickOpen = (item) => {
         if (auth.user) {
             setProductSelect(item);
-            setCurrentPrice(item.price)
+            setCurrentPrice(item.price * (item?.saleOff?.discount ? 1 - item?.saleOff?.discount : 1));
             setOpen(true);
         } else {
             Notification.error("Vui lòng đăng nhập trước khi mua hàng!");
@@ -324,6 +324,8 @@ const Content = () => {
                             <div className={classes.itemHeader}>
                                 {newProductId === product.id ? (
                                     <span className={classes.itemTag}>Món mới</span>
+                                ) : product?.saleOff?.discount ? (
+                                    <span className={classes.itemTag} style={{ backgroundColor: 'red' }}>Giảm giá {product?.saleOff?.discount * 100}%</span>
                                 ) : ""}
                                 {
                                     wishlist?.products?.length > 0 && wishlist?.products?.map(w => w.id).includes(product?.id) ?
@@ -344,7 +346,7 @@ const Content = () => {
                                     {product.title}
                                 </Typography>
                                 <Typography style={{ textAlign: "center", color: "#0c713d", fontWeight: 'bold' }}>
-                                    {(product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                    {(product.price * (product?.saleOff?.discount ? 1 - product?.saleOff?.discount : 1)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                                 </Typography>
                             </CardContent>
                             <CardActions style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
