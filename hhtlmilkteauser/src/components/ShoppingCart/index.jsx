@@ -62,7 +62,7 @@ const ShoppingCart = () => {
 
 
     const onHandleRedirectCheckout = () => {
-        localStorage.setItem("check", "true")
+        // localStorage.setItem("check", "true")
         window.location.href = "/checkout"
         localStorage.setItem("map", "refresh");
     }
@@ -111,7 +111,7 @@ const ShoppingCart = () => {
                                                     </TableCell>
                                                     <TableCell align="center">
                                                         <div style={{ display: 'flex', marginTop: -10, marginLeft: -20 }}>
-                                                            <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "minus") }}><Remove /></div>
+                                                            <div className={classes.btnCount} onClick={() => { if (item.quantity > 1) { onHandleUpdateQuantity(item.id, "minus") } }}><Remove /></div>
                                                             <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
                                                             <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
                                                         </div>

@@ -1,4 +1,5 @@
 import { Container, makeStyles } from "@material-ui/core";
+import { useState } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -21,10 +22,17 @@ const useStyles = makeStyles((theme) => ({
 
 const DefaultLayout = ({ children }) => {
     const classes = useStyles();
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const onHandleOpen = (status) => {
+        setIsOpen(status);
+    }
+
     return (
         <div className={classes.root}>
-            <Header />
-            <main className={classes.content}>
+            <Header isOpen={isOpen} onHandleOpen={onHandleOpen} />
+            <main className={classes.content} onClick={() => { onHandleOpen(false) }}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
                     {children}
