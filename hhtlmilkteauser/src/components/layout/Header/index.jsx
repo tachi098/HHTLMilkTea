@@ -29,12 +29,18 @@ import { Link, NavLink, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthLogoutAction } from "./../../../store/actions/AuthAction";
 import { UserFindByUsernameAction } from "./../../../store/actions/UserAction";
-import { OrderDelteOrderDetail, OrderFindAction, OrderUpdateQuantity } from "../../../store/actions/OrderAction";
+import {
+  OrderDelteOrderDetail,
+  OrderFindAction,
+  OrderUpdateQuantity,
+} from "../../../store/actions/OrderAction";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Notification from "../../../common/Notification";
-import ClearIcon from '@material-ui/icons/Clear';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import ClearIcon from "@material-ui/icons/Clear";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import { Add, DeleteOutline, Remove } from "@material-ui/icons";
+import { GroupOrderFindAllAction } from "./../../../store/actions/GroupOrderAction";
+// import { Client } from "@stomp/stompjs";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -97,28 +103,28 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
   },
   hide: {
-    display: "none"
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   btnCount: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
+    background: "none",
+    border: "none",
+    cursor: "pointer",
     paddingTop: 14,
-    color: '#3250a8',
+    color: "#3250a8",
   },
 }));
 
@@ -152,6 +158,8 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
+// const SOCKET_URL = "ws://localhost:8080/ws/group-order";
+
 const Header = ({ isOpen, onHandleOpen }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -166,11 +174,40 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order);
+  const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
 
   const [open, setOpen] = React.useState(false);
 
+  // useEffect(() => {
+  //   let onConnected = () => {
+  //     console.log("Connected!!");
+  //     client.subscribe("/data", function (msg) {
+  //       // console.log(msg);
+  //       if (msg.body) {
+  //         var jsonBody = JSON.parse(msg.body);
+  //         setDataGroupOrderDetails(jsonBody);
+  //       }
+  //     });
+  //   };
+
+  //   let onDisconnected = () => {
+  //     console.log("Disconnected!");
+  //   };
+
+  //   const client = new Client({
+  //     brokerURL: SOCKET_URL,
+  //     reconnectDelay: 5000,
+  //     heartbeatIncoming: 4000,
+  //     heartbeatOutgoing: 4000,
+  //     onConnect: onConnected,
+  //     onDisconnect: onDisconnected,
+  //   });
+
+  //   client.activate();
+  // }, []);
+
   useEffect(() => {
-    setOpen(isOpen)
+    setOpen(isOpen);
     if (auth?.user?.token) {
       dispatch(UserFindByUsernameAction(auth.user.username));
       dispatch(OrderFindAction(auth.user.id));
@@ -218,11 +255,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandleLogout = () => {
-    AuthLogoutAction()(dispatch).then(res => {
+    AuthLogoutAction()(dispatch).then((res) => {
       setAnchorElAccount(null);
       history.push("/home");
     });
-
   };
 
   const onHandleFavorite = () => {
@@ -231,7 +267,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
     } else {
       Notification.error("Vui lòng đăng nhập !");
     }
-  }
+  };
 
   const list = () => (
     <div
@@ -255,9 +291,24 @@ const Header = ({ isOpen, onHandleOpen }) => {
     </div>
   );
 
+  useEffect(() => {
+    const username = auth?.user?.username;
+    const type = "team";
+    GroupOrderFindAllAction({ username, type })(dispatch);
+  }, [auth?.user?.username, dispatch]);
+
   const handleDrawerOpenGroup = () => {
-    onHandleOpen(true);
-    setOpen(true);
+    if (auth?.user?.token) {
+      onHandleOpen(true);
+      setOpen(true);
+
+      const username = auth?.user?.username;
+      const type = "team";
+
+      GroupOrderFindAllAction({ username, type })(dispatch);
+    } else {
+      Notification.error("Vui lòng đăng nhập !");
+    }
   };
 
   const handleDrawerCloseGroup = () => {
@@ -265,13 +316,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {
-    dispatch(OrderUpdateQuantity({ orderDetailId, action }))
-  }
+    dispatch(OrderUpdateQuantity({ orderDetailId, action }));
+  };
 
   const onHandleDeleteOrderDetail = (id) => {
     dispatch(OrderDelteOrderDetail(id));
-  }
-
+  };
 
   return (
     <AppBar style={{ backgroundColor: "white" }}>
@@ -328,7 +378,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
           </Badge>
 
           <Badge
-            badgeContent={20}
+            badgeContent={
+              dataGroupOrderDetails &&
+              dataGroupOrderDetails?.groupOrderInfoResponses?.length
+            }
             color="secondary"
             style={{ marginRight: 20 }}
           >
@@ -558,225 +611,212 @@ const Header = ({ isOpen, onHandleOpen }) => {
         anchor="right"
         open={open}
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.drawerHeader} >
+        <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerCloseGroup}>
-            {theme.direction === "rtl" ? (
-              <ClearIcon />
-            ) : (
-              <ClearIcon />
-            )}
+            {theme.direction === "rtl" ? <ClearIcon /> : <ClearIcon />}
           </IconButton>
-          <Typography variant='h6' style={{ marginLeft: 100 }}>Đặt hàng nhóm</Typography>
+          <Typography variant="h6" style={{ marginLeft: 100 }}>
+            ĐẶT HÀNG NHÓM
+          </Typography>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20 }}>
-          <Button variant='contained' color='secondary' style={{ marginRight: 10 }}>Xoá</Button>
-          <Button variant='contained' color='primary'>Mời bạn</Button>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: 20,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            style={{ marginRight: 10 }}
+          >
+            Xoá
+          </Button>
+          <Button variant="contained" color="primary">
+            Mời bạn
+          </Button>
         </div>
 
         <Divider style={{ marginTop: 10 }} />
 
         <div style={{ marginTop: 10, overflowY: "scroll", height: 550 }}>
-          <div style={{ paddingLeft: 20, paddingRight: 20 }}>
-            <div style={{ display: 'flex' }}>
-              <div style={{ marginLeft: 20 }}>
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt="Avatar"
-                    className={classes.small}
-                    src={customer?.linkImage ?? logo}
-                    style={{ marginRight: 10 }}
-                  />
-                </StyledBadge>
-              </div>
-              <Typography style={{ marginLeft: 10, marginTop: 8, color: 'red' }}><b>{customer.fullName}</b></Typography>
-            </div>
-            <Divider style={{ marginTop: 5 }} />
+          {dataGroupOrderDetails &&
+            dataGroupOrderDetails?.groupOrderInfoResponses?.map(
+              (item, index) => (
+                <div key={index}>
+                  {Object.is(index, 1) && (
+                    <Typography
+                      style={{
+                        marginLeft: 30,
+                        marginTop: 20,
+                        marginBottom: 10,
+                      }}
+                    >
+                      Bạn của {customer.fullName}
+                    </Typography>
+                  )}
+                  <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+                    <div style={{ display: "flex", position: "relative" }}>
+                      <div style={{ marginLeft: 20 }}>
+                        <StyledBadge
+                          overlap="circular"
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                          }}
+                          variant="dot"
+                        >
+                          {Object.is(index, 0) ? (
+                            <Avatar
+                              alt="Avatar"
+                              className={classes.small}
+                              src={customer?.linkImage ?? logo}
+                              style={{ marginRight: 10 }}
+                            />
+                          ) : (
+                            <Avatar
+                              alt="Avatar"
+                              className={classes.small}
+                              src={logo}
+                              style={{ marginRight: 10 }}
+                            />
+                          )}
+                        </StyledBadge>
+                      </div>
+                      <Typography
+                        style={{ marginLeft: 10, marginTop: 8, color: "red" }}
+                      >
+                        <b>{item.username}</b>
+                      </Typography>
+                      {!Object.is(index, 0) && (
+                        <ClearIcon
+                          style={{
+                            position: "absolute",
+                            top: 9,
+                            right: 30,
+                            color: "red",
+                            cursor: "pointer",
+                          }}
+                        />
+                      )}
+                    </div>
+                    <Divider style={{ marginTop: 5 }} />
 
-            <div style={{ marginTop: 10, overflowY: "scroll", height: 180 }}>
-              {order?.orderDetails?.map((item) => (
-                <div
-                  style={{
-                    justifyContent: 'space-between',
-                    display: "flex",
-                    backgroundColor: "transparent",
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    marginTop: 10
-                  }}
-                  key={item.id}
-                >
-                  <img
-                    alt={item.product.name}
-                    src={item.product.linkImage}
-                    width={50}
-                  />
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ color: "#416C48" }}>
-                      {item.product.name}
-                    </span>
-                    <span style={{ color: "red", fontSize: 10 }}>
-                      {item.sizeOptionId}:{item.addOptionId}
-                    </span>
+                    <div
+                      style={{
+                        marginTop: 10,
+                        overflowY: "scroll",
+                        height: 180,
+                      }}
+                    >
+                      {item?.products?.map((product, productID) => (
+                        <div
+                          style={{
+                            justifyContent: "space-between",
+                            display: "flex",
+                            backgroundColor: "transparent",
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            marginTop: 10,
+                          }}
+                          key={productID}
+                        >
+                          <img
+                            alt={product.name}
+                            src={product.linkImage}
+                            width={50}
+                          />
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
+                            <span style={{ color: "#416C48" }}>
+                              {product.name}
+                            </span>
+                            <span style={{ color: "red", fontSize: 10 }}>
+                              {item.sizeOptionIds[productID]}:
+                              {item.addOptionIds[productID]}
+                            </span>
+                          </div>
+                          <div style={{ display: "flex", marginLeft: 20 }}>
+                            <div
+                              className={classes.btnCount}
+                              onClick={() => {
+                                if (item.quantities[productID] > 1) {
+                                  onHandleUpdateQuantity(product.id, "minus");
+                                }
+                              }}
+                            >
+                              <Remove />
+                            </div>
+                            <p
+                              style={{
+                                marginLeft: 20,
+                                marginRight: 20,
+                                fontSize: 16,
+                              }}
+                            >
+                              {item.quantities[productID]}
+                            </p>
+                            <div
+                              className={classes.btnCount}
+                              onClick={() => {
+                                onHandleUpdateQuantity(product.id, "plus");
+                              }}
+                            >
+                              <Add />
+                            </div>
+                          </div>
+                          <DeleteOutline
+                            style={{
+                              color: "red",
+                              cursor: "pointer",
+                              marginTop: 14,
+                            }}
+                            onClick={() => {
+                              onHandleDeleteOrderDetail(product.id);
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', marginLeft: 20 }}>
-                    <div className={classes.btnCount} onClick={() => { if (item.quantity > 1) { onHandleUpdateQuantity(item.id, "minus") } }}><Remove /></div>
-                    <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
-                    <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
-                  </div>
-                  <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginTop: 14 }} onClick={() => { onHandleDeleteOrderDetail(item.id) }} />
-
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <Typography style={{ marginLeft: 30, marginTop: 20 }}><b>Bạn của {customer.fullName}</b></Typography>
-          <div style={{ marginTop: 10, paddingLeft: 20, paddingRight: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', marginLeft: 20 }}>
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt="Avatar"
-                    className={classes.small}
-                    src={customer?.linkImage ?? logo}
-                    style={{ marginRight: 10 }}
-                  />
-                </StyledBadge>
-                <Typography style={{ marginLeft: 10, marginTop: 8, color: 'red' }}><b>Lyly</b></Typography>
-              </div>
-              <ClearIcon style={{ marginRight: 30, marginTop: 10, color: 'red', cursor: 'pointer' }} />
-            </div>
-            <Divider style={{ marginTop: 5 }} />
-
-            <div style={{ marginTop: 10, overflowY: "scroll", height: 180 }}>
-              {order?.orderDetails?.map((item) => (
-                <div
-                  style={{
-                    justifyContent: 'space-between',
-                    display: "flex",
-                    backgroundColor: "transparent",
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    marginTop: 10
-                  }}
-                  key={item.id}
-                >
-                  <img
-                    alt={item.product.name}
-                    src={item.product.linkImage}
-                    width={50}
-                  />
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ color: "#416C48" }}>
-                      {item.product.name}
-                    </span>
-                    <span style={{ color: "red", fontSize: 10 }}>
-                      {item.sizeOptionId}:{item.addOptionId}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', marginLeft: 20 }}>
-                    <div className={classes.btnCount} onClick={() => { if (item.quantity > 1) { onHandleUpdateQuantity(item.id, "minus") } }}><Remove /></div>
-                    <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
-                    <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
-                  </div>
-                  <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginTop: 14 }} onClick={() => { onHandleDeleteOrderDetail(item.id) }} />
-
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ marginTop: 10, paddingLeft: 20, paddingRight: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', marginLeft: 20 }}>
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt="Avatar"
-                    className={classes.small}
-                    src={customer?.linkImage ?? logo}
-                    style={{ marginRight: 10 }}
-                  />
-                </StyledBadge>
-                <Typography style={{ marginLeft: 10, marginTop: 8, color: 'red' }}><b>NaNa</b></Typography>
-              </div>
-              <ClearIcon style={{ marginRight: 30, marginTop: 10, color: 'red', cursor: 'pointer' }} />
-            </div>
-            <Divider style={{ marginTop: 5 }} />
-            <div style={{ marginTop: 10, overflowY: "scroll", height: 180 }}>
-              {order?.orderDetails?.map((item) => (
-                <div
-                  style={{
-                    justifyContent: 'space-between',
-                    display: "flex",
-                    backgroundColor: "transparent",
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    marginTop: 10
-                  }}
-                  key={item.id}
-                >
-                  <img
-                    alt={item.product.name}
-                    src={item.product.linkImage}
-                    width={50}
-                  />
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ color: "#416C48" }}>
-                      {item.product.name}
-                    </span>
-                    <span style={{ color: "red", fontSize: 10 }}>
-                      {item.sizeOptionId}:{item.addOptionId}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', marginLeft: 20 }}>
-                    <div className={classes.btnCount} onClick={() => { if (item.quantity > 1) { onHandleUpdateQuantity(item.id, "minus") } }}><Remove /></div>
-                    <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
-                    <div className={classes.btnCount} onClick={() => { onHandleUpdateQuantity(item.id, "plus") }}><Add /></div>
-                  </div>
-                  <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginTop: 14 }} onClick={() => { onHandleDeleteOrderDetail(item.id) }} />
-
-                </div>
-              ))}
-            </div>
-          </div>
+              )
+            )}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-          <Typography variant="h6">Tổng tiền</Typography>
-          <Typography variant="h6">{(order?.totalPrice)?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</Typography>
+        {dataGroupOrderDetails && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              paddingLeft: 20,
+              paddingRight: 20,
+              marginTop: 20,
+            }}
+          >
+            <Typography variant="h6">Tổng tiền</Typography>
+            <Typography variant="h6">
+              {dataGroupOrderDetails?.totalPriceGroup?.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              }) ?? 0}
+            </Typography>
+          </div>
+        )}
+
+        <div
+          style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
+        >
+          <Button variant="contained" color="primary" fullWidth>
+            Thanh toán
+          </Button>
         </div>
-
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-          <Button variant='contained' color='primary' fullWidth>Thanh toán</Button>
-        </div>
-
-
-
       </Drawer>
     </AppBar>
   );

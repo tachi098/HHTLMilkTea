@@ -2,12 +2,12 @@ import AuthService from "../../services/AuthService";
 import { login, logout } from "../reducers/AuthReducer";
 import { logoutCustomer } from "../reducers/UserReducer";
 import { logoutOrder } from "../reducers/OrderReducer";
+import { getGroupOderWithUsernameLogout } from "../reducers/GroupOrderReducer";
 
 export const AuthLoginAction = (data) => async (dispatch) => {
   try {
-
     if (Object.is(data.username, "admin")) {
-      data.username = "hhtlmilktea"
+      data.username = "hhtlmilktea";
     }
     const res = await AuthService.login(data);
     dispatch(login(res !== undefined ? res.data : { error: 401 }));
@@ -23,11 +23,11 @@ export const AuthLogoutAction = () => async (dispatch) => {
     dispatch(logout());
     dispatch(logoutCustomer());
     dispatch(logoutOrder());
+    dispatch(getGroupOderWithUsernameLogout());
     return "Logout";
   } catch (err) {
-    console.error(Error)
+    console.error(err);
   }
-
 };
 
 export const AuthRegisterAction = (data) => async (dispatch) => {

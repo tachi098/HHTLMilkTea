@@ -13,5 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/message").setAllowedOriginPatterns("*");
         registry.addEndpoint("/ws/message").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws/group-order").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws/group-order").setAllowedOriginPatterns("*").withSockJS();
     }
 }
