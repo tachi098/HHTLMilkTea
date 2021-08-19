@@ -1,8 +1,14 @@
 import AuthService from "../../services/AuthService";
 import { login, logout } from "../reducers/AuthReducer";
+import { logoutCustomer } from "../reducers/UserReducer";
+import { logoutOrder } from "../reducers/OrderReducer";
 
 export const AuthLoginAction = (data) => async (dispatch) => {
   try {
+
+    if (Object.is(data.username, "admin")) {
+      data.username = "hhtlmilktea"
+    }
     const res = await AuthService.login(data);
     dispatch(login(res !== undefined ? res.data : { error: 401 }));
     return res !== undefined ? res.data : { error: 401 };
@@ -11,9 +17,17 @@ export const AuthLoginAction = (data) => async (dispatch) => {
   }
 };
 
-export const AuthLogoutAction = () => (dispatch) => {
-  AuthService.logout();
-  dispatch(logout());
+export const AuthLogoutAction = () => async (dispatch) => {
+  try {
+    await AuthService.logout();
+    dispatch(logout());
+    dispatch(logoutCustomer());
+    dispatch(logoutOrder());
+    return "Logout";
+  } catch (err) {
+    console.error(Error)
+  }
+
 };
 
 export const AuthRegisterAction = (data) => async (dispatch) => {

@@ -168,7 +168,7 @@ const PaymentForm = () => {
                                 <b>Ghi chú đơn hàng: </b>{address?.note === "" ? "Không có ghi chú" : address?.note}
                             </Typography>
                             <Link to="" style={{ textDecoration: 'none' }} onClick={() => { window.location.href = "/checkout" }} variant="body2">
-                                chỉnh sửa
+                                Chỉnh sửa
                             </Link>
                         </Grid>
                         <Grid item sm={12} md={5} >

@@ -171,7 +171,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   useEffect(() => {
     setOpen(isOpen)
-    if (auth.user !== null) {
+    if (auth?.user?.token) {
       dispatch(UserFindByUsernameAction(auth.user.username));
       dispatch(OrderFindAction(auth.user.id));
     }
@@ -212,17 +212,21 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandelRedirectCart = () => {
-    history.push("/shoppingcart");
+    if (auth?.user?.token) {
+      history.push("/shoppingcart");
+    }
   };
 
   const onHandleLogout = () => {
-    dispatch(AuthLogoutAction());
-    setAnchorElAccount(null);
-    history.push("/home");
+    AuthLogoutAction()(dispatch).then(res => {
+      setAnchorElAccount(null);
+      history.push("/home");
+    });
+
   };
 
   const onHandleFavorite = () => {
-    if (auth.user) {
+    if (auth?.user?.token) {
       history.push("/wishlist");
     } else {
       Notification.error("Vui lòng đăng nhập !");
@@ -297,7 +301,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
         <img src={logo} alt="Milktea" width={50} loading="lazy" />
         <div>
           <Badge
-            badgeContent={auth.user !== null ? quantity : 0}
+            badgeContent={auth?.user?.token !== null ? quantity : 0}
             color="secondary"
             style={{ marginRight: 20 }}
           >
@@ -311,7 +315,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
           </Badge>
 
           <Badge
-            badgeContent={auth?.user !== null ? wishlist?.quantity : 0}
+            badgeContent={auth?.user?.token ? wishlist?.quantity : 0}
             color="secondary"
             style={{ marginRight: 20 }}
           >
