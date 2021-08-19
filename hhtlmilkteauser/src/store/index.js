@@ -8,6 +8,7 @@ import HistoryReducer from "./reducers/HistoryReducer";
 import SpinnerReducer from "./reducers/SpinnerReducer";
 import WheelReducer from "./reducers/WheelReducer";
 import VoucherReducer from "./reducers/VoucherReducer";
+import GroupOrderReducer from "./reducers/GroupOrderReducer";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     spinner: SpinnerReducer,
     wheel: WheelReducer,
     voucher: VoucherReducer,
+    groupOrder: GroupOrderReducer,
   },
 });
 
