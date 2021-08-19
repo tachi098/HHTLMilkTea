@@ -224,7 +224,7 @@ const Wishlist = () => {
     } = useForm();
 
     const handleClickOpen = (item) => {
-        if (auth.user) {
+        if (auth?.user?.token) {
             setProductSelect(item);
             setCurrentPrice(item.price)
             const items = [...item.sizeOptions];

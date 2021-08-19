@@ -37,6 +37,11 @@ const orderSlice = createSlice({
             state.quantity = 0;
             state.totalPrice = 0;
         },
+        logoutOrder: (state, action) => {
+            state.order = {};
+            state.quantity = 0;
+            state.totalPrice = 0;
+        }
     },
 });
 
@@ -49,6 +54,7 @@ export const {
     deleteOrderDetail,
     find,
     update,
-    checkoutSuccess
+    checkoutSuccess,
+    logoutOrder,
 } = actions;
 export default reducer;

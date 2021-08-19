@@ -9,7 +9,7 @@ const PrivateRoute = ({ children, ...rest }) => {
     <Route
       {...rest}
       render={() =>
-        auth.user ? (
+        auth?.user?.token ? (
           <>{children}</>
         ) : (
           <Redirect to="/signin" />

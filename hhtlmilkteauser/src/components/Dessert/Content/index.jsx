@@ -199,7 +199,7 @@ const Content = () => {
     }, [dispatch, valueToOrderBy, valueToSortDir, keyword]);
 
     const handleClickOpen = (item) => {
-        if (auth.user) {
+        if (auth?.user?.token) {
             setProductSelect(item);
             setCurrentPrice(item.price * (item?.saleOff?.discount ? 1 - item?.saleOff?.discount : 1))
             setOpen(true);
@@ -215,7 +215,7 @@ const Content = () => {
     };
 
     const onHandleWishList = (product) => {
-        if (auth.user) {
+        if (auth?.user?.token) {
             const userId = auth.user.id;
             dispatch(udpateWishlist({ userId: userId, productId: product.id }));
             Notification.success("Đã thêm sản phẩm vào yêu thích");
@@ -225,7 +225,7 @@ const Content = () => {
     }
 
     const onHandleWishListSelected = (product) => {
-        if (auth.user) {
+        if (auth?.user?.token) {
             const userId = auth.user.id;
             dispatch(udpateWishlist({ userId: userId, productId: product.id }));
             Notification.warn("Đã xoá sản phẩm khỏi yêu thích");
