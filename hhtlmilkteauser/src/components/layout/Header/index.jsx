@@ -313,6 +313,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   const handleDrawerCloseGroup = () => {
     setOpen(false);
+    onHandleOpen(false)
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {
