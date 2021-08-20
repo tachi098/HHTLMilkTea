@@ -39,8 +39,13 @@ import Notification from "../../../common/Notification";
 import ClearIcon from "@material-ui/icons/Clear";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import { Add, DeleteOutline, Remove } from "@material-ui/icons";
-import { GroupOrderFindAllAction } from "./../../../store/actions/GroupOrderAction";
-// import { Client } from "@stomp/stompjs";
+import {
+  GroupOrderFindAllAction,
+  GroupOrderShortURL,
+} from "./../../../store/actions/GroupOrderAction";
+import { Client } from "@stomp/stompjs";
+import Modal from "@material-ui/core/Modal";
+import TextField from "@material-ui/core/TextField";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -53,10 +58,28 @@ const sections = [
 
 const drawerWidth = 500;
 
+function getModalStyle() {
+  const top = 30;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     justifyContent: "space-between",
+  },
+  paper: {
+    position: "absolute",
+    width: 500,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
   toolbarTitle: {
     flex: 2,
@@ -158,7 +181,7 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
-// const SOCKET_URL = "ws://localhost:8080/ws/group-order";
+const SOCKET_URL = "ws://localhost:8080/ws/group-order";
 
 const Header = ({ isOpen, onHandleOpen }) => {
   const history = useHistory();
@@ -174,37 +197,56 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order);
-  const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
+  // const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
+  const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState({});
 
   const [open, setOpen] = React.useState(false);
 
-  // useEffect(() => {
-  //   let onConnected = () => {
-  //     console.log("Connected!!");
-  //     client.subscribe("/data", function (msg) {
-  //       // console.log(msg);
-  //       if (msg.body) {
-  //         var jsonBody = JSON.parse(msg.body);
-  //         setDataGroupOrderDetails(jsonBody);
-  //       }
-  //     });
-  //   };
+  const [openModal, setOpenModal] = useState(false);
+  const [modalStyle] = React.useState(getModalStyle);
+  const [shortUrlRes, setShortUrlRes] = useState("");
+  const [copy, setCopy] = useState("Sao chép");
 
-  //   let onDisconnected = () => {
-  //     console.log("Disconnected!");
-  //   };
+  const handleOpenModal = () => {
+    const longUrl = `http://${window.location.host}?username=${auth?.user?.username}&type=team&orderID=${order?.id}`;
+    GroupOrderShortURL({ longUrl })(dispatch).then((res) => {
+      setShortUrlRes(`http://${res.shortUrl}`);
+      setCopy("Sao chép");
+      setOpenModal(true);
+    });
+  };
 
-  //   const client = new Client({
-  //     brokerURL: SOCKET_URL,
-  //     reconnectDelay: 5000,
-  //     heartbeatIncoming: 4000,
-  //     heartbeatOutgoing: 4000,
-  //     onConnect: onConnected,
-  //     onDisconnect: onDisconnected,
-  //   });
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
-  //   client.activate();
-  // }, []);
+  useEffect(() => {
+    let onConnected = () => {
+      console.log("Connected!!");
+      client.subscribe("/data", function (msg) {
+        if (msg.body) {
+          var jsonBody = JSON.parse(msg.body);
+          // console.log({ jsonBody });
+          setDataGroupOrderDetails(jsonBody);
+        }
+      });
+    };
+
+    let onDisconnected = () => {
+      console.log("Disconnected!");
+    };
+
+    const client = new Client({
+      brokerURL: SOCKET_URL,
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      onConnect: onConnected,
+      onDisconnect: onDisconnected,
+    });
+
+    client.activate();
+  }, []);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -294,8 +336,9 @@ const Header = ({ isOpen, onHandleOpen }) => {
   useEffect(() => {
     const username = auth?.user?.username;
     const type = "team";
-    GroupOrderFindAllAction({ username, type })(dispatch);
-  }, [auth?.user?.username, dispatch]);
+    const orderID = order?.id;
+    GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+  }, [auth?.user?.username, dispatch, order?.id]);
 
   const handleDrawerOpenGroup = () => {
     if (auth?.user?.token) {
@@ -304,16 +347,43 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
       const username = auth?.user?.username;
       const type = "team";
+      const orderID = order?.id;
 
-      GroupOrderFindAllAction({ username, type })(dispatch);
+      GroupOrderFindAllAction({ username, type, orderID })(dispatch);
     } else {
       Notification.error("Vui lòng đăng nhập !");
     }
   };
 
+  const handleInvite = () => {
+    navigator.clipboard.writeText(shortUrlRes);
+    setCopy("Đã sao chép");
+  };
+
+  const modal = (
+    <div style={modalStyle} className={classes.paper}>
+      <h4 id="simple-modal-title">ĐƯỜNG DẪN CHIA SẼ</h4>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <TextField
+          disabled
+          id="standard-disabled"
+          style={{ width: 300 }}
+          defaultValue={shortUrlRes}
+        />
+        <Button
+          variant="contained"
+          style={{ width: 130, height: 33 }}
+          onClick={handleInvite}
+        >
+          {copy}
+        </Button>
+      </div>
+    </div>
+  );
+
   const handleDrawerCloseGroup = () => {
     setOpen(false);
-    onHandleOpen(false)
+    onHandleOpen(false);
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {
@@ -638,9 +708,17 @@ const Header = ({ isOpen, onHandleOpen }) => {
           >
             Xoá
           </Button>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleOpenModal}>
             Mời bạn
           </Button>
+          <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {modal}
+          </Modal>
         </div>
 
         <Divider style={{ marginTop: 10 }} />

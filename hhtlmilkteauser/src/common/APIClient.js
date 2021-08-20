@@ -27,7 +27,7 @@ api.interceptors.response.use(
   (error) => {
     if (!error.response) {
       localStorage.removeItem("user");
-      window.location.href = "/";
+      // window.location.href = "/";
       return;
     }
 

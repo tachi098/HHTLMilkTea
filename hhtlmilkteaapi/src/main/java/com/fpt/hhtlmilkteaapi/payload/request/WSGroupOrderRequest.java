@@ -13,5 +13,6 @@ public class WSGroupOrderRequest {
 
     private String username;
     private String type;
+    private String orderID;
 
 }
