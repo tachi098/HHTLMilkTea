@@ -131,12 +131,15 @@ const CheckAddress = () => {
                                     <TextField
                                         name="phone"
                                         label="Số điện thoại"
-                                        inputRef={register({ required: true })}
+                                        inputRef={register({
+                                            required: "Số điện thoại không được để trống",
+                                            pattern: { value: /^0[1-9]{1}[0-9]{8}$/, message: "Số điện thoại không hợp lệ" }
+                                        })}
                                         fullWidth
                                     />
-                                    {errors.phone && (
+                                    {errors.phone?.message && (
                                         <FormHelperText style={{ color: "red" }}>
-                                            Số điện thoại không được để trống
+                                            {errors.phone?.message}
                                         </FormHelperText>
                                     )}
                                 </Grid>
