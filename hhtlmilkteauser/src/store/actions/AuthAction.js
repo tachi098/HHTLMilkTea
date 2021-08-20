@@ -3,6 +3,7 @@ import { login, logout } from "../reducers/AuthReducer";
 import { logoutCustomer } from "../reducers/UserReducer";
 import { logoutOrder } from "../reducers/OrderReducer";
 import { getGroupOderWithUsernameLogout } from "../reducers/GroupOrderReducer";
+import GroupOrderService from "../../services/GroupOrderService";
 
 export const AuthLoginAction = (data) => async (dispatch) => {
   try {
@@ -19,6 +20,11 @@ export const AuthLoginAction = (data) => async (dispatch) => {
 
 export const AuthLogoutAction = () => async (dispatch) => {
   try {
+    await GroupOrderService.getGroupOderWithUsernameWS({
+      username: "logout",
+      type: "logout",
+      orderID: "logout",
+    });
     await AuthService.logout();
     dispatch(logout());
     dispatch(logoutCustomer());
