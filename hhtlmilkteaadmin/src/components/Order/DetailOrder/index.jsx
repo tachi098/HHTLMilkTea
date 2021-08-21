@@ -109,7 +109,7 @@ const HistoryDetail = () => {
 
     const handleDelete = (id) => {
         confirmAlert({
-            title: "THÔNG BÁO",
+            title: "HỦY ĐƠN HÀNG",
             message: "Bạn có chắc muốn hủy đơn hàng này không?",
             buttons: [
                 {
@@ -121,6 +121,51 @@ const HistoryDetail = () => {
                 }
             ],
         });
+    };
+
+    const handleShippingStatus = (id) => {
+        dispatch(OrderStatusUpdate({ id, status: 2 }));
+        history.push("/order/")
+        Notification.success("Đã hủy thành công");
+    };
+
+    const handleCompleteStatus = (id) => {
+        dispatch(OrderStatusUpdate({ id, status: 3 }));
+        history.push("/order/")
+        Notification.success("Đã hủy thành công");
+    };
+
+    const handleUpdate = (id, status) => {
+        if (status === 1) {
+            confirmAlert({
+                title: "CẬP NHẬT TRẠNG THÁI",
+                message: "Bạn muốn chuyển sang trạng thái VẬN CHUYỂN?",
+                buttons: [
+                    {
+                        label: "Có",
+                        onClick: () => handleShippingStatus(id),
+                    },
+                    {
+                        label: "Không",
+                    }
+                ],
+            });
+        }
+        if (status === 2) {
+            confirmAlert({
+                title: "CẬP NHẬT TRẠNG THÁI",
+                message: "Bạn muốn chuyển sang trạng thái HOÀN THÀNH?",
+                buttons: [
+                    {
+                        label: "Có",
+                        onClick: () => handleCompleteStatus(id),
+                    },
+                    {
+                        label: "Không",
+                    }
+                ],
+            });
+        }
     };
 
     return (
@@ -236,6 +281,14 @@ const HistoryDetail = () => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                {(order.status === 1 || order.status === 2) && (<Button
+                                    style={{ margin: 10 }}
+                                    variant="contained"
+                                    className={classes.button}
+                                    onClick={() => handleUpdate(order.id, order.status)}
+                                >
+                                    CẬP NHẬT TRẠNG THÁI
+                                </Button>)}
                                 {order.status === 1 && (<Button
                                     style={{ margin: 10 }}
                                     variant="contained"

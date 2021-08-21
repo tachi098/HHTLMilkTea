@@ -1,6 +1,6 @@
 import { Card, Grid, makeStyles, Tabs, Typography, Tab, Box, withStyles, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Select, Chip } from "@material-ui/core"
 import React, { useState, useEffect } from "react"
-import { LocalShippingOutlined, DeleteOutline, Visibility } from "@material-ui/icons"
+import { LocalShippingOutlined, DeleteOutline, Visibility, CreateOutlined } from "@material-ui/icons"
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useDispatch, useSelector } from "react-redux";
@@ -274,12 +274,54 @@ const Order = () => {
 
     const handleDelete = (id) => {
         confirmAlert({
-            title: "THÔNG BÁO",
+            title: "HỦY ĐƠN HÀNG",
             message: "Bạn có chắc muốn hủy đơn hàng này không?",
             buttons: [
                 {
                     label: "Có",
                     onClick: () => handleOnDelete(id),
+                },
+                {
+                    label: "Không",
+                }
+            ],
+        });
+    };
+
+    const handleOnShippingStatus = (id) => {
+        dispatch(OrderStatusUpdate({ id, status: 2 }));
+        Notification.success("Đã cập nhật thành công");
+    };
+
+    const handleShippingStatus = (id) => {
+        confirmAlert({
+            title: "CẬP NHẬT TRẠNG THÁI",
+            message: "Bạn muốn chuyển sang trạng thái VẬN CHUYỂN?",
+            buttons: [
+                {
+                    label: "Có",
+                    onClick: () => handleOnShippingStatus(id),
+                },
+                {
+                    label: "Không",
+                }
+            ],
+        });
+    };
+
+    const handleOnCompleteStatus = (id) => {
+        dispatch(OrderStatusUpdate({ id, status: 3 }));
+        Notification.success("Đã cập nhật thành công");
+    };
+
+    const handleCompleteStatus = (id) => {
+        confirmAlert({
+            title: "CẬP NHẬT TRẠNG THÁI",
+            message: "Bạn muốn chuyển sang trạng thái HOÀN THÀNH?",
+            buttons: [
+                {
+                    label: "Có",
+                    onClick: () => handleOnCompleteStatus(id),
                 },
                 {
                     label: "Không",
@@ -400,6 +442,26 @@ const Order = () => {
                                                             }}
                                                             onClick={() => history.push("/order/detail", { order: order })}
                                                         />
+                                                        {order.status===1 && (
+                                                            <CreateOutlined
+                                                            style={{
+                                                                color: "#3F51B5",
+                                                                cursor: "pointer",
+                                                                marginRight: 10,
+                                                            }}
+                                                            onClick={() => handleShippingStatus(order.id)}
+                                                        />
+                                                        )}
+                                                        {order.status===2 && (
+                                                            <CreateOutlined
+                                                            style={{
+                                                                color: "#3F51B5",
+                                                                cursor: "pointer",
+                                                                marginRight: 10,
+                                                            }}
+                                                            onClick={() => handleCompleteStatus(order.id)}
+                                                        />
+                                                        )}
                                                         {order.status === 1 && order.payment === 1 && (
                                                             <DeleteOutline
                                                                 style={{ color: "red", cursor: "pointer" }}
@@ -515,6 +577,7 @@ const Order = () => {
                                                             }}
                                                             onClick={() => history.push("/order/detail", { order: order })}
                                                         />
+                                                        
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

@@ -19,6 +19,7 @@ import Profile from "./Profile";
 import History from "./History";
 import Voucher from "./Voucher";
 import HistoryDetail from "./History/HistoryDetail";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,20 +53,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Account = () => {
   const classes = useStyles();
-
+  const { customer } = useSelector((state) => state.customer);
   return (
     <React.Fragment>
       <Grid container className={classes.container}>
         <Grid item md={2} xs={4} className={classes.navbar}>
           <div className={classes.navHeader}>
             <Avatar
-              alt="Remy Sharp"
-              src="https://material-ui.com/static/images/avatar/1.jpg"
+              alt="https://material-ui.com/static/images/avatar/1.jpg"
+              src={customer.linkImage}
               className={classes.large}
             />
             <div>
               <Typography className={classes.username}>
-                <b>Pham Quang Huy</b>
+                <b>{customer.fullName}</b>
               </Typography>
             </div>
           </div>

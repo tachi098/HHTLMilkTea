@@ -13,6 +13,12 @@ class ProductService {
     delete = (id) => {
         return api.put(`/product/${id}`);
     }
+    showSaleOff = (query) => {
+        return api.get("/product/saleoff", { params: query });
+    };
+    showSaleOffProduct = (query) => {
+        return api.get("/product/saleoff?saleOff=add", { params: query });
+    };
 }
 
 export default new ProductService();

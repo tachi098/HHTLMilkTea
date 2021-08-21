@@ -35,9 +35,17 @@ const ProductSlice = createSlice({
         existingProduct.deletedAt = deletedAt;
       }
     },
+    getSaleOff: (state, action) => {
+      state.products = action.payload.content;
+      state.totalPages = action.payload.totalPages;
+    },
+    getSaleOffProduct: (state, action) => {
+      state.products = action.payload.content;
+      state.totalPages = action.payload.totalPages;
+    },
   },
 });
 
 const { reducer, actions } = ProductSlice;
-export const { getProducts, productAdded, productUpdate, productDelete } = actions;
+export const { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct } = actions;
 export default reducer;
