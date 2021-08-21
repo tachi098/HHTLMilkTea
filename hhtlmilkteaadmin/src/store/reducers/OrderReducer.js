@@ -26,11 +26,24 @@ const OrderSlice = createSlice({
             state.listFail = action.payload.content;
         },
         onStatus: (state, action) => {
-            const order = state.listProcess.find((o) => o.id === action.payload.id);
-            order.status = action.payload.status;
-            console.log(order);
-            state.listProcess = state.listProcess.filter((o) => o.id !== action.payload.id);
-            state.listFail.push(order);
+            if(action.payload.status === 2){
+                const existingOrder = state.listProcess.find((order) => order.id === action.payload.id);
+                if(existingOrder){
+                    existingOrder.status = 2;
+                }
+            }
+            if(action.payload.status === 3){
+                const order = state.listProcess.find((o) => o.id === action.payload.id);
+                order.status = action.payload.status;
+                state.listProcess = state.listProcess.filter((o) => o.id !== action.payload.id);
+                state.listSuccess.push(order);
+            }
+            if(action.payload.status === 4){
+                const order = state.listProcess.find((o) => o.id === action.payload.id);
+                order.status = action.payload.status;
+                state.listProcess = state.listProcess.filter((o) => o.id !== action.payload.id);
+                state.listFail.push(order);
+            }
         },
     },
 });
