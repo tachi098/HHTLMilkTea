@@ -1,4 +1,4 @@
-import { getProducts, productAdded, productUpdate, productDelete } from "./../reducers/ProductReducer";
+import { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct } from "./../reducers/ProductReducer";
 import ProductService from "./../../services/ProductService";
 
 export const ProductGetAll = (query) => async (dispatch) => {
@@ -70,5 +70,25 @@ export const deleteProduct = (data) => async (dispatch) => {
     dispatch(productDelete(res.data));
   } catch (e) {
     return console.error(e);
+  }
+};
+
+export const ProductSaleOff = (query) => async (dispatch) => {
+  try {
+    await ProductService.showSaleOff(query)
+      .then((res) => dispatch(getSaleOff(res.data)))
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const ShowProductSaleOff = (query) => async (dispatch) => {
+  try {
+    await ProductService.showSaleOffProduct(query)
+      .then((res) => dispatch(getSaleOffProduct(res.data)))
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
   }
 };

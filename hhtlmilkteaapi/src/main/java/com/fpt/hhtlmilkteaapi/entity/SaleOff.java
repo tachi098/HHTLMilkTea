@@ -46,4 +46,10 @@ public class SaleOff implements Serializable {
     @NonNull
     @JsonIgnore
     private Product product;
+
+    public SaleOff(double discount, Date endDate, Product product) {
+        this.discount = discount;
+        this.endDate = endDate;
+        this.product = product;
+    }
 }
