@@ -42,6 +42,8 @@ import { Add, DeleteOutline, Remove } from "@material-ui/icons";
 import {
   GroupOrderFindAllAction,
   GroupOrderShortURL,
+  GroupOrderDeleteMember,
+  GroupOrderDeleteGroupMembersAction,
 } from "./../../../store/actions/GroupOrderAction";
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
@@ -60,7 +62,7 @@ const drawerWidth = 500;
 
 function getModalStyle() {
   const top = 30;
-  const left = 50;
+  const left = 40;
 
   return {
     top: `${top}%`,
@@ -197,7 +199,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order);
-  // const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
+  const { shortUrl } = useSelector((state) => state.groupOrder);
   const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState({});
 
   const [open, setOpen] = React.useState(false);
@@ -207,8 +209,19 @@ const Header = ({ isOpen, onHandleOpen }) => {
   const [shortUrlRes, setShortUrlRes] = useState("");
   const [copy, setCopy] = useState("Sao chép");
 
+  const { search } = window.location;
+
   const handleOpenModal = () => {
-    const longUrl = `http://${window.location.host}?username=${auth?.user?.username}&type=team&orderID=${order?.id}`;
+    let longUrl = `http://${window.location.host}?username=${auth?.user?.username}&type=team&orderID=${order?.id}`;
+    if (
+      !Object.is(localStorage.getItem("member"), null) &&
+      !Object.is(localStorage.getItem("groupMember"), null)
+    ) {
+      const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+
+      longUrl = `http://${window.location.host}?username=${groupMember?.username}&type=team&orderID=${groupMember?.orderID}`;
+    }
+
     GroupOrderShortURL({ longUrl })(dispatch).then((res) => {
       setShortUrlRes(`http://${res.shortUrl}`);
       setCopy("Sao chép");
@@ -221,12 +234,43 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   useEffect(() => {
+    const setParams = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (
+            new URLSearchParams(search).get("username") &&
+            new URLSearchParams(search).get("type") &&
+            new URLSearchParams(search).get("orderID") &&
+            Object.is(localStorage.getItem("user"), null)
+          ) {
+            resolve(
+              localStorage.setItem(
+                "groupMember",
+                JSON.stringify({
+                  username: new URLSearchParams(search).get("username"),
+                  type: new URLSearchParams(search).get("type"),
+                  orderID: new URLSearchParams(search).get("orderID"),
+                })
+              )
+            );
+          } else {
+            resolve();
+          }
+        }, 300);
+      });
+    };
+
+    setParams().then((res) => history.replace("/home"));
+
+    return () => setParams();
+  }, [history, search]);
+
+  useEffect(() => {
     let onConnected = () => {
       console.log("Connected!!");
       client.subscribe("/data", function (msg) {
         if (msg.body) {
           var jsonBody = JSON.parse(msg.body);
-          // console.log({ jsonBody });
           setDataGroupOrderDetails(jsonBody);
         }
       });
@@ -341,15 +385,31 @@ const Header = ({ isOpen, onHandleOpen }) => {
   }, [auth?.user?.username, dispatch, order?.id]);
 
   const handleDrawerOpenGroup = () => {
-    if (auth?.user?.token) {
-      onHandleOpen(true);
-      setOpen(true);
+    const groupMember = JSON.parse(localStorage.getItem("groupMember"));
 
-      const username = auth?.user?.username;
-      const type = "team";
-      const orderID = order?.id;
+    if (
+      auth?.user?.token ||
+      (Object.is(groupMember?.type, "team") &&
+        !Object.is(localStorage.getItem("member"), null))
+    ) {
+      if (
+        order?.id ||
+        (groupMember?.orderID &&
+          !Object.is(localStorage.getItem("member"), null))
+      ) {
+        onHandleOpen(true);
+        setOpen(true);
 
-      GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        const username = groupMember
+          ? groupMember?.username
+          : auth?.user?.username;
+        const type = "team";
+        const orderID = groupMember ? groupMember?.orderID : order?.id;
+
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      } else {
+        Notification.info("Mua nhóm, phải có ít nhất một sản phẩm!");
+      }
     } else {
       Notification.error("Vui lòng đăng nhập !");
     }
@@ -387,11 +447,47 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {
-    dispatch(OrderUpdateQuantity({ orderDetailId, action }));
+    const username = auth?.user?.username;
+    const type = "team";
+    const orderID = order?.id;
+    dispatch(
+      OrderUpdateQuantity(
+        { orderDetailId, action },
+        { username, type, orderID }
+      )
+    );
   };
 
   const onHandleDeleteOrderDetail = (id) => {
-    dispatch(OrderDelteOrderDetail(id));
+    const username = auth?.user?.username;
+    const type = "team";
+    const orderID = order?.id;
+    dispatch(OrderDelteOrderDetail(id, { username, type, orderID }));
+  };
+
+  const handleDeleteMember = (namemenber, nameOwner, orderID) => {
+    const username = auth?.user?.username;
+    const type = "team";
+    const orderId = order?.id;
+    GroupOrderDeleteMember(
+      { namemenber, nameOwner, orderID },
+      { username, type, orderId }
+    )(dispatch);
+  };
+
+  const handleDeleteGroup = () => {
+    const usernameOwner = auth?.user?.username;
+    const orderIdOwner = order?.id;
+
+    const username = auth?.user?.username;
+    const type = "team";
+    const orderID = order?.id;
+
+    GroupOrderDeleteGroupMembersAction(
+      { usernameOwner, orderIdOwner },
+      { username, type, orderID },
+      shortUrl.split("/")[2]
+    )(dispatch);
   };
 
   return (
@@ -451,7 +547,9 @@ const Header = ({ isOpen, onHandleOpen }) => {
           <Badge
             badgeContent={
               dataGroupOrderDetails &&
-              dataGroupOrderDetails?.groupOrderInfoResponses?.length
+              (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
+                ? dataGroupOrderDetails?.groupOrderInfoResponses?.length - 1
+                : 0)
             }
             color="secondary"
             style={{ marginRight: 20 }}
@@ -701,13 +799,16 @@ const Header = ({ isOpen, onHandleOpen }) => {
             marginRight: 20,
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ marginRight: 10 }}
-          >
-            Xoá
-          </Button>
+          {Object.is(localStorage.getItem("member"), null) && (
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginRight: 10 }}
+              onClick={() => handleDeleteGroup()}
+            >
+              Xoá
+            </Button>
+          )}
           <Button variant="contained" color="primary" onClick={handleOpenModal}>
             Mời bạn
           </Button>
@@ -772,16 +873,27 @@ const Header = ({ isOpen, onHandleOpen }) => {
                       >
                         <b>{item.username}</b>
                       </Typography>
-                      {!Object.is(index, 0) && (
-                        <ClearIcon
-                          style={{
-                            position: "absolute",
-                            top: 9,
-                            right: 30,
-                            color: "red",
-                            cursor: "pointer",
-                          }}
-                        />
+                      {Object.is(localStorage.getItem("member"), null) && (
+                        <>
+                          {!Object.is(index, 0) && (
+                            <ClearIcon
+                              style={{
+                                position: "absolute",
+                                top: 9,
+                                right: 30,
+                                color: "red",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                handleDeleteMember(
+                                  item.username,
+                                  auth?.user?.username,
+                                  order?.id
+                                )
+                              }
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                     <Divider style={{ marginTop: 5 }} />
@@ -822,16 +934,25 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             </span>
                           </div>
                           <div style={{ display: "flex", marginLeft: 20 }}>
-                            <div
-                              className={classes.btnCount}
-                              onClick={() => {
-                                if (item.quantities[productID] > 1) {
-                                  onHandleUpdateQuantity(product.id, "minus");
-                                }
-                              }}
-                            >
-                              <Remove />
-                            </div>
+                            {Object.is(customer?.fullName, item.username) ? (
+                              <div
+                                className={classes.btnCount}
+                                onClick={() => {
+                                  if (item.quantities[productID] > 1) {
+                                    onHandleUpdateQuantity(
+                                      item.orderDetailsID[productID],
+                                      "minus"
+                                    );
+                                  }
+                                }}
+                              >
+                                <Remove />
+                              </div>
+                            ) : (
+                              <div className={classes.btnCount}>
+                                <Remove />
+                              </div>
+                            )}
                             <p
                               style={{
                                 marginLeft: 20,
@@ -841,25 +962,46 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             >
                               {item.quantities[productID]}
                             </p>
-                            <div
-                              className={classes.btnCount}
-                              onClick={() => {
-                                onHandleUpdateQuantity(product.id, "plus");
-                              }}
-                            >
-                              <Add />
-                            </div>
+                            {Object.is(customer?.fullName, item.username) ? (
+                              <div
+                                className={classes.btnCount}
+                                onClick={() => {
+                                  onHandleUpdateQuantity(
+                                    item.orderDetailsID[productID],
+                                    "plus"
+                                  );
+                                }}
+                              >
+                                <Add />
+                              </div>
+                            ) : (
+                              <div className={classes.btnCount}>
+                                <Add />
+                              </div>
+                            )}
                           </div>
-                          <DeleteOutline
-                            style={{
-                              color: "red",
-                              cursor: "pointer",
-                              marginTop: 14,
-                            }}
-                            onClick={() => {
-                              onHandleDeleteOrderDetail(product.id);
-                            }}
-                          />
+                          {Object.is(customer?.fullName, item.username) ? (
+                            <DeleteOutline
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                marginTop: 14,
+                              }}
+                              onClick={() => {
+                                onHandleDeleteOrderDetail(
+                                  item.orderDetailsID[productID]
+                                );
+                              }}
+                            />
+                          ) : (
+                            <DeleteOutline
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                marginTop: 14,
+                              }}
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
@@ -889,13 +1031,22 @@ const Header = ({ isOpen, onHandleOpen }) => {
           </div>
         )}
 
-        <div
-          style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
-        >
-          <Button variant="contained" color="primary" fullWidth>
-            Thanh toán
-          </Button>
-        </div>
+        {Object.is(localStorage.getItem("member"), null) && (
+          <div
+            style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
+          >
+            {dataGroupOrderDetails &&
+              (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1 ? (
+                <Button variant="contained" color="primary" fullWidth>
+                  Thanh toán
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" fullWidth disabled>
+                  Thanh toán
+                </Button>
+              ))}
+          </div>
+        )}
       </Drawer>
     </AppBar>
   );

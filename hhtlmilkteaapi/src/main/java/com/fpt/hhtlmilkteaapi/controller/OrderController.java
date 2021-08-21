@@ -108,6 +108,9 @@ public class OrderController {
         } else {
             String orderId = "O" + formatter.format(new Date());
             orderNew = new Order(orderId, null, null, 0, 0, null, 0, user, 0, 0);
+            orderNew.setCreatedAt(new Date());
+            orderNew.setUpdatedAt(new Date());
+            orderNew.setTeam(true);
             orderRepository.save(orderNew);
         }
 

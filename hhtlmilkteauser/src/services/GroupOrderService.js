@@ -14,6 +14,18 @@ class GroupOrderService {
     });
   };
 
+  groupOrderDeleteMember = ({ namemenber, nameOwner, orderID }) => {
+    return api.delete(`/grouporder/${namemenber}/${nameOwner}/${orderID}`);
+  };
+
+  groupOrderDeleteGroupMembers = ({ usernameOwner, orderIdOwner }) => {
+    return api.delete(`/grouporder/${usernameOwner}/${orderIdOwner}`);
+  };
+
+  groupORderDeleteShareLink = (longUrl) => {
+    return api.delete(`/grouporder/${longUrl}`);
+  };
+
   getShortURL = ({ longUrl }) => {
     return api.post(
       "/shared/shorter",

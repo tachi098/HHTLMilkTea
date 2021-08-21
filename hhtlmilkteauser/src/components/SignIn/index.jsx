@@ -60,6 +60,8 @@ const SignIn = () => {
       }
       if (res?.roles.includes("ROLE_USER")) {
         localStorage.setItem("user", JSON.stringify(auth.user));
+        localStorage.removeItem("groupMember");
+        localStorage.removeItem("member");
         history.push("/home");
       }
     });

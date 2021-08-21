@@ -25,7 +25,7 @@ public class ShorterController {
     private UrlShorterService urlShorterService;
 
     @PostMapping("${get.request.path}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> generateUrl(@RequestBody UrlShorterRequest urlShorterRequest, HttpServletRequest httpServletRequest) {
         String longUrl = urlShorterRequest.getLongUrl().trim();
         urlShorterService.setServletRequest(httpServletRequest);

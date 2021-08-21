@@ -35,6 +35,9 @@ public class GroupOrderController {
     private IGroupOrderDetailsRepository groupOrderDetailsRepository;
 
     @Autowired
+    private IShorterRepository shorterRepository;
+
+    @Autowired
     private SimpMessagingTemplate template;
 
     /**
@@ -61,11 +64,14 @@ public class GroupOrderController {
             }
             Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
             List<OrderDetail> orderDetails = (List<OrderDetail>) order.getOrderDetails();
+            List<Long> orderDetailsID = new ArrayList<>();
             List<Integer> quantities = new ArrayList<>();
             List<Product> products = new ArrayList<>();
             List<String> addOptionIds = new ArrayList<>();;
             List<String> sizeOptionIds = new ArrayList<>();;
             orderDetails.forEach(od -> {
+                orderDetailsID.add(od.getId());
+
                 quantities.add(od.getQuantity());
 
                 Product product = od.getProduct();
@@ -84,6 +90,7 @@ public class GroupOrderController {
 
             // Group Order Info Response
             GroupOrderInfoResponse groupOrderInfoResponse = new GroupOrderInfoResponse();
+            groupOrderInfoResponse.setOrderDetailsID(orderDetailsID);
             groupOrderInfoResponse.setUsername(user.getFullName());
             groupOrderInfoResponse.setQuantities(quantities);
             groupOrderInfoResponse.setProducts(products);
@@ -106,11 +113,14 @@ public class GroupOrderController {
                     totalPrice += go.getPriceCurrent() +  go.getPriceCurrent();
                 }
 
+                List<Long> orderDetailsIDMember = new ArrayList<>();
                 List<Integer> quantitiesMember = new ArrayList<>();
                 List<Product> productsMember = new ArrayList<>();
                 List<String> addOptionIdsMember = new ArrayList<>();;
                 List<String> sizeOptionIdsMember = new ArrayList<>();;
                 groupOrderDetails.forEach(god -> {
+                    orderDetailsIDMember.add(god.getId());
+
                     quantitiesMember.add(god.getQuantity());
 
                     Product productMember = god.getProduct();
@@ -121,6 +131,7 @@ public class GroupOrderController {
                     sizeOptionIdsMember.add(god.getSizeOptionId());
                 });
 
+                groupOrderInfoResponseMember.setOrderDetailsID(orderDetailsIDMember);
                 groupOrderInfoResponseMember.setUsername(gm.getName());
                 groupOrderInfoResponseMember.setQuantities(quantitiesMember);
                 groupOrderInfoResponseMember.setProducts(productsMember);
@@ -174,11 +185,14 @@ public class GroupOrderController {
             }
             Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
             List<OrderDetail> orderDetails = (List<OrderDetail>) order.getOrderDetails();
+            List<Long> orderDetailsID = new ArrayList<>();
             List<Integer> quantities = new ArrayList<>();
             List<Product> products = new ArrayList<>();
             List<String> addOptionIds = new ArrayList<>();;
             List<String> sizeOptionIds = new ArrayList<>();;
             orderDetails.forEach(od -> {
+                orderDetailsID.add(od.getId());
+
                 quantities.add(od.getQuantity());
 
                 Product product = od.getProduct();
@@ -197,6 +211,7 @@ public class GroupOrderController {
 
             // Group Order Info Response
             GroupOrderInfoResponse groupOrderInfoResponse = new GroupOrderInfoResponse();
+            groupOrderInfoResponse.setOrderDetailsID(orderDetailsID);
             groupOrderInfoResponse.setUsername(user.getFullName());
             groupOrderInfoResponse.setQuantities(quantities);
             groupOrderInfoResponse.setProducts(products);
@@ -219,11 +234,14 @@ public class GroupOrderController {
                     totalPrice += go.getQuantity() * go.getPriceCurrent();
                 }
 
+                List<Long> orderDetailsIDMember = new ArrayList<>();
                 List<Integer> quantitiesMember = new ArrayList<>();
                 List<Product> productsMember = new ArrayList<>();
                 List<String> addOptionIdsMember = new ArrayList<>();;
                 List<String> sizeOptionIdsMember = new ArrayList<>();;
                 groupOrderDetails.forEach(god -> {
+                    orderDetailsIDMember.add(god.getId());
+
                     quantitiesMember.add(god.getQuantity());
 
                     Product productMember = god.getProduct();
@@ -234,6 +252,7 @@ public class GroupOrderController {
                     sizeOptionIdsMember.add(god.getSizeOptionId());
                 });
 
+                groupOrderInfoResponseMember.setOrderDetailsID(orderDetailsIDMember);
                 groupOrderInfoResponseMember.setUsername(gm.getName());
                 groupOrderInfoResponseMember.setQuantities(quantitiesMember);
                 groupOrderInfoResponseMember.setProducts(productsMember);
@@ -256,6 +275,44 @@ public class GroupOrderController {
         }
         catch (IOException e) {
             e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{namemenber}/{nameOwner}/{orderID}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> deleteMember(@PathVariable String namemenber, @PathVariable String nameOwner, @PathVariable String orderID) {
+
+        User user = userRepository.findByUsername(nameOwner).get();
+        Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
+        GroupMember member = groupMemberRepository.findByNameAndUsernameOwnerAndOrder(namemenber, nameOwner, order).get();
+        groupMemberRepository.delete(member);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{usernameOwner}/{orderId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> deleteMembers(@PathVariable String usernameOwner, @PathVariable String orderId) {
+
+        User user = userRepository.findByUsername(usernameOwner).get();
+        Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
+        List<GroupMember> groupMembers = groupMemberRepository.findAllByUsernameOwnerAndOrder(usernameOwner, order);
+        groupMemberRepository.deleteAll(groupMembers);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{longUrl}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> deleteLongUrl(@PathVariable String longUrl) {
+
+        String url = "localhost:8080/shared/" + longUrl;
+
+        if(shorterRepository.existsByShortUrl(url)) {
+            Shorter shorter = shorterRepository.findShorterMappingsByShortUrl(url);
+            shorterRepository.delete(shorter);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

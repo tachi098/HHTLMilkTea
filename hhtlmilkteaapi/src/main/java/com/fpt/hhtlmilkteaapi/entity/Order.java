@@ -46,7 +46,7 @@ public class Order implements Serializable {
     @ColumnDefault("0")
     private long memberVip;
 
-    @ColumnDefault("false")
+    @ColumnDefault("true")
     private boolean team;
 
     @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
@@ -95,4 +95,5 @@ public class Order implements Serializable {
         this.totalPrice = totalPrice;
         this.shipping = shipping;
     }
+
 }
