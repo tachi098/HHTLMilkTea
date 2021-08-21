@@ -127,49 +127,49 @@ public class SeedProductsTable {
             //Insert Snack
             //Insert snack01
             Category category02 = categoryRepository.findById(2L).get();
-            Product snack01 = new Product("P0882021035830", "Hạt Điều Rang Củi Tỏi Ớt - Lon", "Khối lượng tịnh: 130 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628675856/product/dieutuoi.png", "dieutuoi",
+            Product snack01 = new Product("P0882021035830", "Hạt Điều Rang Củi Tỏi Ớt - Lon", "chilli Garlic Cashew-Can", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628675856/product/dieutuoi.png", "dieutuoi",
                     75000, category02, null, null);
 
             //Insert snack02
-            Product snack02 = new Product("P0882021035831", "Hạt Điều Rang Củi Tỏi Ớt - Gói", "Khối lượng tịnh: 40 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628675965/product/dieutuoigiay.png", "dieutuoigiay",
+            Product snack02 = new Product("P0882021035831", "Hạt Điều Rang Củi Tỏi Ớt - Gói", "chilli Garlic Cashew-Bag", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628675965/product/dieutuoigiay.png", "dieutuoigiay",
                     26000, category02, null, null);
 
             //Insert snack03
-            Product snack03 = new Product("P0882021035832", "Hạt Điều Rang Củi (Vỏ Lụa) - Lon", "Khối lượng tịnh: 130 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628676146/product/dieu.png", "dieu",
+            Product snack03 = new Product("P0882021035832", "Hạt Điều Rang Củi (Vỏ Lụa) - Lon", "Cashew-Can", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628676146/product/dieu.png", "dieu",
                     78000, category02, null, null);
 
             //Insert snack04
-            Product snack04 = new Product("P0882021035833", "Hạt Điều Rang Củi (Vỏ Lụa) - Gói - Lon", "Khối lượng tịnh: 40 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628676309/product/dieutuoivolua.png", "dieutuoivolua",
+            Product snack04 = new Product("P0882021035833", "Hạt Điều Rang Củi (Vỏ Lụa) - Gói - Lon", "Cashew-Bag", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628676309/product/dieutuoivolua.png", "dieutuoivolua",
                     27000, category02, null, null);
 
             //Insert Product
             //Insert product01
             Category category03 = categoryRepository.findById(3L).get();
-            Product pd01 = new Product("P0882021035834", "Cà Phê King + Fin Nhôm", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690333/product/king.png", "king",
+            Product pd01 = new Product("P0882021035834", "Cà Phê King + Fin Nhôm", "Filter Coffe King", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690333/product/king.png", "king",
                     107000, category03, null, null);
 
             //Insert product02
-            Product pd02 = new Product("P0882021035834", "Cà Phê Robusa + Fin Nhôm", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690415/product/robusa.png", "robusa",
+            Product pd02 = new Product("P0882021035834", "Cà Phê Robusa + Fin Nhôm", "Filter Coffe Robusa", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690415/product/robusa.png", "robusa",
                     87000, category03, null, null);
 
             //Insert product03
-            Product pd03 = new Product("P0882021035835", "Cà Phê Moka Blend + Fin Nhôm", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690464/product/mokablend.png", "mokablend",
+            Product pd03 = new Product("P0882021035835", "Cà Phê Moka Blend + Fin Nhôm", "Filter Coffe Moka Blend", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690464/product/mokablend.png", "mokablend",
                     93000, category03, null, null);
 
             //Insert product04
-            Product pd04 = new Product("P0882021035836", "Cà Phê Moka + Fin Nhôm", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690544/product/moka.png", "moka",
+            Product pd04 = new Product("P0882021035836", "Cà Phê Moka + Fin Nhôm", "Filter Coffe Moka", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690544/product/moka.png", "moka",
                     116000, category03, null, null);
 
             //Insert product05
-            Product pd05 = new Product("P0882021035837", "Cà Phê Royal Special + Fin Nhôm", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690668/product/royal.png", "royal",
+            Product pd05 = new Product("P0882021035837", "Cà Phê Royal Special + Fin Nhôm", "Filter Coffe Royal Special", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690668/product/royal.png", "royal",
                     103000, category03, null, null);
 
             //Insert product06
-            Product pd06 = new Product("P0882021035838", "Cà Phê Royal Smooth", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690777/product/smooth.png", "smooth",
+            Product pd06 = new Product("P0882021035838", "Cà Phê Royal Smooth", "Filter Coffe Royal Smooth", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628690777/product/smooth.png", "smooth",
                     97000, category03, null, null);
 
             //Insert product07
-            Product pd07 = new Product("P0882021035838", "Cà Phê Rich", "Khối lượng tịnh: 200 g", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628691163/product/rich.png", "rich",
+            Product pd07 = new Product("P0882021035838", "Cà Phê Rich", "Filter Coffe Rich", "https://res.cloudinary.com/fpt-aptech-hhtl/image/upload/v1628691163/product/rich.png", "rich",
                     74000, category03, null, null);
 
             // Insert Data

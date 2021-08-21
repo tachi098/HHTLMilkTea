@@ -225,7 +225,7 @@ public class ProductController {
         String newProductId = productNew.size() > 0 ? productNew.get(0).getId() : "";
 
         if (!"".equals(keyword)){
-            products = products.stream().filter((item) -> item.getName().toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());
+            products = products.stream().filter((item) -> (item.getName().toLowerCase().contains(keyword.toLowerCase())) || item.getTitle().toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());
         }
 
         productResponse.setProduct(products);
