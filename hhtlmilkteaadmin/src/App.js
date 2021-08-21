@@ -35,6 +35,10 @@ const SizeOption = React.lazy(() => import("./components/SizeOption"));
 const AddSizeOption = React.lazy(() => import("./components/SizeOption/AddSizeOption"));
 const EditSizeOption = React.lazy(() => import("./components/SizeOption/EditSizeOption"));
 
+const SaleOff = React.lazy(() => import("./components/SaleOff"));
+const AddSaleOff = React.lazy(() => import("./components/SaleOff/AddSaleOff"));
+const CreateSaleOff = React.lazy(() => import("./components/SaleOff/CreateSaleOff"));
+
 const DetailUser = React.lazy(() => import("./components/User/DetailUser"));
 const Order = React.lazy(() => import("./components/Order"));
 const DetailOrder = React.lazy(() => import("./components/Order/DetailOrder"));
@@ -115,6 +119,16 @@ const App = () => {
             </PrivateRoute>
             <PrivateRoute exact path={"/sizeoption/edit"}>
               <EditSizeOption />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={"/saleoff"}>
+              <SaleOff />
+            </PrivateRoute>
+            <PrivateRoute path={"/saleoff/add"}>
+              <AddSaleOff />
+            </PrivateRoute>
+            <PrivateRoute path={"/saleoff/create"}>
+              <CreateSaleOff />
             </PrivateRoute>
 
             <PrivateRoute exact path={"/order"}>

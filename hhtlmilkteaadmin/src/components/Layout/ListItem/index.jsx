@@ -10,6 +10,7 @@ import { Euro, FormatAlignCenter } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import LoupeIcon from "@material-ui/icons/Loupe";
 import LocalDrinkIcon from "@material-ui/icons/LocalDrink";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import { Link } from "react-router-dom";
 import { Divider } from "@material-ui/core";
 
@@ -66,6 +67,15 @@ const MainListItems = () => {
             <LocalDrinkIcon style={{ marginLeft: 5 }} />
           </ListItemIcon>
           <ListItemText primary="Thêm Size" />
+        </ListItem>
+      </Link>
+
+      <Link to="/saleoff" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <AttachMoneyIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Sale OFF" />
         </ListItem>
       </Link>
 

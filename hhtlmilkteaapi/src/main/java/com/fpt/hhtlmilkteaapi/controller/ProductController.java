@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -214,17 +215,17 @@ public class ProductController {
         List<Product> productNew = productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, "id"));
         productNew.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
 
-        if ("".equals(cateName)){
+        if ("".equals(cateName)) {
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_NameNotLikeAndCategoryId_NameNotLike("Snack", "Product", Sort.by(Sort.Direction.ASC, sortField));
             products = products.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
-        }else{
+        } else {
             products = !"asc".equals(sortDir) ? productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.DESC, sortField)) : productRepository.findProductsByCategoryId_Name(cateName, Sort.by(Sort.Direction.ASC, sortField));
             products = products.stream().filter(p -> p.getCategoryId().getDeletedAt() == null && p.getDeletedAt() == null).collect(Collectors.toList());
         }
 
         String newProductId = productNew.size() > 0 ? productNew.get(0).getId() : "";
 
-        if (!"".equals(keyword)){
+        if (!"".equals(keyword)) {
             products = products.stream().filter((item) -> item.getName().toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());
         }
 
@@ -232,5 +233,44 @@ public class ProductController {
         productResponse.setNewProductId(newProductId);
 
         return ResponseEntity.ok(productResponse);
+    }
+
+    @GetMapping("/showAll")
+    public ResponseEntity<?> showAll() {
+        return ResponseEntity.ok(productRepository.findAll());
+    }
+
+    @GetMapping("/saleoff")
+    public ResponseEntity<?> getProductsBySaleOff(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int pageSize,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "") Double discount,
+            @RequestParam(defaultValue = "list") String saleOff  // list: show product saleOff !== null, add: === null
+    ) {
+        Date date = new Date();
+        Timestamp timeNow = new Timestamp(date.getTime());
+
+        Pageable pageable = PageRequest.of(
+                page - 1, pageSize,
+                "asc".equals(sortDir) ? Sort.by(sortField).descending() : Sort.by(sortField).ascending()
+        );
+
+        Page<Product> products = productRepository.findAll(pageable);
+
+        if ("list".equals(saleOff)) {
+            products = discount == 0 ?
+                    productRepository.findProductBySaleOff_EndDateGreaterThan(timeNow, pageable) :
+                    productRepository.findProductBySaleOffDiscountLike(discount, pageable);
+        } else {
+            products =
+                    "".equals(keyword) ?
+                            productRepository.findProductBySaleOffNull(pageable) :
+                            productRepository.findProductsByNameLike("%" + keyword + "%", pageable);
+        }
+
+        return ResponseEntity.ok(products);
     }
 }
