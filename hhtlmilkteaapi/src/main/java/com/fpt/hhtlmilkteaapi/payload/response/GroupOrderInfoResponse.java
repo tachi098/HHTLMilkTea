@@ -15,6 +15,7 @@ import java.util.List;
 public class GroupOrderInfoResponse {
 
     private String username;
+    private List<Long> orderDetailsID;
     private List<Integer> quantities;
     private List<Product> products;
     private List<String> addOptionIds;

@@ -1,7 +1,7 @@
 import GroupOrderService from "../../services/GroupOrderService";
 import {
-  // getGroupOderWithUsername,
   getShortURLFromData,
+  getShortURLEmpty,
 } from "./../reducers/GroupOrderReducer";
 
 export const GroupOrderFindAllAction =
@@ -13,15 +13,6 @@ export const GroupOrderFindAllAction =
         type,
         orderID,
       });
-      // const res = await GroupOrderService.getGroupOderWithUsername({
-      //   username,
-      //   type,
-      //   orderID,
-      // });
-      // dispatch(
-      //   getGroupOderWithUsername(!Object.is(res, undefined) ? res.data : {})
-      // );
-      // return !Object.is(res, undefined) ? res.data : {};
     } catch (err) {
       console.error(err);
     }
@@ -36,5 +27,44 @@ export const GroupOrderShortURL =
       return res.data;
     } catch (err) {
       console.log(err);
+    }
+  };
+
+export const GroupOrderDeleteMember =
+  ({ namemenber, nameOwner, orderID }, { username, type, orderId }) =>
+  async (dispatch) => {
+    try {
+      await GroupOrderService.groupOrderDeleteMember({
+        namemenber,
+        nameOwner,
+        orderID,
+      });
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderId,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+export const GroupOrderDeleteGroupMembersAction =
+  ({ usernameOwner, orderIdOwner }, { username, type, orderID }, longUrl) =>
+  async (dispatch) => {
+    try {
+      await GroupOrderService.groupOrderDeleteGroupMembers({
+        usernameOwner,
+        orderIdOwner,
+      });
+      const res = await GroupOrderService.groupORderDeleteShareLink(longUrl);
+      dispatch(getShortURLEmpty(res.data));
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderID,
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
