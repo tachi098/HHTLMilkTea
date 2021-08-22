@@ -43,8 +43,12 @@ const Home = () => {
   useEffect(() => {
     if (
       new URLSearchParams(search).get("username") &&
-      new URLSearchParams(search).get("username") !==
-        JSON.parse(localStorage.getItem("groupMember"))?.username
+      new URLSearchParams(search).get("type") &&
+      new URLSearchParams(search).get("orderID") &&
+      Object.is(localStorage.getItem("user"), null)
+      // new URLSearchParams(search).get("username") &&
+      // new URLSearchParams(search).get("username") !==
+      //   JSON.parse(localStorage.getItem("groupMember"))?.username
     ) {
       localStorage.removeItem("member"); // remove if have new link share
     }

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import javax.websocket.server.PathParam;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -62,14 +63,14 @@ public class OrderController {
         CartResponse cartResponse = new CartResponse();
 
         Order order = orderRepository.findOrderByUserId_IdAndStatusLike(id, 0, Sort.by(Sort.Direction.DESC, "id"));
-        if (order != null){
+        if (order != null) {
             int sum = 0;
-            for(OrderDetail orderDetailnew: order.getOrderDetails()){
+            for (OrderDetail orderDetailnew : order.getOrderDetails()) {
                 sum += orderDetailnew.getQuantity();
             }
 
             long total = 0;
-            for (OrderDetail orderDetailnew : order.getOrderDetails()){
+            for (OrderDetail orderDetailnew : order.getOrderDetails()) {
                 total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
             }
 
@@ -134,7 +135,7 @@ public class OrderController {
                 }
 
                 long total = 0;
-                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
                     total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
                 }
 
@@ -154,7 +155,7 @@ public class OrderController {
                 }
 
                 long total = 0;
-                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+                for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
                     total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
                 }
 
@@ -177,7 +178,7 @@ public class OrderController {
             }
 
             long total = 0;
-            for (OrderDetail orderDetailnew : orderNew.getOrderDetails()){
+            for (OrderDetail orderDetailnew : orderNew.getOrderDetails()) {
                 total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
             }
 
@@ -203,12 +204,12 @@ public class OrderController {
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
 
-        if(id == -1){
+        if (id == -1) {
             Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(1, 2), pageable);
             return ResponseEntity.ok(orders);
         }
 
-        Optional<User> user =  userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
 
         Page<Order> orders = orderRepository.findAllByUserIdEqualsAndStatusIn(user, Arrays.asList(1, 2), pageable);
 
@@ -230,12 +231,12 @@ public class OrderController {
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
 
-        if(id == -1){
+        if (id == -1) {
             Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(3), pageable);
             return ResponseEntity.ok(orders);
         }
 
-        Optional<User> user =  userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
 
         Page<Order> orders = orderRepository.findAllByUserIdEqualsAndStatusIn(user, Arrays.asList(3), pageable);
 
@@ -257,12 +258,12 @@ public class OrderController {
                 "asc".equals(sortDir) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending()
         );
 
-        if(id == -1){
+        if (id == -1) {
             Page<Order> orders = orderRepository.findAllByStatusIn(Arrays.asList(4), pageable);
             return ResponseEntity.ok(orders);
         }
 
-        Optional<User> user =  userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
 
         Page<Order> orders = orderRepository.findAllByUserIdEqualsAndStatusIn(user, Arrays.asList(4), pageable);
 
@@ -274,21 +275,17 @@ public class OrderController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateQuantity(
             @RequestBody OrderQuantityRequest orderQuantityRequest
-    ){
+    ) {
         CartResponse cartResponse = new CartResponse();
         OrderDetail orderDetail = orderDetailRepository.findById(orderQuantityRequest.getOrderDetailId()).get();
         Order order = orderRepository.findById(orderDetail.getOrderId().getId()).get();
 
-        if (orderQuantityRequest.getAction().equals("plus")){
+        if (orderQuantityRequest.getAction().equals("plus")) {
             orderDetail.setQuantity(orderDetail.getQuantity() + 1);
             orderDetailRepository.save(orderDetail);
-        }else{
-            if(orderDetail.getQuantity() == 1){
-                orderDetailRepository.delete(orderDetail);
-            }else{
-                orderDetail.setQuantity(orderDetail.getQuantity() - 1);
-                orderDetailRepository.save(orderDetail);
-            }
+        } else {
+            orderDetail.setQuantity(orderDetail.getQuantity() - 1);
+            orderDetailRepository.save(orderDetail);
         }
         order.setOrderDetails(orderDetailRepository.findByOrderId_Id(order.getId()));
 
@@ -298,7 +295,7 @@ public class OrderController {
         }
 
         long total = 0;
-        for (OrderDetail orderDetailnew : order.getOrderDetails()){
+        for (OrderDetail orderDetailnew : order.getOrderDetails()) {
             total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
         }
 
@@ -310,7 +307,7 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateQuantity(@PathVariable long id){
+    public ResponseEntity<?> updateQuantity(@PathVariable long id) {
         CartResponse cartResponse = new CartResponse();
         OrderDetail orderDetail = orderDetailRepository.findById(id).get();
         Order order = orderRepository.findById(orderDetail.getOrderId().getId()).get();
@@ -325,7 +322,7 @@ public class OrderController {
         }
 
         long total = 0;
-        for (OrderDetail orderDetailnew : order.getOrderDetails()){
+        for (OrderDetail orderDetailnew : order.getOrderDetails()) {
             total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
         }
 
@@ -350,14 +347,14 @@ public class OrderController {
         order.setDeletedAt(new Date());
         orderRepository.save(order);
 
-        return  ResponseEntity.ok(orderRepository.save(order));
+        return ResponseEntity.ok(orderRepository.save(order));
     }
 
     @PutMapping("/checkout")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest checkoutRequest) {
 
-        if(!orderRepository.existsById(checkoutRequest.getOrderId())) {
+        if (!orderRepository.existsById(checkoutRequest.getOrderId())) {
             return ResponseEntity.ok(new MessageResponse("Bad Request"));
         }
 
@@ -387,10 +384,10 @@ public class OrderController {
         //Update memberVip
         User user = userRepository.findById(order.getUserId().getId()).get();
         MemberVip memberVip = user.getMemberVip();
-        if(memberVip == null){
+        if (memberVip == null) {
             memberVip = new MemberVip(0, user);
         }
-        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotal()/100) - checkoutRequest.getMemberVip());
+        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotal() / 100) - checkoutRequest.getMemberVip());
         memberVipRepository.save(memberVip);
 
         user.setMemberVip(memberVip);
@@ -399,6 +396,6 @@ public class OrderController {
         MemberVipResponse memberVipResponse = new MemberVipResponse();
         memberVipResponse.setUser(user);
 
-        return  ResponseEntity.ok(memberVipResponse);
+        return ResponseEntity.ok(memberVipResponse);
     }
 }

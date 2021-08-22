@@ -9,10 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupMemberRequest {
+public class GroupMemberRequest extends OrderRequest {
 
     private String name;
     private String usernameOwner;
     private String orderId;
+    private long groupOrderDetailId;
+    private String action;
 
 }
