@@ -9,15 +9,22 @@ import {
   checkoutSuccess,
 } from "./../reducers/OrderReducer";
 
-export const OrderAddAction = (data) => async (dispatch) => {
-  try {
-    await OrderService.add(data)
-      .then((response) => dispatch(add(response.data)))
-      .catch((error) => console.error(error));
-  } catch (error) {
-    console.error(error);
-  }
-};
+export const OrderAddAction =
+  (data, { username, type, orderID }) =>
+  async (dispatch) => {
+    try {
+      await OrderService.add(data)
+        .then((response) => dispatch(add(response.data)))
+        .catch((error) => console.error(error));
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderID,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 export const OrderFindAction = (data) => async (dispatch) => {
   try {

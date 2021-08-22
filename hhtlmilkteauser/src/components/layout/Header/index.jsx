@@ -44,6 +44,7 @@ import {
   GroupOrderShortURL,
   GroupOrderDeleteMember,
   GroupOrderDeleteGroupMembersAction,
+  GroupOrderUpdateQuantity,
 } from "./../../../store/actions/GroupOrderAction";
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
@@ -200,7 +201,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
   const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order);
   const { shortUrl } = useSelector((state) => state.groupOrder);
-  const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState({});
+  const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState(null);
 
   const [open, setOpen] = React.useState(false);
 
@@ -297,24 +298,6 @@ const Header = ({ isOpen, onHandleOpen }) => {
           // console.log(jsonBody);
 
           setDataGroupOrderDetails(jsonBody);
-
-          if (
-            !Object.is(localStorage.getItem("member"), null) &&
-            !Object.is(localStorage.getItem("groupMember"), null)
-          ) {
-            let jsonProcee = { ...jsonBody }; // clone
-            let jsonClone = Array.from(
-              jsonProcee?.groupOrderInfoResponses
-            ).find((goir) => goir.username === localStorage.getItem("member"));
-            let jsonPrimary = Array.from(
-              jsonProcee?.groupOrderInfoResponses
-            ).filter(
-              (goir) => goir.username !== localStorage.getItem("member")
-            );
-            jsonPrimary.unshift(jsonClone);
-            jsonProcee.groupOrderInfoResponses = jsonPrimary;
-            setDataGroupOrderDetails(jsonProcee);
-          }
         }
       });
     };
@@ -346,33 +329,38 @@ const Header = ({ isOpen, onHandleOpen }) => {
   // Cehck member in list
   useEffect(() => {
     const member = localStorage.getItem("member");
-    let flag = true;
-    if (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0) {
-      for (
-        let i = 0;
-        i < dataGroupOrderDetails?.groupOrderInfoResponses?.length;
-        i++
-      ) {
-        if (
-          dataGroupOrderDetails?.groupOrderInfoResponses[i].username === member
+
+    if (member) {
+      let flag = true;
+      if (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0) {
+        for (
+          let i = 0;
+          i < dataGroupOrderDetails?.groupOrderInfoResponses?.length;
+          i++
         ) {
-          flag = false;
-          return;
+          if (
+            dataGroupOrderDetails?.groupOrderInfoResponses[i]?.username ===
+            member
+          ) {
+            flag = false;
+            return;
+          }
         }
       }
-    }
 
-    if (localStorage.getItem("user")) {
-      flag = false;
-    }
+      if (localStorage.getItem("user")) {
+        flag = false;
+      }
 
-    if (flag) {
-      setOpen(false);
-      onHandleOpen(false);
+      if (flag) {
+        setOpen(false);
+        onHandleOpen(false);
+      }
     }
   }, [
     dataGroupOrderDetails?.groupOrderInfoResponses,
     dataGroupOrderDetails?.groupOrderInfoResponses?.length,
+    dispatch,
     onHandleOpen,
   ]);
 
@@ -467,7 +455,9 @@ const Header = ({ isOpen, onHandleOpen }) => {
       auth?.user?.token ||
       (Object.is(groupMember?.type, "team") &&
         !Object.is(localStorage.getItem("member"), null) &&
-        dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1)
+        dataGroupOrderDetails?.groupOrderInfoResponses.findIndex(
+          (a) => a.username === localStorage.getItem("member")
+        ) !== -1)
     ) {
       if (
         order?.id ||
@@ -527,15 +517,28 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {
-    const username = auth?.user?.username;
-    const type = "team";
-    const orderID = order?.id;
-    dispatch(
-      OrderUpdateQuantity(
-        { orderDetailId, action },
-        { username, type, orderID }
-      )
-    );
+    if (auth?.user?.token) {
+      const username = auth?.user?.username;
+      const type = "team";
+      const orderID = order?.id;
+      dispatch(
+        OrderUpdateQuantity(
+          { orderDetailId, action },
+          { username, type, orderID }
+        )
+      );
+    } else if (localStorage.getItem("member")) {
+      const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+      const username = groupMember?.username;
+      const orderID = groupMember?.orderID;
+      const type = "team";
+      dispatch(
+        GroupOrderUpdateQuantity(
+          { groupOrderDetailId: orderDetailId, action },
+          { username, type, orderID }
+        )
+      );
+    }
   };
 
   const onHandleDeleteOrderDetail = (id) => {
@@ -624,7 +627,57 @@ const Header = ({ isOpen, onHandleOpen }) => {
             />
           </Badge>
 
-          <Badge
+          {dataGroupOrderDetails && (
+            <>
+              {dataGroupOrderDetails?.groupOrderInfoResponses.findIndex(
+                (a) => a.username === localStorage.getItem("member")
+              ) !== -1 && (
+                <Badge
+                  badgeContent={
+                    dataGroupOrderDetails &&
+                    (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
+                      ? dataGroupOrderDetails?.groupOrderInfoResponses?.length -
+                        1
+                      : 0)
+                  }
+                  color="secondary"
+                  style={{ marginRight: 20 }}
+                >
+                  <GroupAddIcon
+                    style={{ color: "#416c48", cursor: "pointer" }}
+                    aria-haspopup="true"
+                    onClick={handleDrawerOpenGroup}
+                  />
+                </Badge>
+              )}
+            </>
+          )}
+
+          {dataGroupOrderDetails && (
+            <>
+              {auth?.user?.token && (
+                <Badge
+                  badgeContent={
+                    dataGroupOrderDetails &&
+                    (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
+                      ? dataGroupOrderDetails?.groupOrderInfoResponses?.length -
+                        1
+                      : 0)
+                  }
+                  color="secondary"
+                  style={{ marginRight: 20 }}
+                >
+                  <GroupAddIcon
+                    style={{ color: "#416c48", cursor: "pointer" }}
+                    aria-haspopup="true"
+                    onClick={handleDrawerOpenGroup}
+                  />
+                </Badge>
+              )}
+            </>
+          )}
+
+          {/* <Badge
             badgeContent={
               dataGroupOrderDetails &&
               (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
@@ -639,7 +692,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
               aria-haspopup="true"
               onClick={handleDrawerOpenGroup}
             />
-          </Badge>
+          </Badge> */}
 
           <Menu
             id="simple-menu"
@@ -911,16 +964,19 @@ const Header = ({ isOpen, onHandleOpen }) => {
               (item, index) => (
                 <div key={index}>
                   {Object.is(index, 1) && (
-                    <Typography
-                      style={{
-                        marginLeft: 30,
-                        marginTop: 20,
-                        marginBottom: 10,
-                      }}
-                    >
-                      Bạn của{" "}
-                      {customer.fullName ?? localStorage.getItem("member")}
-                    </Typography>
+                    <>
+                      {customer?.fullName && (
+                        <Typography
+                          style={{
+                            marginLeft: 30,
+                            marginTop: 20,
+                            marginBottom: 10,
+                          }}
+                        >
+                          Bạn của {customer.fullName}
+                        </Typography>
+                      )}
+                    </>
                   )}
                   <div style={{ paddingLeft: 20, paddingRight: 20 }}>
                     <div style={{ display: "flex", position: "relative" }}>
@@ -953,7 +1009,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                       <Typography
                         style={{ marginLeft: 10, marginTop: 8, color: "red" }}
                       >
-                        <b>{item.username}</b>
+                        <b>{item?.username}</b>
                       </Typography>
                       {Object.is(localStorage.getItem("member"), null) && (
                         <>
@@ -1016,7 +1072,11 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             </span>
                           </div>
                           <div style={{ display: "flex", marginLeft: 20 }}>
-                            {Object.is(customer?.fullName, item.username) ? (
+                            {Object.is(
+                              customer?.fullName ||
+                                localStorage.getItem("member"),
+                              item.username
+                            ) ? (
                               <div
                                 className={classes.btnCount}
                                 onClick={() => {
@@ -1044,7 +1104,11 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             >
                               {item.quantities[productID]}
                             </p>
-                            {Object.is(customer?.fullName, item.username) ? (
+                            {Object.is(
+                              customer?.fullName ||
+                                localStorage.getItem("member"),
+                              item.username
+                            ) ? (
                               <div
                                 className={classes.btnCount}
                                 onClick={() => {
@@ -1062,7 +1126,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
                               </div>
                             )}
                           </div>
-                          {Object.is(customer?.fullName, item.username) ? (
+                          {Object.is(customer?.fullName, item.username) ||
+                          localStorage.getItem("member") ? (
                             <DeleteOutline
                               style={{
                                 color: "red",

@@ -30,6 +30,14 @@ class GroupOrderService {
     return api.post("/grouporder/create-member", data);
   };
 
+  groupOrderCreateMemberAdd = (data) => {
+    return api.post("/grouporder/create-orderDetails", data);
+  };
+
+  groupOrderCreateMemberUpdateQuantity = (data) => {
+    return api.put("/grouporder/update-orderDetails-quantity", data);
+  };
+
   getShortURL = ({ longUrl }) => {
     return api.post(
       "/shared/shorter",

@@ -1,8 +1,6 @@
 package com.fpt.hhtlmilkteaapi.repository;
 
-import com.fpt.hhtlmilkteaapi.entity.AdditionOption;
-import com.fpt.hhtlmilkteaapi.entity.GroupMember;
-import com.fpt.hhtlmilkteaapi.entity.GroupOrderDetails;
+import com.fpt.hhtlmilkteaapi.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +12,7 @@ import java.util.List;
 public interface IGroupOrderDetailsRepository extends JpaRepository<GroupOrderDetails, Long> {
 
     List<GroupOrderDetails> findAllByGroupMember(GroupMember groupMember);
+
+    GroupOrderDetails findByGroupMemberAndProductAndAddOptionIdLikeAndSizeOptionIdLike(GroupMember groupMember, Product product, String addOptionId, String sizeOptionId);
 
 }

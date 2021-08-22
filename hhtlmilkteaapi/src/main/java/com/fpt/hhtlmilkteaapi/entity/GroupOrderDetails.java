@@ -47,4 +47,14 @@ public class GroupOrderDetails {
     @JsonIgnoreProperties("groupOrderDetails")
     private Product product;
 
+    public GroupOrderDetails(String sizeOptionId, String addOptionId, int quantity, long priceCurrent, String noteProduct, GroupMember groupMember, Product product) {
+        this.sizeOptionId = sizeOptionId;
+        this.addOptionId = addOptionId;
+        this.quantity = quantity;
+        this.priceCurrent = priceCurrent;
+        this.noteProduct = noteProduct;
+        this.groupMember = groupMember;
+        this.product = product;
+    }
+
 }

@@ -83,3 +83,33 @@ export const GroupOrderCreateMemberAction = (data) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const GroupOrderAddAction =
+  (data, { username, type, orderID }) =>
+  async (dispatch) => {
+    try {
+      await GroupOrderService.groupOrderCreateMemberAdd(data);
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderID,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+export const GroupOrderUpdateQuantity =
+  (data, { username, type, orderID }) =>
+  async (dispatch) => {
+    try {
+      await GroupOrderService.groupOrderCreateMemberUpdateQuantity(data);
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderID,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
