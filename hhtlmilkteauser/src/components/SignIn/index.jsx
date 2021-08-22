@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { AuthLoginAction } from "./../../../src/store/actions/AuthAction";
 import { FormHelperText, InputAdornment } from "@material-ui/core";
 import { AccountCircle, LockRounded } from "@material-ui/icons";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -66,6 +67,22 @@ const SignIn = () => {
       }
     });
   };
+
+  //support group member
+  useEffect(() => {
+    if (
+      !Object.is(localStorage.getItem("member", null)) &&
+      !Object.is(localStorage.getItem("member"), null)
+    ) {
+      setTimeout(() => {
+        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+        const username = groupMember?.username;
+        const type = "team";
+        const orderID = groupMember?.orderID;
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      }, 300);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (auth.user) {

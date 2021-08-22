@@ -21,6 +21,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Notification from "./../../common/Notification";
 import { send } from "emailjs-com";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -68,6 +69,22 @@ const Forget = () => {
   const [lockButton, setLockButton] = useState(false);
   const [dataOld, setDataOld] = useState("");
   const { register, handleSubmit, errors } = useForm();
+
+  //support group member
+  useEffect(() => {
+    if (
+      !Object.is(localStorage.getItem("member", null)) &&
+      !Object.is(localStorage.getItem("member"), null)
+    ) {
+      setTimeout(() => {
+        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+        const username = groupMember?.username;
+        const type = "team";
+        const orderID = groupMember?.orderID;
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      }, 300);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (user?.token && !user?.roles?.includes("ROLE_ADMIN")) {

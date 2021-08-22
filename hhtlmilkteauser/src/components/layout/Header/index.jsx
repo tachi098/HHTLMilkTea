@@ -260,7 +260,21 @@ const Header = ({ isOpen, onHandleOpen }) => {
       });
     };
 
-    setParams().then((res) => history.replace("/home"));
+    setParams().then((res) => {
+      if (
+        !Object.is(localStorage.getItem("member"), null) &&
+        !Object.is(localStorage.getItem("groupMember"), null)
+        //   ||
+        // !Object.is(localStorage.getItem("user"), null)
+      ) {
+        // history.replace("/milktea");
+        return;
+      }
+      //  else {
+      //   // history.replace("/home");
+      //   return;
+      // }
+    });
 
     return () => setParams();
   }, [history, search]);
@@ -268,10 +282,39 @@ const Header = ({ isOpen, onHandleOpen }) => {
   useEffect(() => {
     let onConnected = () => {
       console.log("Connected!!");
-      client.subscribe("/data", function (msg) {
+
+      let wsUsername = `${auth?.user?.username}/data`;
+
+      if (localStorage.getItem("groupMember")) {
+        wsUsername = `${
+          JSON.parse(localStorage.getItem("groupMember"))?.username
+        }/data`;
+      }
+
+      client.subscribe(wsUsername, function (msg) {
         if (msg.body) {
           var jsonBody = JSON.parse(msg.body);
+          // console.log(jsonBody);
+
           setDataGroupOrderDetails(jsonBody);
+
+          if (
+            !Object.is(localStorage.getItem("member"), null) &&
+            !Object.is(localStorage.getItem("groupMember"), null)
+          ) {
+            let jsonProcee = { ...jsonBody }; // clone
+            let jsonClone = Array.from(
+              jsonProcee?.groupOrderInfoResponses
+            ).find((goir) => goir.username === localStorage.getItem("member"));
+            let jsonPrimary = Array.from(
+              jsonProcee?.groupOrderInfoResponses
+            ).filter(
+              (goir) => goir.username !== localStorage.getItem("member")
+            );
+            jsonPrimary.unshift(jsonClone);
+            jsonProcee.groupOrderInfoResponses = jsonPrimary;
+            setDataGroupOrderDetails(jsonProcee);
+          }
         }
       });
     };
@@ -290,7 +333,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
     });
 
     client.activate();
-  }, []);
+  }, [auth.token, auth?.user?.username]);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -299,6 +342,39 @@ const Header = ({ isOpen, onHandleOpen }) => {
       dispatch(OrderFindAction(auth.user.id));
     }
   }, [auth, dispatch, isOpen]);
+
+  // Cehck member in list
+  useEffect(() => {
+    const member = localStorage.getItem("member");
+    let flag = true;
+    if (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0) {
+      for (
+        let i = 0;
+        i < dataGroupOrderDetails?.groupOrderInfoResponses?.length;
+        i++
+      ) {
+        if (
+          dataGroupOrderDetails?.groupOrderInfoResponses[i].username === member
+        ) {
+          flag = false;
+          return;
+        }
+      }
+    }
+
+    if (localStorage.getItem("user")) {
+      flag = false;
+    }
+
+    if (flag) {
+      setOpen(false);
+      onHandleOpen(false);
+    }
+  }, [
+    dataGroupOrderDetails?.groupOrderInfoResponses,
+    dataGroupOrderDetails?.groupOrderInfoResponses?.length,
+    onHandleOpen,
+  ]);
 
   function handleClick(event) {
     if (anchorEl !== event.currentTarget) {
@@ -390,12 +466,14 @@ const Header = ({ isOpen, onHandleOpen }) => {
     if (
       auth?.user?.token ||
       (Object.is(groupMember?.type, "team") &&
-        !Object.is(localStorage.getItem("member"), null))
+        !Object.is(localStorage.getItem("member"), null) &&
+        dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1)
     ) {
       if (
         order?.id ||
         (groupMember?.orderID &&
-          !Object.is(localStorage.getItem("member"), null))
+          !Object.is(localStorage.getItem("member"), null) &&
+          dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1)
       ) {
         onHandleOpen(true);
         setOpen(true);
@@ -412,6 +490,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
       }
     } else {
       Notification.error("Vui lòng đăng nhập !");
+      localStorage.removeItem("member");
+      localStorage.removeItem("groupMember");
     }
   };
 
@@ -800,14 +880,16 @@ const Header = ({ isOpen, onHandleOpen }) => {
           }}
         >
           {Object.is(localStorage.getItem("member"), null) && (
-            <Button
-              variant="contained"
-              color="secondary"
-              style={{ marginRight: 10 }}
-              onClick={() => handleDeleteGroup()}
-            >
-              Xoá
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ marginRight: 10 }}
+                onClick={() => handleDeleteGroup()}
+              >
+                Xoá
+              </Button>
+            </>
           )}
           <Button variant="contained" color="primary" onClick={handleOpenModal}>
             Mời bạn
@@ -823,7 +905,6 @@ const Header = ({ isOpen, onHandleOpen }) => {
         </div>
 
         <Divider style={{ marginTop: 10 }} />
-
         <div style={{ marginTop: 10, overflowY: "scroll", height: 550 }}>
           {dataGroupOrderDetails &&
             dataGroupOrderDetails?.groupOrderInfoResponses?.map(
@@ -837,7 +918,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
                         marginBottom: 10,
                       }}
                     >
-                      Bạn của {customer.fullName}
+                      Bạn của{" "}
+                      {customer.fullName ?? localStorage.getItem("member")}
                     </Typography>
                   )}
                   <div style={{ paddingLeft: 20, paddingRight: 20 }}>

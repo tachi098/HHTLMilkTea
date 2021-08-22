@@ -26,6 +26,10 @@ class GroupOrderService {
     return api.delete(`/grouporder/${longUrl}`);
   };
 
+  groupOrderCreateMember = (data) => {
+    return api.post("/grouporder/create-member", data);
+  };
+
   getShortURL = ({ longUrl }) => {
     return api.post(
       "/shared/shorter",
