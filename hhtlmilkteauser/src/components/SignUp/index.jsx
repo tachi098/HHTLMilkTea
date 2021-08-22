@@ -15,6 +15,7 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { AccountCircle, LockRounded } from "@material-ui/icons";
 import EmailIcon from "@material-ui/icons/Email";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +47,22 @@ const SignUp = () => {
   const [message, setMessage] = useState("");
   const password = useRef({});
   password.current = watch("password", "");
+
+  //support group member
+  useEffect(() => {
+    if (
+      !Object.is(localStorage.getItem("member", null)) &&
+      !Object.is(localStorage.getItem("member"), null)
+    ) {
+      setTimeout(() => {
+        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+        const username = groupMember?.username;
+        const type = "team";
+        const orderID = groupMember?.orderID;
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      }, 300);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (user?.token && !user?.roles?.includes("ROLE_ADMIN")) {

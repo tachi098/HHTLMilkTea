@@ -24,6 +24,7 @@ import {
   WheelCreateAction,
 } from "./../../store/actions/WheelAction";
 import moment from "moment";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +59,22 @@ const Spinner = () => {
   const [segColors, setSegColors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  //support group member
+  useEffect(() => {
+    if (
+      !Object.is(localStorage.getItem("member", null)) &&
+      !Object.is(localStorage.getItem("member"), null)
+    ) {
+      setTimeout(() => {
+        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+        const username = groupMember?.username;
+        const type = "team";
+        const orderID = groupMember?.orderID;
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      }, 300);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     WheelListAction()(dispatch);
     SpinnerFindByAllAction()(dispatch);
@@ -84,8 +101,7 @@ const Spinner = () => {
   }, [spinner]);
 
   const onFinished = (winner) => {
-
-    console.log({ customer, user })
+    console.log({ customer, user });
 
     if (Object.is(winner, "May mắn lần sau")) {
       SpinnerUpdateMarkAction({

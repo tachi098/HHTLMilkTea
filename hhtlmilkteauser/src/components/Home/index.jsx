@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 import Content from "./Content";
 import Slide from "./Slider";
+import { GroupOrderCreateMemberAction } from "./../../store/actions/GroupOrderAction";
+import { useHistory } from "react-router-dom";
 
 function getModalStyle() {
   const top = 30;
@@ -28,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
   const [modalStyle] = React.useState(getModalStyle);
   const [openModalJoin, setOpenModalJoin] = useState(false);
@@ -35,8 +38,16 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const auth = useSelector((state) => state.auth);
   const { order } = useSelector((state) => state.order);
+  const { search } = window.location;
 
   useEffect(() => {
+    if (
+      new URLSearchParams(search).get("username") &&
+      new URLSearchParams(search).get("username") !==
+        JSON.parse(localStorage.getItem("groupMember"))?.username
+    ) {
+      localStorage.removeItem("member"); // remove if have new link share
+    }
     setTimeout(() => {
       if (
         Object.is(
@@ -49,7 +60,7 @@ const Home = () => {
         setOpenModalJoin(true);
       }
     }, 300);
-  }, []);
+  }, [search]);
 
   useEffect(() => {
     if (
@@ -75,16 +86,34 @@ const Home = () => {
   };
 
   const handleJoin = () => {
+    const groupMemberSave = JSON.parse(localStorage.getItem("groupMember"));
+
+    const usernameSave = groupMemberSave?.username;
+    const orderIDSave = groupMemberSave?.orderID;
+
     if (!Object.is(member, "")) {
-      localStorage.setItem("member", member);
-      setTimeout(() => {
-        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
-        const username = groupMember?.username;
-        const type = "team";
-        const orderID = groupMember?.orderID;
-        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-        setOpenModalJoin(false);
-      }, 300);
+      GroupOrderCreateMemberAction({
+        name: member,
+        usernameOwner: usernameSave,
+        orderId: orderIDSave,
+      })(dispatch).then((res) => {
+        if (res === "Tên này đã được sử dụng") {
+          setMessage("Tên này đã được sử dụng");
+          return;
+        } else {
+          localStorage.setItem("member", member);
+          setTimeout(() => {
+            const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+            const username = groupMember?.username;
+            const type = "team";
+            const orderID = groupMember?.orderID;
+            GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+            setOpenModalJoin(false);
+            history.replace("/home");
+            window.location.reload();
+          }, 300);
+        }
+      });
     } else {
       setMessage("Hãy nhập tên để tham gia!");
     }

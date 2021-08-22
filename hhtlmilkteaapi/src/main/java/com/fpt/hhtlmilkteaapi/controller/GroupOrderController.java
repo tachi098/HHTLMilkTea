@@ -2,6 +2,7 @@ package com.fpt.hhtlmilkteaapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.hhtlmilkteaapi.entity.*;
+import com.fpt.hhtlmilkteaapi.payload.request.GroupMemberRequest;
 import com.fpt.hhtlmilkteaapi.payload.request.WSGroupOrderRequest;
 import com.fpt.hhtlmilkteaapi.payload.response.GroupOrderInfoResponse;
 import com.fpt.hhtlmilkteaapi.payload.response.GroupOrderResponse;
@@ -9,11 +10,13 @@ import com.fpt.hhtlmilkteaapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,7 +165,7 @@ public class GroupOrderController {
                 "logout".equals(wsGroupOrderRequest.getOrderID())) {
             try {
                 String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
-                template.convertAndSend("/data", jsonStr);
+                template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -271,7 +274,7 @@ public class GroupOrderController {
 
         try {
             String jsonStr = Obj.writeValueAsString(groupOrderResponse);
-            template.convertAndSend("/data", jsonStr);
+            template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -316,6 +319,27 @@ public class GroupOrderController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PostMapping("/create-member")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> createGroupMember(@RequestBody GroupMemberRequest groupMemberRequest) {
+
+        if(groupMemberRepository.findByNameAndUsernameOwner(groupMemberRequest.getName(),
+                groupMemberRequest.getUsernameOwner()).isPresent()) {
+            return ResponseEntity.ok("Tên này đã được sử dụng");
+        }
+
+        GroupMember groupMember = new GroupMember();
+        groupMember.setName(groupMemberRequest.getName());
+        groupMember.setUsernameOwner(groupMemberRequest.getUsernameOwner());
+
+        User user = userRepository.findByUsername(groupMemberRequest.getUsernameOwner()).get();
+        Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
+        groupMember.setOrder(order);
+
+        return ResponseEntity.ok(groupMemberRepository.save(groupMember));
     }
 
 }

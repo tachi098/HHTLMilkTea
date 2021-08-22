@@ -13,6 +13,12 @@ export const GroupOrderFindAllAction =
         type,
         orderID,
       });
+
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderId: orderID,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -68,3 +74,12 @@ export const GroupOrderDeleteGroupMembersAction =
       console.error(error);
     }
   };
+
+export const GroupOrderCreateMemberAction = (data) => async (dispatch) => {
+  try {
+    const res = await GroupOrderService.groupOrderCreateMember(data);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
