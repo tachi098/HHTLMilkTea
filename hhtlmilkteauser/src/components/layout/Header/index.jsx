@@ -340,7 +340,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
       client.activate();
     }, 750);
-  }, [auth.token, auth?.user?.username]);
+  }, [auth.token, auth?.user?.username, dispatch]);
 
   useEffect(() => {
     setOpen(isOpen);
