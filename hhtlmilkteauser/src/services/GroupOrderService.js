@@ -38,6 +38,10 @@ class GroupOrderService {
     return api.put("/grouporder/update-orderDetails-quantity", data);
   };
 
+  groupOrderDetialsDelete = (id) => {
+    return api.delete(`/grouporder/delete/${id}`);
+  };
+
   getShortURL = ({ longUrl }) => {
     return api.post(
       "/shared/shorter",

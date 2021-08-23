@@ -63,6 +63,7 @@ const SignIn = () => {
         localStorage.setItem("user", JSON.stringify(auth.user));
         localStorage.removeItem("groupMember");
         localStorage.removeItem("member");
+        localStorage.removeItem("map");
         history.push("/home");
       }
     });
@@ -80,7 +81,7 @@ const SignIn = () => {
         const type = "team";
         const orderID = groupMember?.orderID;
         GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-      }, 300);
+      }, 750);
     }
   }, [dispatch]);
 

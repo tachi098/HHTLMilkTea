@@ -13,6 +13,7 @@ class AuthService {
     localStorage.removeItem("user");
     localStorage.removeItem("groupMember");
     localStorage.removeItem("member");
+    localStorage.removeItem("map");
   };
 
   checkEmail = (data) => {

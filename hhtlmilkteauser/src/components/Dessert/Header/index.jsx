@@ -21,7 +21,7 @@ const Header = () => {
         const type = "team";
         const orderID = groupMember?.orderID;
         GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-      }, 300);
+      }, 750);
     }
   }, [dispatch]);
 

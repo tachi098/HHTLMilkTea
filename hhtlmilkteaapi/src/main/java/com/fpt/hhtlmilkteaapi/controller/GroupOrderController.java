@@ -76,9 +76,8 @@ public class GroupOrderController {
             List<Integer> quantities = new ArrayList<>();
             List<Product> products = new ArrayList<>();
             List<String> addOptionIds = new ArrayList<>();
-            ;
             List<String> sizeOptionIds = new ArrayList<>();
-            ;
+
             orderDetails.forEach(od -> {
                 orderDetailsID.add(od.getId());
 
@@ -429,6 +428,16 @@ public class GroupOrderController {
         }
 
         groupOrderDetailsRepository.save(groupOrderDetails);
+
+        return ResponseEntity.ok("");
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> deleteGroupOrderDetails(@PathVariable long id) {
+
+        GroupOrderDetails groupOrderDetails = groupOrderDetailsRepository.findById(id).get();
+        groupOrderDetailsRepository.delete(groupOrderDetails);
 
         return ResponseEntity.ok("");
     }

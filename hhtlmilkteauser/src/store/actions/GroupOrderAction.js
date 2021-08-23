@@ -113,3 +113,18 @@ export const GroupOrderUpdateQuantity =
       console.error(error);
     }
   };
+
+export const GroupOrderDetailsDelete =
+  (id, { username, type, orderID }) =>
+  async (dispatch) => {
+    try {
+      await GroupOrderService.groupOrderDetialsDelete(id);
+      await GroupOrderService.getGroupOderWithUsernameWS({
+        username,
+        type,
+        orderID,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };

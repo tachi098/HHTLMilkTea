@@ -41,8 +41,9 @@ public class ShorterController {
         if (longUrl != null) {
             return new ModelAndView("redirect:" + longUrl);
         } else {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+//            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return new ModelAndView("redirect:" + "http://localhost:3000");
+//            return null;
         }
     }
 

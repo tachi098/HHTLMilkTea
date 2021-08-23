@@ -234,6 +234,7 @@ const Content = () => {
       const items = [...item.sizeOptions];
       setSize(items.sort((a, b) => a.id - b.id));
       setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
+      setCount(1);
       setOpen(true);
     } else {
       Notification.error("Vui lòng đăng nhập trước khi mua hàng!");

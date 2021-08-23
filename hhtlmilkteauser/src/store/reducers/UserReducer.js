@@ -1,10 +1,8 @@
-import {
-  createSlice
-} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   customer: {},
-  wishlist: {},
+  wishlist: null,
   error: {},
 };
 
@@ -30,15 +28,12 @@ const userSlice = createSlice({
     },
     logoutCustomer: (state, action) => {
       state.customer = {};
-      state.wishlist = {};
-    }
+      state.wishlist = null;
+    },
   },
 });
 
-const {
-  reducer,
-  actions
-} = userSlice;
+const { reducer, actions } = userSlice;
 export const {
   userbyusername,
   profileUpdate,
