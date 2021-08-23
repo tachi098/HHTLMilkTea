@@ -8,7 +8,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   PermIdentityOutlined,
   AssignmentOutlined,
@@ -19,7 +19,8 @@ import Profile from "./Profile";
 import History from "./History";
 import Voucher from "./Voucher";
 import HistoryDetail from "./History/HistoryDetail";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -54,6 +55,43 @@ const useStyles = makeStyles((theme) => ({
 const Account = () => {
   const classes = useStyles();
   const { customer } = useSelector((state) => state.customer);
+
+  //support group member
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { order } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    if (
+      order &&
+      Object.keys(order).length !== 0 &&
+      order.constructor === Object
+    ) {
+      if (
+        (!Object.is(localStorage.getItem("member", null)) &&
+          !Object.is(localStorage.getItem("member"), null)) ||
+        localStorage.getItem("user")
+      ) {
+        setTimeout(() => {
+          const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+          const username = groupMember?.username;
+          const type = "team";
+          const orderID = groupMember?.orderID;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+
+      if (auth?.user?.token) {
+        setTimeout(() => {
+          const username = auth?.user?.username;
+          const type = "team";
+          const orderID = order?.id;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+    }
+  }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
+
   return (
     <React.Fragment>
       <Grid container className={classes.container}>

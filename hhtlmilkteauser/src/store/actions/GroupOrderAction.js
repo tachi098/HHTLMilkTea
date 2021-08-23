@@ -2,6 +2,7 @@ import GroupOrderService from "../../services/GroupOrderService";
 import {
   getShortURLFromData,
   getShortURLEmpty,
+  getGroupOrderSaveState,
 } from "./../reducers/GroupOrderReducer";
 
 export const GroupOrderFindAllAction =
@@ -128,3 +129,11 @@ export const GroupOrderDetailsDelete =
       console.error(error);
     }
   };
+
+export const GroupOrderSaveStateAction = (data) => async (dispatch) => {
+  try {
+    dispatch(getGroupOrderSaveState(data));
+  } catch (error) {
+    console.error(error);
+  }
+};

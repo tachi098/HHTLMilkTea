@@ -46,6 +46,7 @@ import {
   GroupOrderDeleteGroupMembersAction,
   GroupOrderUpdateQuantity,
   GroupOrderDetailsDelete,
+  GroupOrderSaveStateAction,
 } from "./../../../store/actions/GroupOrderAction";
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
@@ -318,6 +319,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
               window.location.reload();
             }
 
+            GroupOrderSaveStateAction(jsonBody)(dispatch);
             setDataGroupOrderDetails(jsonBody);
           }
         });
@@ -601,6 +603,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
       { username, type, orderID },
       shortUrl.split("/")[2]
     )(dispatch);
+  };
+
+  const handlePayment = () => {
+    window.location.href = "/checkout";
+    localStorage.setItem("map", "refresh");
+    localStorage.setItem("group", "payment");
   };
 
   return (
@@ -998,7 +1006,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                 <div key={index}>
                   {Object.is(index, 1) && (
                     <>
-                      {customer?.fullName && (
+                      {(customer?.fullName || customer?.username) && (
                         <Typography
                           style={{
                             marginLeft: 30,
@@ -1006,7 +1014,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             marginBottom: 10,
                           }}
                         >
-                          Bạn của {customer.fullName}
+                          Bạn của {customer.fullName || customer?.username}
                         </Typography>
                       )}
                     </>
@@ -1042,7 +1050,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                       <Typography
                         style={{ marginLeft: 10, marginTop: 8, color: "red" }}
                       >
-                        <b>{item?.username}</b>
+                        <b>{item?.username || customer?.username}</b>
                       </Typography>
                       {Object.is(localStorage.getItem("member"), null) && (
                         <>
@@ -1220,7 +1228,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
           >
             {dataGroupOrderDetails &&
               (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1 ? (
-                <Button variant="contained" color="primary" fullWidth>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => handlePayment()}
+                >
                   Thanh toán
                 </Button>
               ) : (

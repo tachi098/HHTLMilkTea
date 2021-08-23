@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,6 +14,7 @@ import {
   OrderDelteOrderDetail,
   OrderUpdateQuantity,
 } from "../../store/actions/OrderAction";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -64,10 +65,44 @@ const ShoppingCart = () => {
   const { order, totalPrice } = useSelector((state) => state.order);
   const auth = useSelector((state) => state.auth);
 
+  //support group member
+
+  useEffect(() => {
+    if (
+      order &&
+      Object.keys(order).length !== 0 &&
+      order.constructor === Object
+    ) {
+      if (
+        (!Object.is(localStorage.getItem("member", null)) &&
+          !Object.is(localStorage.getItem("member"), null)) ||
+        localStorage.getItem("user")
+      ) {
+        setTimeout(() => {
+          const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+          const username = groupMember?.username;
+          const type = "team";
+          const orderID = groupMember?.orderID;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+
+      if (auth?.user?.token) {
+        setTimeout(() => {
+          const username = auth?.user?.username;
+          const type = "team";
+          const orderID = order?.id;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+    }
+  }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
+
   const onHandleRedirectCheckout = () => {
     // localStorage.setItem("check", "true")
     window.location.href = "/checkout";
     localStorage.setItem("map", "refresh");
+    localStorage.removeItem("group");
   };
 
   const onHandleUpdateQuantity = (orderDetailId, action) => {

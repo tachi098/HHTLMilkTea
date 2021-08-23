@@ -21,6 +21,9 @@ const groupOrderSlice = createSlice({
     getShortURLEmpty: (state, action) => {
       state.shortUrl = "";
     },
+    getGroupOrderSaveState: (state, action) => {
+      state.dataGroupOrderDetails = action.payload;
+    },
   },
 });
 
@@ -30,5 +33,6 @@ export const {
   getGroupOderWithUsernameLogout,
   getShortURLFromData,
   getShortURLEmpty,
+  getGroupOrderSaveState,
 } = actions;
 export default reducer;
