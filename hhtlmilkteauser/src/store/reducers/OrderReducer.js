@@ -1,60 +1,55 @@
-import {
-    createSlice
-} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    order: {},
-    quantity: 0,
-    totalPrice: 0
+  order: {},
+  quantity: 0,
+  totalPrice: 0,
 };
 
 const orderSlice = createSlice({
-    name: "order",
-    initialState,
-    reducers: {
-        add: (state, action) => {
-            state.order = action.payload.order;
-            state.quantity = action.payload.quantity;
-            state.totalPrice = action.payload.totalPrice;
-        },
-        find: (state, action) => {
-            state.order = action.payload.order;
-            state.quantity = action.payload.quantity;
-            state.totalPrice = action.payload.totalPrice;
-        },
-        update: (state, action) => {
-            state.order = action.payload.order;
-            state.quantity = action.payload.quantity;
-            state.totalPrice = action.payload.totalPrice;
-        },
-        deleteOrderDetail: (state, action) => {
-            state.order = action.payload.order;
-            state.quantity = action.payload.quantity;
-            state.totalPrice = action.payload.totalPrice;
-        },
-        checkoutSuccess: (state, action) => {
-            state.order = {};
-            state.quantity = 0;
-            state.totalPrice = 0;
-        },
-        logoutOrder: (state, action) => {
-            state.order = {};
-            state.quantity = 0;
-            state.totalPrice = 0;
-        }
+  name: "order",
+  initialState,
+  reducers: {
+    add: (state, action) => {
+      state.order = action.payload.order;
+      state.quantity = action.payload.quantity;
+      state.totalPrice = action.payload.totalPrice;
     },
+    find: (state, action) => {
+      state.order = action.payload.order;
+      state.quantity = action.payload.quantity;
+      state.totalPrice = action.payload.totalPrice;
+    },
+    update: (state, action) => {
+      state.order = action.payload.order;
+      state.quantity = action.payload.quantity;
+      state.totalPrice = action.payload.totalPrice;
+    },
+    deleteOrderDetail: (state, action) => {
+      state.order = action.payload.order;
+      state.quantity = action.payload.quantity;
+      state.totalPrice = action.payload.totalPrice;
+    },
+    checkoutSuccess: (state, action) => {
+      state.order = {};
+      state.quantity = 0;
+      state.totalPrice = 0;
+    },
+    logoutOrder: (state, action) => {
+      state.order = {};
+      state.quantity = 0;
+      state.totalPrice = 0;
+    },
+  },
 });
 
-const {
-    reducer,
-    actions
-} = orderSlice;
+const { reducer, actions } = orderSlice;
 export const {
-    add,
-    deleteOrderDetail,
-    find,
-    update,
-    checkoutSuccess,
-    logoutOrder,
+  add,
+  deleteOrderDetail,
+  find,
+  update,
+  checkoutSuccess,
+  logoutOrder,
 } = actions;
 export default reducer;

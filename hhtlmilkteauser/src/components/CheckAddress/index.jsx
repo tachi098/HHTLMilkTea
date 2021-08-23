@@ -9,8 +9,9 @@ import {
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
 const useStyles = makeStyles((theme) => ({
   btnReloadMap: {
@@ -79,6 +80,37 @@ const CheckAddress = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  // support group member
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (Object.keys(order).length !== 0) {
+      if (
+        (!Object.is(localStorage.getItem("member", null)) &&
+          !Object.is(localStorage.getItem("member"), null)) ||
+        localStorage.getItem("user")
+      ) {
+        setTimeout(() => {
+          const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+          const username = groupMember?.username;
+          const type = "team";
+          const orderID = groupMember?.orderID;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+
+      if (auth?.user?.token) {
+        setTimeout(() => {
+          const username = auth?.user?.username;
+          const type = "team";
+          const orderID = order?.id;
+          GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+        }, 750);
+      }
+    }
+  }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
 
   useEffect(() => {
     if (!localStorage.getItem("map")) {
