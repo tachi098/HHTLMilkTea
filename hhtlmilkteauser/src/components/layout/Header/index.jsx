@@ -45,6 +45,7 @@ import {
   GroupOrderDeleteMember,
   GroupOrderDeleteGroupMembersAction,
   GroupOrderUpdateQuantity,
+  GroupOrderDetailsDelete,
 } from "./../../../store/actions/GroupOrderAction";
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
@@ -257,7 +258,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
           } else {
             resolve();
           }
-        }, 300);
+        }, 750);
       });
     };
 
@@ -281,41 +282,62 @@ const Header = ({ isOpen, onHandleOpen }) => {
   }, [history, search]);
 
   useEffect(() => {
-    let onConnected = () => {
-      console.log("Connected!!");
+    setTimeout(() => {
+      let onConnected = () => {
+        console.log("Connected!!");
 
-      let wsUsername = `${auth?.user?.username}/data`;
+        let wsUsername = `${auth?.user?.username}/data`;
 
-      if (localStorage.getItem("groupMember")) {
-        wsUsername = `${
-          JSON.parse(localStorage.getItem("groupMember"))?.username
-        }/data`;
-      }
-
-      client.subscribe(wsUsername, function (msg) {
-        if (msg.body) {
-          var jsonBody = JSON.parse(msg.body);
-          // console.log(jsonBody);
-
-          setDataGroupOrderDetails(jsonBody);
+        if (localStorage.getItem("groupMember")) {
+          wsUsername = `${
+            JSON.parse(localStorage.getItem("groupMember"))?.username
+          }/data`;
         }
+
+        client.subscribe(wsUsername, async function (msg) {
+          if (msg.body) {
+            var jsonBody = await JSON.parse(msg.body);
+            // console.log(jsonBody);
+
+            if (
+              jsonBody?.groupOrderInfoResponses === null &&
+              jsonBody?.totalPriceGroup === 0 &&
+              localStorage.getItem("member") &&
+              localStorage.getItem("groupMember")
+            ) {
+              localStorage.removeItem("member");
+              localStorage.removeItem("groupMember");
+              window.location.reload();
+            }
+
+            if (
+              jsonBody?.groupOrderInfoResponses === null &&
+              jsonBody?.totalPriceGroup === 0 &&
+              localStorage.getItem("user")
+            ) {
+              window.location.reload();
+            }
+
+            setDataGroupOrderDetails(jsonBody);
+          }
+        });
+      };
+
+      let onDisconnected = () => {
+        console.log("Disconnected!");
+      };
+
+      const client = new Client({
+        brokerURL: SOCKET_URL,
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        onConnect: onConnected,
+        onDisconnect: onDisconnected,
       });
-    };
 
-    let onDisconnected = () => {
-      console.log("Disconnected!");
-    };
-
-    const client = new Client({
-      brokerURL: SOCKET_URL,
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      onConnect: onConnected,
-      onDisconnect: onDisconnected,
-    });
-
-    client.activate();
+      client.activate();
+    }, 750);
   }, [auth.token, auth?.user?.username]);
 
   useEffect(() => {
@@ -542,10 +564,18 @@ const Header = ({ isOpen, onHandleOpen }) => {
   };
 
   const onHandleDeleteOrderDetail = (id) => {
-    const username = auth?.user?.username;
-    const type = "team";
-    const orderID = order?.id;
-    dispatch(OrderDelteOrderDetail(id, { username, type, orderID }));
+    if (auth?.user?.token) {
+      const username = auth?.user?.username;
+      const type = "team";
+      const orderID = order?.id;
+      dispatch(OrderDelteOrderDetail(id, { username, type, orderID }));
+    } else if (localStorage.getItem("member")) {
+      const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+      const username = groupMember?.username;
+      const orderID = groupMember?.orderID;
+      const type = "team";
+      dispatch(GroupOrderDetailsDelete(id, { username, type, orderID }));
+    }
   };
 
   const handleDeleteMember = (namemenber, nameOwner, orderID) => {
@@ -613,9 +643,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
               onMouseOver={handleClick}
             />
           </Badge>
-
           <Badge
-            badgeContent={auth?.user?.token ? wishlist?.quantity : 0}
+            badgeContent={wishlist !== null ? wishlist?.quantity : 0}
             color="secondary"
             style={{ marginRight: 20 }}
           >
@@ -627,35 +656,39 @@ const Header = ({ isOpen, onHandleOpen }) => {
             />
           </Badge>
 
-          {dataGroupOrderDetails && (
-            <>
-              {dataGroupOrderDetails?.groupOrderInfoResponses.findIndex(
-                (a) => a.username === localStorage.getItem("member")
-              ) !== -1 && (
-                <Badge
-                  badgeContent={
-                    dataGroupOrderDetails &&
-                    (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
-                      ? dataGroupOrderDetails?.groupOrderInfoResponses?.length -
-                        1
-                      : 0)
-                  }
-                  color="secondary"
-                  style={{ marginRight: 20 }}
-                >
-                  <GroupAddIcon
-                    style={{ color: "#416c48", cursor: "pointer" }}
-                    aria-haspopup="true"
-                    onClick={handleDrawerOpenGroup}
-                  />
-                </Badge>
-              )}
-            </>
-          )}
+          {dataGroupOrderDetails &&
+            Object.values(dataGroupOrderDetails?.groupOrderInfoResponses) && (
+              <>
+                {Object.values(
+                  dataGroupOrderDetails?.groupOrderInfoResponses
+                ).findIndex(
+                  (a) => a.username === localStorage.getItem("member")
+                ) !== -1 && (
+                  <Badge
+                    badgeContent={
+                      dataGroupOrderDetails &&
+                      (dataGroupOrderDetails?.groupOrderInfoResponses?.length >
+                      0
+                        ? dataGroupOrderDetails?.groupOrderInfoResponses
+                            ?.length - 1
+                        : 0)
+                    }
+                    color="secondary"
+                    style={{ marginRight: 20 }}
+                  >
+                    <GroupAddIcon
+                      style={{ color: "#416c48", cursor: "pointer" }}
+                      aria-haspopup="true"
+                      onClick={handleDrawerOpenGroup}
+                    />
+                  </Badge>
+                )}
+              </>
+            )}
 
           {dataGroupOrderDetails && (
             <>
-              {auth?.user?.token && (
+              {auth?.user?.token && order?.orderDetails?.length > 0 && (
                 <Badge
                   badgeContent={
                     dataGroupOrderDetails &&
@@ -1126,8 +1159,11 @@ const Header = ({ isOpen, onHandleOpen }) => {
                               </div>
                             )}
                           </div>
-                          {Object.is(customer?.fullName, item.username) ||
-                          localStorage.getItem("member") ? (
+                          {Object.is(
+                            customer?.fullName ||
+                              localStorage.getItem("member"),
+                            item.username
+                          ) ? (
                             <DeleteOutline
                               style={{
                                 color: "red",

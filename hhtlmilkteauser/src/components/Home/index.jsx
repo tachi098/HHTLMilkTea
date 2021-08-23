@@ -63,8 +63,8 @@ const Home = () => {
       ) {
         setOpenModalJoin(true);
       }
-    }, 300);
-  }, [search]);
+    }, 750);
+  }, [history, search]);
 
   useEffect(() => {
     if (
@@ -81,7 +81,7 @@ const Home = () => {
         const orderID = groupMember ? groupMember?.orderID : order?.id;
         GroupOrderFindAllAction({ username, type, orderID })(dispatch);
         setOpenModalJoin(false);
-      }, 300);
+      }, 750);
     }
   }, [auth?.user?.token, auth?.user?.username, dispatch, member, order?.id]);
 
@@ -115,7 +115,7 @@ const Home = () => {
             setOpenModalJoin(false);
             history.replace("/home");
             window.location.reload();
-          }, 300);
+          }, 750);
         }
       });
     } else {
