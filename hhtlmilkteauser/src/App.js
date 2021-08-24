@@ -8,6 +8,7 @@ import "./App.scss";
 import PrivateRoute from "./components/PrivateRoute";
 import React, { Suspense } from "react";
 import CheckAddress from "./components/CheckAddress";
+import ChatBox from "./components/ChatBox"
 
 const Home = React.lazy(() => import("./components/Home"));
 const Milktea = React.lazy(() => import("./components/Milktea"));
@@ -23,11 +24,13 @@ const Spinner = React.lazy(() => import("./components/Spinner"));
 const Wishlist = React.lazy(() => import("./components/Wishlist"));
 const PaymentForm = React.lazy(() => import("./components/PaymentForm"));
 const ReturnMomo = React.lazy(() => import("./components/ReturnMomo"));
+const AboutUs = React.lazy(() => import("./components/AboutUs"));
 
 const App = () => {
 
   return (
     <>
+      <ChatBox />
       <ToastContainer />
       <Router>
         <Suspense
@@ -72,6 +75,9 @@ const App = () => {
                 </Route>
                 <Route path={"/milktea"} exact>
                   <Milktea />
+                </Route>
+                <Route path={"/about"} exact>
+                  <AboutUs />
                 </Route>
 
                 <PrivateRoute
