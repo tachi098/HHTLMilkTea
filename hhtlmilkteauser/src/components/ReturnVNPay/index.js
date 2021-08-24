@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReturnMomo = () => {
+const ReturnVNPay = () => {
   const classes = useStyles();
 
   const [message, setMessage] = useState("");
@@ -81,23 +81,23 @@ const ReturnMomo = () => {
   }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
 
   useEffect(() => {
-    const errorCode = new URLSearchParams(search).get("errorCode");
+    const vnp_ResponseCode = new URLSearchParams(search).get(
+      "vnp_ResponseCode"
+    );
     const payment = new URLSearchParams(search).get("payment");
     const order =
       localStorage.getItem("order") !== null
         ? JSON.parse(localStorage.getItem("order"))
         : {};
 
-    const accessKey = new URLSearchParams(search).get("accessKey");
-    const amount = new URLSearchParams(search).get("amount");
-    const extraData = new URLSearchParams(search).get("extraData");
+    const vnp_Amount = new URLSearchParams(search).get("vnp_Amount");
+    const vnp_BankCode = new URLSearchParams(search).get("vnp_BankCode");
 
-    if (Object.is(errorCode, "0")) {
+    if (Object.is(vnp_ResponseCode, "00")) {
       if (
         !Object.is(payment, "cod") &&
-        accessKey &&
-        amount &&
-        extraData &&
+        vnp_Amount &&
+        vnp_BankCode &&
         localStorage.getItem("order")
       ) {
         dispatch(checkoutOrder(order));
@@ -180,4 +180,4 @@ const ReturnMomo = () => {
   );
 };
 
-export default ReturnMomo;
+export default ReturnVNPay;
