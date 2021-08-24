@@ -8,7 +8,8 @@ import "./App.scss";
 import PrivateRoute from "./components/PrivateRoute";
 import React, { Suspense } from "react";
 import CheckAddress from "./components/CheckAddress";
-import ChatBox from "./components/ChatBox"
+import ChatBox from "./components/ChatBox";
+import ReturnVNPay from "./components/ReturnVNPay";
 
 const Home = React.lazy(() => import("./components/Home"));
 const Milktea = React.lazy(() => import("./components/Milktea"));
@@ -27,7 +28,6 @@ const ReturnMomo = React.lazy(() => import("./components/ReturnMomo"));
 const AboutUs = React.lazy(() => import("./components/AboutUs"));
 
 const App = () => {
-
   return (
     <>
       <ChatBox />
@@ -106,10 +106,13 @@ const App = () => {
                   <ReturnMomo />
                 </PrivateRoute>
 
+                <PrivateRoute path={"/checkoutresult-vnpay"}>
+                  <ReturnVNPay />
+                </PrivateRoute>
+
                 <Route path="/*">
                   <Page404 />
                 </Route>
-
               </Switch>
             </ScrollOnTop>
           </DefaultLayout>

@@ -22,6 +22,33 @@ import { MonetizationOnOutlined } from "@material-ui/icons";
 import momo from "./../../assets/img/MoMoLogo.png";
 import { GroupOrderFindAllAction } from "../../store/actions/GroupOrderAction";
 
+import VNPayLogo from "./../../assets/img/VNPAY.png";
+import publicIp from "public-ip";
+import queryString from "query-string";
+import dateFormat from "dateformat";
+import sha256 from "sha256";
+
+const HASH_SECRET = "XPUQZNZXYYUJAXXLMAJPLEAAQZYXVNCA";
+const TMNCODE = "ZYP5A0IS";
+const VNP_URL = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+const VNP_RETURN = "http://localhost:3000/checkoutresult-vnpay";
+
+function sortObject(o) {
+  const sorted = {};
+  const onlyKey = [];
+  for (const key in o) {
+    if (o.hasOwnProperty(key)) {
+      onlyKey.push(key);
+    }
+  }
+  onlyKey.sort();
+  Array.from({ length: onlyKey.length }, (elm, idx) => {
+    sorted[onlyKey[idx]] = o[onlyKey[idx]];
+    return null;
+  });
+  return sorted;
+}
+
 const useStyles = makeStyles((theme) => ({
   btnReloadMap: {
     marginTop: 10,
@@ -132,8 +159,9 @@ const PaymentForm = () => {
       totalPrice: localStorage.getItem("group")
         ? +address.shippingPrice +
           +dataGroupOrderDetails?.totalPriceGroup -
-          mark
-        : +address.shippingPrice + +totalPrice - mark,
+          mark +
+          +dataGroupOrderDetails?.totalPriceGroup * 0.05
+        : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
       memberVip: mark,
       total: localStorage.getItem("group")
         ? +dataGroupOrderDetails?.totalPriceGroup
@@ -149,8 +177,9 @@ const PaymentForm = () => {
       localStorage.getItem("group")
         ? +address.shippingPrice +
             +dataGroupOrderDetails?.totalPriceGroup -
-            mark
-        : +address.shippingPrice + +totalPrice - mark
+            mark +
+            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+        : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05
     );
     localStorage.removeItem("order");
     localStorage.setItem(
@@ -160,8 +189,9 @@ const PaymentForm = () => {
         totalPrice: localStorage.getItem("group")
           ? +address.shippingPrice +
             +dataGroupOrderDetails?.totalPriceGroup -
-            mark
-          : +address.shippingPrice + +totalPrice - mark,
+            mark +
+            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+          : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
         memberVip: mark,
         address: address.to,
         phone: address.phone,
@@ -201,6 +231,106 @@ const PaymentForm = () => {
       setErr("Điểm nhập vào phải là số");
     }
   };
+
+  const handlerVNPay = async () => {
+    const tmnCode = TMNCODE;
+    const secretKey = HASH_SECRET;
+    const returnUrl = VNP_RETURN;
+
+    const date = new Date();
+
+    const createDate = dateFormat(date, "yyyymmddHHmmss");
+    // const orderId = dateFormat(date, "HHmmss");
+    const orderId = new Date().getTime();
+    const amount = localStorage.getItem("group")
+      ? (
+          +address.shippingPrice +
+          +dataGroupOrderDetails?.totalPriceGroup -
+          mark +
+          +dataGroupOrderDetails?.totalPriceGroup * 0.05
+        ).toString()
+      : (
+          +address.shippingPrice +
+          +totalPrice -
+          mark +
+          +totalPrice * 0.05
+        ).toString();
+
+    localStorage.removeItem("order");
+    localStorage.setItem(
+      "order",
+      JSON.stringify({
+        orderId: order.id,
+        totalPrice: localStorage.getItem("group")
+          ? +address.shippingPrice +
+            +dataGroupOrderDetails?.totalPriceGroup -
+            mark +
+            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+          : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
+        memberVip: mark,
+        address: address.to,
+        phone: address.phone,
+        shipping: +address.shippingPrice,
+        payment: "vnpay",
+        note: address.note,
+        total: localStorage.getItem("group")
+          ? +dataGroupOrderDetails?.totalPriceGroup
+          : +totalPrice,
+      })
+    );
+
+    const bankCode = "NCB";
+
+    const orderInfo = "vnpay";
+    const orderType = "topup";
+    const locale = "vn";
+    const currCode = "VND";
+    const set_vnp_Params = {};
+
+    set_vnp_Params["vnp_Version"] = "2";
+    set_vnp_Params["vnp_Command"] = "pay";
+    set_vnp_Params["vnp_TmnCode"] = tmnCode;
+    set_vnp_Params["vnp_Locale"] = locale;
+    set_vnp_Params["vnp_CurrCode"] = currCode;
+    set_vnp_Params["vnp_TxnRef"] = orderId;
+    set_vnp_Params["vnp_OrderInfo"] = orderInfo;
+    set_vnp_Params["vnp_OrderType"] = orderType;
+    set_vnp_Params["vnp_Amount"] = amount * 100;
+    set_vnp_Params["vnp_ReturnUrl"] = returnUrl;
+    set_vnp_Params["vnp_IpAddr"] = await publicIp.v4();
+    set_vnp_Params["vnp_CreateDate"] = createDate;
+    set_vnp_Params["vnp_BankCode"] = bankCode;
+
+    const vnp_Params = sortObject(set_vnp_Params);
+
+    const signData =
+      secretKey + queryString.stringify(vnp_Params, { encode: false });
+
+    // var sha256 = require('sha256');
+
+    const secureHash = sha256(signData);
+
+    vnp_Params["vnp_SecureHashType"] = "SHA256";
+    vnp_Params["vnp_SecureHash"] = secureHash;
+    const vnpUrl =
+      VNP_URL + "?" + queryString.stringify(vnp_Params, { encode: true });
+    window.location.href = vnpUrl;
+    // setUrl(vnpUrl);
+  };
+
+  const sumQuery = queryString.parse(window.location.search);
+  if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
+    console.log("get result params", sumQuery);
+    const returnSecretHash = sumQuery["vnp_SecureHash"].toString();
+    delete sumQuery["vnp_SecureHash"];
+    delete sumQuery["vnp_SecureHashType"];
+    const returnSignData =
+      HASH_SECRET + queryString.stringify(sumQuery, { encode: false });
+    const enc256 = sha256(returnSignData);
+    if (enc256 === returnSecretHash) {
+      console.log("bang nhau");
+    } else console.log("fail checksum");
+  }
 
   return (
     <React.Fragment>
@@ -279,7 +409,10 @@ const PaymentForm = () => {
                         <TableCell align="center">
                           {(item.priceCurrent * item.quantity).toLocaleString(
                             "it-IT",
-                            { style: "currency", currency: "VND" }
+                            {
+                              style: "currency",
+                              currency: "VND",
+                            }
                           )}
                         </TableCell>
                       </TableRow>
@@ -374,6 +507,17 @@ const PaymentForm = () => {
               })}
             </Typography>
             <Typography variant="body1" gutterBottom>
+              <b>Thuế (5%): </b>
+              {(
+                (localStorage.getItem("group") &&
+                  +dataGroupOrderDetails?.totalPriceGroup * 0.05) ??
+                +totalPrice * 0.05
+              ).toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
               <b>Phí vận chuyển: </b>
               {(+address?.shippingPrice).toLocaleString("it-IT", {
                 style: "currency",
@@ -394,15 +538,21 @@ const PaymentForm = () => {
                 ? (
                     +address?.shippingPrice +
                     +dataGroupOrderDetails?.totalPriceGroup -
-                    mark
+                    mark +
+                    +dataGroupOrderDetails?.totalPriceGroup * 0.05
                   ).toLocaleString("it-IT", {
                     style: "currency",
                     currency: "VND",
                   })
-                : (+address?.shippingPrice + +totalPrice - mark).toLocaleString(
-                    "it-IT",
-                    { style: "currency", currency: "VND" }
-                  )}
+                : (
+                    +address?.shippingPrice +
+                    +totalPrice -
+                    mark +
+                    +totalPrice * 0.05
+                  ).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
             </Typography>
           </Grid>
 
@@ -417,6 +567,15 @@ const PaymentForm = () => {
                   startIcon={<img src={momo} width="40" alt="" />}
                 >
                   Thanh toán momo
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ marginLeft: 20 }}
+                  onClick={handlerVNPay}
+                  startIcon={<img src={VNPayLogo} width="40" alt="" />}
+                >
+                  Thanh toán VNPay
                 </Button>
                 <Button
                   style={{ paddingTop: 13, paddingBottom: 13, marginLeft: 20 }}

@@ -1,6 +1,6 @@
 import { Container, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
-import Logo from "./../../../assets/img/Milktea.jpg";
+import Logo from "./../../../assets/img/Milktea.gif";
 import content4 from "./../../../assets/img/content4.jpg";
 import content5 from "./../../../assets/img/content5.png";
 

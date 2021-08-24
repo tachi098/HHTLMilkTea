@@ -21,7 +21,7 @@ const ChatBox = () => {
     <div>
       <ThemeProvider theme={theme}>
         <ChatBot
-          headerTitle="Chat with HHTLMilkTea coffee"
+          headerTitle="HHTLMilkTea Chatbot"
           floating={true}
           steps={steps}
           botAvatar={logo}

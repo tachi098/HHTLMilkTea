@@ -58,6 +58,11 @@
     "react-toastify": "^7.0.4",
     "react-wheel-of-prizes": "^1.0.8",
     "sass": "^1.37.0",
-    "@stomp/stompjs": "^6.1.0"
+    "@stomp/stompjs": "^6.1.0",
+    "dateformat": "^4.5.1",
+    "encodeurl": "^1.0.2",
+    "public-ip": "^4.0.4",
+    "query-string": "^7.0.1",
+    "sha256": "^0.2.0"
   }
 }
