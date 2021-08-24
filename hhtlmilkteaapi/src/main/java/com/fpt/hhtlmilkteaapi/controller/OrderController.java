@@ -50,6 +50,9 @@ public class OrderController {
     @Autowired
     private IMemberVipRepository memberVipRepository;
 
+    @Autowired
+    private IShorterRepository shorterRepository;
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getOrders() {
@@ -395,6 +398,10 @@ public class OrderController {
 
         MemberVipResponse memberVipResponse = new MemberVipResponse();
         memberVipResponse.setUser(user);
+
+        // Delete long url
+        List<Shorter> shorters = shorterRepository.findAllByLongUrlLike("%" + checkoutRequest.getOrderId() + "%");
+        shorterRepository.delete(shorters.get(0));
 
         return ResponseEntity.ok(memberVipResponse);
     }

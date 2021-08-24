@@ -349,17 +349,16 @@ public class GroupOrderController {
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> createGroupMember(@RequestBody GroupMemberRequest groupMemberRequest) {
 
-        if (groupMemberRepository.findByNameAndUsernameOwner(groupMemberRequest.getName(),
-                groupMemberRequest.getUsernameOwner()).isPresent()) {
+        User user = userRepository.findByUsername(groupMemberRequest.getUsernameOwner()).get();
+        Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
+        if (groupMemberRepository.findByNameAndUsernameOwnerAndOrder(groupMemberRequest.getName(),
+                groupMemberRequest.getUsernameOwner(), order).isPresent()) {
             return ResponseEntity.ok("Tên này đã được sử dụng");
         }
 
         GroupMember groupMember = new GroupMember();
         groupMember.setName(groupMemberRequest.getName());
         groupMember.setUsernameOwner(groupMemberRequest.getUsernameOwner());
-
-        User user = userRepository.findByUsername(groupMemberRequest.getUsernameOwner()).get();
-        Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
         groupMember.setOrder(order);
 
         return ResponseEntity.ok(groupMemberRepository.save(groupMember));
