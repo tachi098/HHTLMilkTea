@@ -735,6 +735,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
             />
           </Badge> */}
 
+          <Badge style={{ position: "relative" }}>
+            <div id="google_translate_element"></div>
+          </Badge>
+
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
