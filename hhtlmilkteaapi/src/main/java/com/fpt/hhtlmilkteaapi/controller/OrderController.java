@@ -53,6 +53,9 @@ public class OrderController {
     @Autowired
     private IShorterRepository shorterRepository;
 
+    @Autowired
+    private IGroupMemberRepository groupMemberRepository;
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getOrders() {
@@ -401,7 +404,18 @@ public class OrderController {
 
         // Delete long url
         List<Shorter> shorters = shorterRepository.findAllByLongUrlLike("%" + checkoutRequest.getOrderId() + "%");
-        shorterRepository.delete(shorters.get(0));
+        if(shorters.size() > 0) {
+            shorterRepository.delete(shorters.get(0));
+        }
+
+        // Delete member not group
+        if(!checkoutRequest.isTeam()) {
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByOrder(order);
+            if(groupMembers.size() > 0) {
+                groupMemberRepository.deleteAll(groupMembers);
+            }
+        }
+
 
         return ResponseEntity.ok(memberVipResponse);
     }

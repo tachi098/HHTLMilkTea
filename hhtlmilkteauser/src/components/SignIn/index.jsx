@@ -65,6 +65,7 @@ const SignIn = () => {
         localStorage.removeItem("member");
         localStorage.removeItem("map");
         localStorage.removeItem("group");
+        localStorage.removeItem("reset-pass");
         history.push("/home");
       }
     });
