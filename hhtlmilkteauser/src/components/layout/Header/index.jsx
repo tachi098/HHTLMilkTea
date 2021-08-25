@@ -51,6 +51,7 @@ import {
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
+// import GoogleTranslate from "../../GoogleTranslate";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -290,11 +291,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
         let wsUsername = `${auth?.user?.username}/data`;
 
         if (localStorage.getItem("groupMember")) {
-          wsUsername = `${JSON.parse(localStorage.getItem("groupMember"))?.username
-            }/data`;
+          wsUsername = `${
+            JSON.parse(localStorage.getItem("groupMember"))?.username
+          }/data`;
         }
 
-        client.subscribe(wsUsername, async function (msg) {
+        client.subscribe(wsUsername, async function(msg) {
           if (msg.body) {
             var jsonBody = await JSON.parse(msg.body);
             // console.log(jsonBody);
@@ -671,25 +673,25 @@ const Header = ({ isOpen, onHandleOpen }) => {
                 ).findIndex(
                   (a) => a.username === localStorage.getItem("member")
                 ) !== -1 && (
-                    <Badge
-                      badgeContent={
-                        dataGroupOrderDetails &&
-                        (dataGroupOrderDetails?.groupOrderInfoResponses?.length >
-                          0
-                          ? dataGroupOrderDetails?.groupOrderInfoResponses
+                  <Badge
+                    badgeContent={
+                      dataGroupOrderDetails &&
+                      (dataGroupOrderDetails?.groupOrderInfoResponses?.length >
+                      0
+                        ? dataGroupOrderDetails?.groupOrderInfoResponses
                             ?.length - 1
-                          : 0)
-                      }
-                      color="secondary"
-                      style={{ marginRight: 20 }}
-                    >
-                      <GroupAddIcon
-                        style={{ color: "#416c48", cursor: "pointer" }}
-                        aria-haspopup="true"
-                        onClick={handleDrawerOpenGroup}
-                      />
-                    </Badge>
-                  )}
+                        : 0)
+                    }
+                    color="secondary"
+                    style={{ marginRight: 20 }}
+                  >
+                    <GroupAddIcon
+                      style={{ color: "#416c48", cursor: "pointer" }}
+                      aria-haspopup="true"
+                      onClick={handleDrawerOpenGroup}
+                    />
+                  </Badge>
+                )}
               </>
             )}
 
@@ -701,7 +703,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                     dataGroupOrderDetails &&
                     (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
                       ? dataGroupOrderDetails?.groupOrderInfoResponses?.length -
-                      1
+                        1
                       : 0)
                   }
                   color="secondary"
@@ -734,9 +736,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
             />
           </Badge> */}
 
-          <Badge style={{ position: "relative" }}>
-            <div id="google_translate_element"></div>
-          </Badge>
+          {/* <Badge style={{ position: "relative" }}> */}
+          {/* <div id="google_translate_element"></div> */}
+          {/* <GoogleTranslate /> */}
+          {/* </Badge> */}
 
           <Menu
             id="simple-menu"
@@ -1118,7 +1121,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                           <div style={{ display: "flex", marginLeft: 20 }}>
                             {Object.is(
                               customer?.fullName ||
-                              localStorage.getItem("member"),
+                                localStorage.getItem("member"),
                               item.username
                             ) ? (
                               <div
@@ -1150,7 +1153,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             </p>
                             {Object.is(
                               customer?.fullName ||
-                              localStorage.getItem("member"),
+                                localStorage.getItem("member"),
                               item.username
                             ) ? (
                               <div
@@ -1172,7 +1175,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                           </div>
                           {Object.is(
                             customer?.fullName ||
-                            localStorage.getItem("member"),
+                              localStorage.getItem("member"),
                             item.username
                           ) ? (
                             <DeleteOutline
