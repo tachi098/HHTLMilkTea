@@ -14,6 +14,8 @@ public interface ICodeRepository extends JpaRepository<Code, Long> {
 
     List<Code> findAllByEndDateGreaterThanEqualAndDeletedAtNull(Date date);
 
+    List<Code> findAllByEndDateGreaterThanEqualAndDeletedAtNullAndUsername(Date endDate, String username);
+
     Boolean existsByName(String name); // Exception: exist
 
     Boolean existsByNameAndEndDateLessThanEqual(String name, Date date); // Exception: exist and expiry date

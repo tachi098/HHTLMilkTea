@@ -1,8 +1,8 @@
 import api from "./../common/APIClient";
 
 class VoucherService {
-  list = () => {
-    return api.get("/voucher/list");
+  list = (username) => {
+    return api.get(`/voucher/list/${username}`);
   };
 
   checkCode = (data) => {

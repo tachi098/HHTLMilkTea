@@ -57,7 +57,6 @@ public class GroupOrderController {
                                                       @PathVariable String orderID) {
 
 
-
         List<GroupOrderInfoResponse> groupOrderInfoResponses = new ArrayList<>();
         long totalPrice = 0;
 
@@ -164,143 +163,147 @@ public class GroupOrderController {
     @PostMapping("/GroupOderWithUsernameWS")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getGroupOderWithUsernameWS(@RequestBody WSGroupOrderRequest wsGroupOrderRequest) {
+        try {
+            // Send data ws
+            ObjectMapper Obj = new ObjectMapper();
 
-        // Send data ws
-        ObjectMapper Obj = new ObjectMapper();
+            if ("logout".equals(wsGroupOrderRequest.getUsername()) &&
+                    "logout".equals(wsGroupOrderRequest.getType()) &&
+                    "logout".equals(wsGroupOrderRequest.getOrderID())) {
+                try {
+                    String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
+                    template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        if ("logout".equals(wsGroupOrderRequest.getUsername()) &&
-                "logout".equals(wsGroupOrderRequest.getType()) &&
-                "logout".equals(wsGroupOrderRequest.getOrderID())) {
+                return ResponseEntity.ok(HttpStatus.OK);
+            }
+
+            List<GroupOrderInfoResponse> groupOrderInfoResponses = new ArrayList<>();
+            long totalPrice = 0;
+
+            // Check type to process
+            if ("team".equals(wsGroupOrderRequest.getType())) {
+                if (!userRepository.findByUsername(wsGroupOrderRequest.getUsername()).isPresent()) {
+                    try {
+                        String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
+                        template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return ResponseEntity.ok(HttpStatus.OK);
+                }
+                User user = userRepository.findByUsername(wsGroupOrderRequest.getUsername()).get();
+                if (!orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).isPresent()) {
+                    try {
+                        String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
+                        template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return ResponseEntity.ok(HttpStatus.OK);
+                }
+
+                Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
+                List<OrderDetail> orderDetails = (List<OrderDetail>) order.getOrderDetails();
+                List<Long> orderDetailsID = new ArrayList<>();
+                List<Integer> quantities = new ArrayList<>();
+                List<Product> products = new ArrayList<>();
+                List<String> addOptionIds = new ArrayList<>();
+                ;
+                List<String> sizeOptionIds = new ArrayList<>();
+                ;
+                orderDetails.forEach(od -> {
+                    orderDetailsID.add(od.getId());
+
+                    quantities.add(od.getQuantity());
+
+                    Product product = od.getProduct();
+                    product.setPrice(od.getPriceCurrent());
+                    products.add(product);
+
+                    addOptionIds.add(od.getAddOptionId());
+                    sizeOptionIds.add(od.getSizeOptionId());
+                });
+
+
+                // Total Price Current
+                for (OrderDetail o : orderDetails) {
+                    totalPrice += o.getQuantity() * o.getPriceCurrent();
+                }
+
+                // Group Order Info Response
+                GroupOrderInfoResponse groupOrderInfoResponse = new GroupOrderInfoResponse();
+                groupOrderInfoResponse.setOrderDetailsID(orderDetailsID);
+                groupOrderInfoResponse.setUsername(user.getFullName());
+                groupOrderInfoResponse.setQuantities(quantities);
+                groupOrderInfoResponse.setProducts(products);
+                groupOrderInfoResponse.setAddOptionIds(addOptionIds);
+                groupOrderInfoResponse.setSizeOptionIds(sizeOptionIds);
+
+                // Data of Owner
+                groupOrderInfoResponses.add(groupOrderInfoResponse);
+
+                // Data of GroupMember
+                List<GroupMember> groupMembers = groupMemberRepository
+                        .findAllByUsernameOwnerAndOrder(wsGroupOrderRequest.getUsername(), orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get());
+                for (GroupMember gm : groupMembers) {
+                    GroupOrderInfoResponse groupOrderInfoResponseMember = new GroupOrderInfoResponse();
+
+                    // Get All GroupOrderDetails
+                    List<GroupOrderDetails> groupOrderDetails = groupOrderDetailsRepository.findAllByGroupMember(gm);
+
+                    // Total Price Current
+                    for (GroupOrderDetails go : groupOrderDetails) {
+                        totalPrice += go.getQuantity() * go.getPriceCurrent();
+                    }
+
+                    List<Long> orderDetailsIDMember = new ArrayList<>();
+                    List<Integer> quantitiesMember = new ArrayList<>();
+                    List<Product> productsMember = new ArrayList<>();
+                    List<String> addOptionIdsMember = new ArrayList<>();
+                    ;
+                    List<String> sizeOptionIdsMember = new ArrayList<>();
+                    ;
+                    groupOrderDetails.forEach(god -> {
+                        orderDetailsIDMember.add(god.getId());
+
+                        quantitiesMember.add(god.getQuantity());
+
+                        Product productMember = god.getProduct();
+                        productMember.setPrice(god.getPriceCurrent());
+                        productsMember.add(productMember);
+
+                        addOptionIdsMember.add(god.getAddOptionId());
+                        sizeOptionIdsMember.add(god.getSizeOptionId());
+                    });
+
+                    groupOrderInfoResponseMember.setOrderDetailsID(orderDetailsIDMember);
+                    groupOrderInfoResponseMember.setUsername(gm.getName());
+                    groupOrderInfoResponseMember.setQuantities(quantitiesMember);
+                    groupOrderInfoResponseMember.setProducts(productsMember);
+                    groupOrderInfoResponseMember.setAddOptionIds(addOptionIdsMember);
+                    groupOrderInfoResponseMember.setSizeOptionIds(sizeOptionIdsMember);
+
+                    groupOrderInfoResponses.add(groupOrderInfoResponseMember);
+                }
+            }
+
+            // Result GroupOrder
+            GroupOrderResponse groupOrderResponse = new GroupOrderResponse();
+            groupOrderResponse.setGroupOrderInfoResponses(groupOrderInfoResponses);
+            groupOrderResponse.setTotalPriceGroup(totalPrice);
+
+
             try {
-                String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
+                String jsonStr = Obj.writeValueAsString(groupOrderResponse);
                 template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } catch (Exception ex) {
 
-            return ResponseEntity.ok(HttpStatus.OK);
-        }
-
-        List<GroupOrderInfoResponse> groupOrderInfoResponses = new ArrayList<>();
-        long totalPrice = 0;
-
-        // Check type to process
-        if ("team".equals(wsGroupOrderRequest.getType())) {
-            if (!userRepository.findByUsername(wsGroupOrderRequest.getUsername()).isPresent()) {
-                try {
-                    String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
-                    template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return ResponseEntity.ok(HttpStatus.OK);
-            }
-            User user = userRepository.findByUsername(wsGroupOrderRequest.getUsername()).get();
-            if (!orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).isPresent()) {
-                try {
-                    String jsonStr = Obj.writeValueAsString(new GroupOrderResponse());
-                    template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return ResponseEntity.ok(HttpStatus.OK);
-            }
-
-            Order order = orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get();
-            List<OrderDetail> orderDetails = (List<OrderDetail>) order.getOrderDetails();
-            List<Long> orderDetailsID = new ArrayList<>();
-            List<Integer> quantities = new ArrayList<>();
-            List<Product> products = new ArrayList<>();
-            List<String> addOptionIds = new ArrayList<>();
-            ;
-            List<String> sizeOptionIds = new ArrayList<>();
-            ;
-            orderDetails.forEach(od -> {
-                orderDetailsID.add(od.getId());
-
-                quantities.add(od.getQuantity());
-
-                Product product = od.getProduct();
-                product.setPrice(od.getPriceCurrent());
-                products.add(product);
-
-                addOptionIds.add(od.getAddOptionId());
-                sizeOptionIds.add(od.getSizeOptionId());
-            });
-
-
-            // Total Price Current
-            for (OrderDetail o : orderDetails) {
-                totalPrice += o.getQuantity() * o.getPriceCurrent();
-            }
-
-            // Group Order Info Response
-            GroupOrderInfoResponse groupOrderInfoResponse = new GroupOrderInfoResponse();
-            groupOrderInfoResponse.setOrderDetailsID(orderDetailsID);
-            groupOrderInfoResponse.setUsername(user.getFullName());
-            groupOrderInfoResponse.setQuantities(quantities);
-            groupOrderInfoResponse.setProducts(products);
-            groupOrderInfoResponse.setAddOptionIds(addOptionIds);
-            groupOrderInfoResponse.setSizeOptionIds(sizeOptionIds);
-
-            // Data of Owner
-            groupOrderInfoResponses.add(groupOrderInfoResponse);
-
-            // Data of GroupMember
-            List<GroupMember> groupMembers = groupMemberRepository.findAllByUsernameOwnerAndOrder(wsGroupOrderRequest.getUsername(), orderRepository.findByUserIdAndStatusAndTeam(user, 0, true).get());
-            for (GroupMember gm : groupMembers) {
-                GroupOrderInfoResponse groupOrderInfoResponseMember = new GroupOrderInfoResponse();
-
-                // Get All GroupOrderDetails
-                List<GroupOrderDetails> groupOrderDetails = groupOrderDetailsRepository.findAllByGroupMember(gm);
-
-                // Total Price Current
-                for (GroupOrderDetails go : groupOrderDetails) {
-                    totalPrice += go.getQuantity() * go.getPriceCurrent();
-                }
-
-                List<Long> orderDetailsIDMember = new ArrayList<>();
-                List<Integer> quantitiesMember = new ArrayList<>();
-                List<Product> productsMember = new ArrayList<>();
-                List<String> addOptionIdsMember = new ArrayList<>();
-                ;
-                List<String> sizeOptionIdsMember = new ArrayList<>();
-                ;
-                groupOrderDetails.forEach(god -> {
-                    orderDetailsIDMember.add(god.getId());
-
-                    quantitiesMember.add(god.getQuantity());
-
-                    Product productMember = god.getProduct();
-                    productMember.setPrice(god.getPriceCurrent());
-                    productsMember.add(productMember);
-
-                    addOptionIdsMember.add(god.getAddOptionId());
-                    sizeOptionIdsMember.add(god.getSizeOptionId());
-                });
-
-                groupOrderInfoResponseMember.setOrderDetailsID(orderDetailsIDMember);
-                groupOrderInfoResponseMember.setUsername(gm.getName());
-                groupOrderInfoResponseMember.setQuantities(quantitiesMember);
-                groupOrderInfoResponseMember.setProducts(productsMember);
-                groupOrderInfoResponseMember.setAddOptionIds(addOptionIdsMember);
-                groupOrderInfoResponseMember.setSizeOptionIds(sizeOptionIdsMember);
-
-                groupOrderInfoResponses.add(groupOrderInfoResponseMember);
-            }
-        }
-
-        // Result GroupOrder
-        GroupOrderResponse groupOrderResponse = new GroupOrderResponse();
-        groupOrderResponse.setGroupOrderInfoResponses(groupOrderInfoResponses);
-        groupOrderResponse.setTotalPriceGroup(totalPrice);
-
-
-        try {
-            String jsonStr = Obj.writeValueAsString(groupOrderResponse);
-            template.convertAndSend(wsGroupOrderRequest.getUsername() + "/data", jsonStr);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

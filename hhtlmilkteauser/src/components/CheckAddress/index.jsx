@@ -144,7 +144,7 @@ const CheckAddress = () => {
   };
 
   return (
-    <React.Fragment>
+    <div>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Typography variant="h6" gutterBottom>
@@ -263,16 +263,16 @@ const CheckAddress = () => {
                     <div id="mapResult" style={{ display: "none" }}>
                       <div>
                         <label htmlFor="Kilometers">Khoảng cách: </label>&nbsp;
-                        <label id="in_kilo"></label>
+                        <label translate="no" id="in_kilo"></label>
                       </div>
                       <div>
                         <label htmlFor="Duration">Thời gian giao hàng: </label>
                         &nbsp;
-                        <label id="duration_text"></label>
+                        <label translate="no" id="duration_text"></label>
                       </div>
                       <div>
                         <label htmlFor="Price">Chi phí giao hàng: </label>&nbsp;
-                        <label id="price_shipping"></label>
+                        <label translate="no" id="price_shipping"></label>
                         &nbsp;<label>VNĐ</label>
                       </div>
                     </div>
@@ -292,7 +292,7 @@ const CheckAddress = () => {
           </Grid>
         </Paper>
       </main>
-    </React.Fragment>
+    </div>
   );
 };
 

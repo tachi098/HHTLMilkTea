@@ -530,7 +530,10 @@ const Content = () => {
                         >
                           -
                         </div>
-                        <p style={{ marginLeft: 20, marginRight: 20 }}>
+                        <p
+                          translate="no"
+                          style={{ marginLeft: 20, marginRight: 20 }}
+                        >
                           {count}
                         </p>
                         <div
@@ -574,7 +577,10 @@ const Content = () => {
                     >
                       {(currentPrice ? currentPrice * count : 0).toLocaleString(
                         "it-IT",
-                        { style: "currency", currency: "VND" }
+                        {
+                          style: "currency",
+                          currency: "VND",
+                        }
                       )}
                     </Typography>
                   </div>

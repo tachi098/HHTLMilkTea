@@ -120,7 +120,7 @@ const Spinner = () => {
   }, [spinner]);
 
   const onFinished = (winner) => {
-    console.log({ customer, user });
+    // console.log({ customer, user });
 
     if (Object.is(winner, "May mắn lần sau")) {
       SpinnerUpdateMarkAction({

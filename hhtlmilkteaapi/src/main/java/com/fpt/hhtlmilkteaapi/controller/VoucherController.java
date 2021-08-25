@@ -39,12 +39,12 @@ public class VoucherController {
     @Autowired
     private IProductRepository productRepository;
 
-    @GetMapping("/list")
+    @GetMapping("/list/{username}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getCodes() {
+    public ResponseEntity<?> getCodes(@PathVariable String username) {
 
         // Get codes reverse
-        List<Code> codes = codeRepository.findAllByEndDateGreaterThanEqualAndDeletedAtNull(new Date());
+        List<Code> codes = codeRepository.findAllByEndDateGreaterThanEqualAndDeletedAtNullAndUsername(new Date(), username);
         Collections.sort(codes, (a, b) -> (int) -(a.getId() - b.getId()));
         return ResponseEntity.ok(codes);
     }
@@ -82,7 +82,7 @@ public class VoucherController {
         memberVipRepository.save(memberVip);
 
         // List codes news after update deletedAt
-        List<Code> codes = codeRepository.findAllByEndDateGreaterThanEqualAndDeletedAtNull(new Date());
+        List<Code> codes = codeRepository.findAllByEndDateGreaterThanEqualAndDeletedAtNullAndUsername(new Date(), voucherRequest.getUsername());
         User userNew = userRepository.findByUsername(voucherRequest.getUsername()).get();
 
 

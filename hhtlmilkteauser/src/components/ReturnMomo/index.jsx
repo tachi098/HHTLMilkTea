@@ -88,6 +88,11 @@ const ReturnMomo = () => {
         ? JSON.parse(localStorage.getItem("order"))
         : {};
 
+    const orderCod =
+      localStorage.getItem("order-cod") !== null
+        ? JSON.parse(localStorage.getItem("order-cod"))
+        : {};
+
     const accessKey = new URLSearchParams(search).get("accessKey");
     const amount = new URLSearchParams(search).get("amount");
     const extraData = new URLSearchParams(search).get("extraData");
@@ -102,6 +107,12 @@ const ReturnMomo = () => {
       ) {
         dispatch(checkoutOrder(order));
         localStorage.removeItem("order");
+      } else if (
+        Object.is(payment, "cod") &&
+        localStorage.getItem("order-cod")
+      ) {
+        dispatch(checkoutOrder(orderCod));
+        localStorage.removeItem("order-cod");
       }
       setMessage("success");
     } else {

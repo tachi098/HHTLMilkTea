@@ -51,7 +51,7 @@ import {
 import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
-// import GoogleTranslate from "../../GoogleTranslate";
+import GoogleTranslate from "../../GoogleTranslate";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -236,6 +236,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  // useEffect(() => {
+  //   document.querySelector(".MuiBadge-badge").setAttribute("translate", "no");
+  // }, []);
 
   useEffect(() => {
     const setParams = () => {
@@ -639,31 +643,35 @@ const Header = ({ isOpen, onHandleOpen }) => {
         />
         <img src={logo} alt="Milktea" width={50} loading="lazy" />
         <div>
-          <Badge
-            badgeContent={auth?.user?.token !== null ? quantity : 0}
-            color="secondary"
-            style={{ marginRight: 20 }}
-          >
-            <ShoppingCartIcon
-              style={{ color: "#416c48" }}
-              aria-owns={anchorEl ? "simple-menu" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-              onMouseOver={handleClick}
-            />
-          </Badge>
-          <Badge
-            badgeContent={wishlist !== null ? wishlist?.quantity : 0}
-            color="secondary"
-            style={{ marginRight: 20 }}
-          >
-            <FavoriteIcon
-              style={{ color: "#416c48", cursor: "pointer" }}
-              aria-owns={anchorEl ? "simple-menu" : undefined}
-              aria-haspopup="true"
-              onClick={onHandleFavorite}
-            />
-          </Badge>
+          <span translate="no">
+            <Badge
+              badgeContent={auth?.user?.token !== null ? quantity : 0}
+              color="secondary"
+              style={{ marginRight: 20 }}
+            >
+              <ShoppingCartIcon
+                style={{ color: "#416c48" }}
+                aria-owns={anchorEl ? "simple-menu" : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+                onMouseOver={handleClick}
+              />
+            </Badge>
+          </span>
+          <span translate="no">
+            <Badge
+              badgeContent={wishlist !== null ? wishlist?.quantity : 0}
+              color="secondary"
+              style={{ marginRight: 20 }}
+            >
+              <FavoriteIcon
+                style={{ color: "#416c48", cursor: "pointer" }}
+                aria-owns={anchorEl ? "simple-menu" : undefined}
+                aria-haspopup="true"
+                onClick={onHandleFavorite}
+              />
+            </Badge>
+          </span>
 
           {dataGroupOrderDetails &&
             Object.values(dataGroupOrderDetails?.groupOrderInfoResponses) && (
@@ -673,6 +681,34 @@ const Header = ({ isOpen, onHandleOpen }) => {
                 ).findIndex(
                   (a) => a.username === localStorage.getItem("member")
                 ) !== -1 && (
+                  <span translate="no">
+                    <Badge
+                      badgeContent={
+                        dataGroupOrderDetails &&
+                        (dataGroupOrderDetails?.groupOrderInfoResponses
+                          ?.length > 0
+                          ? dataGroupOrderDetails?.groupOrderInfoResponses
+                              ?.length - 1
+                          : 0)
+                      }
+                      color="secondary"
+                      style={{ marginRight: 20 }}
+                    >
+                      <GroupAddIcon
+                        style={{ color: "#416c48", cursor: "pointer" }}
+                        aria-haspopup="true"
+                        onClick={handleDrawerOpenGroup}
+                      />
+                    </Badge>
+                  </span>
+                )}
+              </>
+            )}
+
+          {dataGroupOrderDetails && (
+            <>
+              {auth?.user?.token && order?.orderDetails?.length > 0 && (
+                <span translate="no">
                   <Badge
                     badgeContent={
                       dataGroupOrderDetails &&
@@ -691,30 +727,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                       onClick={handleDrawerOpenGroup}
                     />
                   </Badge>
-                )}
-              </>
-            )}
-
-          {dataGroupOrderDetails && (
-            <>
-              {auth?.user?.token && order?.orderDetails?.length > 0 && (
-                <Badge
-                  badgeContent={
-                    dataGroupOrderDetails &&
-                    (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
-                      ? dataGroupOrderDetails?.groupOrderInfoResponses?.length -
-                        1
-                      : 0)
-                  }
-                  color="secondary"
-                  style={{ marginRight: 20 }}
-                >
-                  <GroupAddIcon
-                    style={{ color: "#416c48", cursor: "pointer" }}
-                    aria-haspopup="true"
-                    onClick={handleDrawerOpenGroup}
-                  />
-                </Badge>
+                </span>
               )}
             </>
           )}
@@ -736,10 +749,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
             />
           </Badge> */}
 
-          {/* <Badge style={{ position: "relative" }}> */}
-          {/* <div id="google_translate_element"></div> */}
-          {/* <GoogleTranslate /> */}
-          {/* </Badge> */}
+          <Badge style={{ position: "relative" }}>
+            {/* <div id="google_translate_element"></div> */}
+            <GoogleTranslate />
+          </Badge>
 
           <Menu
             id="simple-menu"
@@ -846,7 +859,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
                       <div>
                         {customer && (customer.fullName ?? customer.username)}
                         <Typography className={classes.title}>
-                          Điểm: {customer && (customer?.memberVip?.mark ?? "0")}
+                          Điểm:{" "}
+                          <span translate="no">
+                            {customer && (customer?.memberVip?.mark ?? "0")}
+                          </span>
                         </Typography>
                       </div>
                     </div>
@@ -1148,6 +1164,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                                 marginRight: 20,
                                 fontSize: 16,
                               }}
+                              translate="no"
                             >
                               {item.quantities[productID]}
                             </p>
