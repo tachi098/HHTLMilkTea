@@ -201,6 +201,7 @@ const ShoppingCart = () => {
                                     marginRight: 20,
                                     fontSize: 16,
                                   }}
+                                  translate="no"
                                 >
                                   {item.quantity}
                                 </p>

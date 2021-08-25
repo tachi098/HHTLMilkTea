@@ -236,7 +236,8 @@ const Forget = () => {
             className={classes.submit}
             disabled={lockButton}
           >
-            Gửi {timeLeft > 0 && "(" + timeLeft + ")"}
+            Gửi{" "}
+            <span translate="no">{timeLeft > 0 && "(" + timeLeft + ")"}</span>
           </Button>
           <Grid container justifyContent="space-between">
             <Grid item>

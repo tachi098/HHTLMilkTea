@@ -71,14 +71,14 @@ const Voucher = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    VoucherListAction()(dispatch);
-  }, [dispatch]);
+    VoucherListAction(user?.username)(dispatch);
+  }, [dispatch, user?.username]);
 
   const onSubmit = (data) => {
     data.id = user.id;
     data.username = user.username;
     VoucherCheckCodeAction(data)(dispatch).then((res) =>
-      setMessage(res.message)
+      setMessage(res?.message)
     );
   };
 

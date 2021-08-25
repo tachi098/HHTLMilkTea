@@ -16,7 +16,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { checkoutOrder } from "../../store/actions/OrderAction";
+// import { checkoutOrder } from "../../store/actions/OrderAction";
 import Momo from "../Momo";
 import { MonetizationOnOutlined } from "@material-ui/icons";
 import momo from "./../../assets/img/MoMoLogo.png";
@@ -114,6 +114,10 @@ const PaymentForm = () => {
   const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
+    // document.querySelector("html").setAttribute("translate", "no");
+  }, []);
+
+  useEffect(() => {
     if (
       (!Object.is(localStorage.getItem("member", null)) &&
         !Object.is(localStorage.getItem("member"), null)) ||
@@ -167,7 +171,8 @@ const PaymentForm = () => {
         ? +dataGroupOrderDetails?.totalPriceGroup
         : +totalPrice,
     };
-    dispatch(checkoutOrder(data));
+    localStorage.setItem("order-cod", JSON.stringify(data));
+    // dispatch(checkoutOrder(data));
     window.location.href = "/checkoutresult?errorCode=0&payment=cod";
   };
 
@@ -333,7 +338,7 @@ const PaymentForm = () => {
   }
 
   return (
-    <React.Fragment>
+    <div>
       {Object.is(address, undefined) &&
         (window.location.href = "/shoppingcart")}
       <main className={classes.layout}>
@@ -391,13 +396,18 @@ const PaymentForm = () => {
                     {order?.orderDetails?.map((item) => (
                       <TableRow key={item.id}>
                         <TableCell align="center">
-                          <Badge badgeContent={item.quantity} color="secondary">
-                            <img
-                              alt={item.product.name}
-                              src={item.product.linkImage}
-                              width={100}
-                            />
-                          </Badge>
+                          <span translate="no">
+                            <Badge
+                              badgeContent={item.quantity}
+                              color="secondary"
+                            >
+                              <img
+                                alt={item.product.name}
+                                src={item.product.linkImage}
+                                width={100}
+                              />
+                            </Badge>
+                          </span>
                         </TableCell>
                         <TableCell>
                           <p>{item.product.name}</p>
@@ -519,40 +529,46 @@ const PaymentForm = () => {
             </Typography>
             <Typography variant="body1" gutterBottom>
               <b>Phí vận chuyển: </b>
-              {(+address?.shippingPrice).toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })}
+              <span translate="no">
+                {(+address?.shippingPrice).toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </Typography>
             <Typography variant="body1" gutterBottom>
               <b>Giảm giá: </b>
-              {mark.toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })}{" "}
-              (làm tròn)
+              <span translate="no">
+                {mark.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}{" "}
+                (làm tròn)
+              </span>
             </Typography>
             <Typography variant="h6" gutterBottom>
               <b>Tổng tiền: </b>
-              {localStorage.getItem("group")
-                ? (
-                    +address?.shippingPrice +
-                    +dataGroupOrderDetails?.totalPriceGroup -
-                    mark +
-                    +dataGroupOrderDetails?.totalPriceGroup * 0.05
-                  ).toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })
-                : (
-                    +address?.shippingPrice +
-                    +totalPrice -
-                    mark +
-                    +totalPrice * 0.05
-                  ).toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+              <span translate="no">
+                {localStorage.getItem("group")
+                  ? (
+                      +address?.shippingPrice +
+                      +dataGroupOrderDetails?.totalPriceGroup -
+                      mark +
+                      +dataGroupOrderDetails?.totalPriceGroup * 0.05
+                    ).toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })
+                  : (
+                      +address?.shippingPrice +
+                      +totalPrice -
+                      mark +
+                      +totalPrice * 0.05
+                    ).toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+              </span>
             </Typography>
           </Grid>
 
@@ -593,7 +609,7 @@ const PaymentForm = () => {
           </Grid>
         </Paper>
       </main>
-    </React.Fragment>
+    </div>
   );
 };
 
