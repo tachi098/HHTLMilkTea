@@ -66,7 +66,8 @@ const SignIn = () => {
         localStorage.removeItem("map");
         localStorage.removeItem("group");
         localStorage.removeItem("reset-pass");
-        history.push("/home");
+        // history.push("/home");
+        window.location.href = "/home"
       }
     });
   };
@@ -99,7 +100,8 @@ const SignIn = () => {
       }
       if (auth.user.roles.includes("ROLE_USER")) {
         localStorage.setItem("user", JSON.stringify(auth.user));
-        history.push("/home");
+        // history.push("/home");
+        window.location.href = "/home"
       }
     }
   }, [auth, history]);
