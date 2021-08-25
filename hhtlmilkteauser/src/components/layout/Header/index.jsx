@@ -295,7 +295,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
           }/data`;
         }
 
-        client.subscribe(wsUsername, async function (msg) {
+        client.subscribe(wsUsername, async function(msg) {
           if (msg.body) {
             var jsonBody = await JSON.parse(msg.body);
             // console.log(jsonBody);
@@ -316,7 +316,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
               jsonBody?.totalPriceGroup === 0 &&
               localStorage.getItem("user")
             ) {
-              window.location.reload();
+              // window.location.reload();
             }
 
             GroupOrderSaveStateAction(jsonBody)(dispatch);

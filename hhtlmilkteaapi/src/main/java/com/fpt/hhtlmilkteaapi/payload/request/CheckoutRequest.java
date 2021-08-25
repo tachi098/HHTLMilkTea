@@ -19,4 +19,5 @@ public class CheckoutRequest {
     private int totalPrice;
     private int memberVip;
     private int total;
+    private boolean team;
 }

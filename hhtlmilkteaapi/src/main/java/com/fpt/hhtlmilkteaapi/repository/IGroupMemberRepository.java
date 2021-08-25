@@ -15,6 +15,8 @@ public interface IGroupMemberRepository extends JpaRepository<GroupMember, Long>
 
     List<GroupMember> findAllByUsernameOwnerAndOrder(String usernameOwner, Order order);
 
+    List<GroupMember> findAllByOrder(Order order);
+
     Optional<GroupMember> findByNameAndUsernameOwnerAndOrder(String name, String usernameOwner, Order order);
 
     Optional<GroupMember> findByNameAndUsernameOwner(String name, String usernameOwner);
