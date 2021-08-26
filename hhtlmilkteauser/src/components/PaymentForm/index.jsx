@@ -162,9 +162,9 @@ const PaymentForm = () => {
       note: address.note,
       totalPrice: localStorage.getItem("group")
         ? +address.shippingPrice +
-          +dataGroupOrderDetails?.totalPriceGroup -
-          mark +
-          +dataGroupOrderDetails?.totalPriceGroup * 0.05
+        +dataGroupOrderDetails?.totalPriceGroup -
+        mark +
+        +dataGroupOrderDetails?.totalPriceGroup * 0.05
         : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
       memberVip: mark,
       total: localStorage.getItem("group")
@@ -181,9 +181,9 @@ const PaymentForm = () => {
     setTotal(
       localStorage.getItem("group")
         ? +address.shippingPrice +
-            +dataGroupOrderDetails?.totalPriceGroup -
-            mark +
-            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+        +dataGroupOrderDetails?.totalPriceGroup -
+        mark +
+        +dataGroupOrderDetails?.totalPriceGroup * 0.05
         : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05
     );
     localStorage.removeItem("order");
@@ -193,9 +193,9 @@ const PaymentForm = () => {
         orderId: order.id,
         totalPrice: localStorage.getItem("group")
           ? +address.shippingPrice +
-            +dataGroupOrderDetails?.totalPriceGroup -
-            mark +
-            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+          +dataGroupOrderDetails?.totalPriceGroup -
+          mark +
+          +dataGroupOrderDetails?.totalPriceGroup * 0.05
           : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
         memberVip: mark,
         address: address.to,
@@ -249,17 +249,17 @@ const PaymentForm = () => {
     const orderId = new Date().getTime();
     const amount = localStorage.getItem("group")
       ? (
-          +address.shippingPrice +
-          +dataGroupOrderDetails?.totalPriceGroup -
-          mark +
-          +dataGroupOrderDetails?.totalPriceGroup * 0.05
-        ).toString()
+        +address.shippingPrice +
+        +dataGroupOrderDetails?.totalPriceGroup -
+        mark +
+        +dataGroupOrderDetails?.totalPriceGroup * 0.05
+      ).toString()
       : (
-          +address.shippingPrice +
-          +totalPrice -
-          mark +
-          +totalPrice * 0.05
-        ).toString();
+        +address.shippingPrice +
+        +totalPrice -
+        mark +
+        +totalPrice * 0.05
+      ).toString();
 
     localStorage.removeItem("order");
     localStorage.setItem(
@@ -268,9 +268,9 @@ const PaymentForm = () => {
         orderId: order.id,
         totalPrice: localStorage.getItem("group")
           ? +address.shippingPrice +
-            +dataGroupOrderDetails?.totalPriceGroup -
-            mark +
-            +dataGroupOrderDetails?.totalPriceGroup * 0.05
+          +dataGroupOrderDetails?.totalPriceGroup -
+          mark +
+          +dataGroupOrderDetails?.totalPriceGroup * 0.05
           : +address.shippingPrice + +totalPrice - mark + +totalPrice * 0.05,
         memberVip: mark,
         address: address.to,
@@ -342,6 +342,7 @@ const PaymentForm = () => {
       {Object.is(address, undefined) &&
         (window.location.href = "/shoppingcart")}
       <main className={classes.layout}>
+        {console.log("data:", dataGroupOrderDetails)}
         <Paper className={classes.paper}>
           <Typography
             variant="h4"
@@ -427,7 +428,51 @@ const PaymentForm = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {localStorage.getItem("group") &&
+
+                    {localStorage.getItem("group") && dataGroupOrderDetails?.groupOrderInfoResponses?.length > 1 && (
+                      <>
+                        {dataGroupOrderDetails?.groupOrderInfoResponses?.map((data, index) => (
+                          <React.Fragment key={index}>
+                            {index > 0 && data?.products?.map((item, productId) => (
+                              <TableRow key={productId}>
+                                <TableCell align="center">
+                                  <Badge
+                                    badgeContent={data.quantities[productId]}
+                                    color="secondary"
+                                  >
+                                    <img
+                                      alt={item.name}
+                                      src={item.linkImage}
+                                      width={100}
+                                    />
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <p>{item.name}</p>
+                                  <span
+                                    style={{ fontSize: 12, color: "red" }}
+                                  >
+                                    {data.sizeOptionIds[productId]}{" "}
+                                    {data.addOptionIds[productId] !== "" &&
+                                      ": " + data.addOptionIds[productId]}
+                                  </span>
+                                </TableCell>
+                                <TableCell align="center">
+                                  {(
+                                    item.price * data.quantities[productId]
+                                  ).toLocaleString("it-IT", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                      </>
+                    )}
+
+                    {/* {localStorage.getItem("group") &&
                       order?.groupMembers?.length > 0 && (
                         <>
                           {order?.groupMembers?.map((gm, i) => (
@@ -469,7 +514,7 @@ const PaymentForm = () => {
                             </React.Fragment>
                           ))}
                         </>
-                      )}
+                      )} */}
                   </TableBody>
                 </Table>
               </div>
@@ -507,25 +552,29 @@ const PaymentForm = () => {
           <Grid item sm={12} md={12}>
             <Typography variant="body1" gutterBottom>
               <b>Tạm tính: </b>
-              {(
-                (localStorage.getItem("group") &&
-                  dataGroupOrderDetails?.totalPriceGroup) ??
-                totalPrice
-              ).toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })}
+              <span translate="no">
+                {(
+                  (localStorage.getItem("group") &&
+                    dataGroupOrderDetails?.totalPriceGroup) ??
+                  totalPrice
+                ).toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </Typography>
             <Typography variant="body1" gutterBottom>
               <b>Thuế (5%): </b>
-              {(
-                (localStorage.getItem("group") &&
-                  +dataGroupOrderDetails?.totalPriceGroup * 0.05) ??
-                +totalPrice * 0.05
-              ).toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })}
+              <span translate="no">
+                {(
+                  (localStorage.getItem("group") &&
+                    +dataGroupOrderDetails?.totalPriceGroup * 0.05) ??
+                  +totalPrice * 0.05
+                ).toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </Typography>
             <Typography variant="body1" gutterBottom>
               <b>Phí vận chuyển: </b>
@@ -551,23 +600,23 @@ const PaymentForm = () => {
               <span translate="no">
                 {localStorage.getItem("group")
                   ? (
-                      +address?.shippingPrice +
-                      +dataGroupOrderDetails?.totalPriceGroup -
-                      mark +
-                      +dataGroupOrderDetails?.totalPriceGroup * 0.05
-                    ).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })
+                    +address?.shippingPrice +
+                    +dataGroupOrderDetails?.totalPriceGroup -
+                    mark +
+                    +dataGroupOrderDetails?.totalPriceGroup * 0.05
+                  ).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })
                   : (
-                      +address?.shippingPrice +
-                      +totalPrice -
-                      mark +
-                      +totalPrice * 0.05
-                    ).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    +address?.shippingPrice +
+                    +totalPrice -
+                    mark +
+                    +totalPrice * 0.05
+                  ).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
               </span>
             </Typography>
           </Grid>
