@@ -1,24 +1,27 @@
 import React from 'react';
-import Link from '@material-ui/core/Link';
+// import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Title from './../Title';
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { RevenueToday } from "../../../store/actions/RevenueAction";
+// function preventDefault(event) {
+//   event.preventDefault();
+// }
 
 const Deposits = () => {
+  const { revenueToday } = useSelector((state) => state.revenue);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(RevenueToday());
+  }, [dispatch]);
+
   return (
     <React.Fragment>
-      <Title>Doanh thu</Title>
+      <Title>Doanh thu hôm nay</Title>
       <Typography component="p" variant="h4">
-        3,024 VNĐ
+        {revenueToday} VNĐ
       </Typography>
-      <div>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          Chi tiết
-        </Link>
-      </div>
     </React.Fragment>
   );
 }

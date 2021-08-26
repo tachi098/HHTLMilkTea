@@ -96,14 +96,15 @@ const useStyles = makeStyles((theme) => ({
 
 const HistoryDetail = () => {
     const classes = useStyles();
-
     const location = useLocation();
     const [order] = useState(location?.state?.order);
+    const [status, setStatus] = useState(order.status);
     const dispatch = useDispatch();
     const history = useHistory();
     const handleOnDelete = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 4 }));
-        history.push("/order/")
+        setStatus(4);
+        //history.push("/order/");
         Notification.success("Đã hủy thành công");
     };
 
@@ -125,13 +126,15 @@ const HistoryDetail = () => {
 
     const handleShippingStatus = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 2 }));
-        history.push("/order/")
+        setStatus(2);
+        //history.push("/order/")
         Notification.success("Đã hủy thành công");
     };
 
     const handleCompleteStatus = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 3 }));
-        history.push("/order/")
+        setStatus(3);
+        //history.push("/order/")
         Notification.success("Đã hủy thành công");
     };
 
@@ -139,7 +142,7 @@ const HistoryDetail = () => {
         if (status === 1) {
             confirmAlert({
                 title: "CẬP NHẬT TRẠNG THÁI",
-                message: "Bạn muốn chuyển sang trạng thái VẬN CHUYỂN?",
+                message: "Bạn muốn chuyển sang trạng thái GIAO HÀNG?",
                 buttons: [
                     {
                         label: "Có",
@@ -199,28 +202,28 @@ const HistoryDetail = () => {
                             </Grid>
                             <Grid item md={6} xl={6} sm={12}>
                                 Tình trạng:
-                                {order.status === 1 &&
+                                {status === 1 &&
                                     (
                                         <Chip
                                             label="Đang xử lý"
                                             style={{ backgroundColor: "pearl", color: "white" }}
                                         />
                                     )}
-                                {order.status === 2 &&
+                                {status === 2 &&
                                     (
                                         <Chip
                                             label="Đang giao hàng"
                                             style={{ backgroundColor: "lightblue", color: "white" }}
                                         />
                                     )}
-                                {order.status === 3 &&
+                                {status === 3 &&
                                     (
                                         <Chip
                                             label="Hoàn thành"
                                             style={{ backgroundColor: "green", color: "white" }}
                                         />
                                     )}
-                                {order.status === 4 && (
+                                {status === 4 && (
                                     <Chip
                                         label="Đã hủy"
                                         style={{ backgroundColor: "red", color: "white" }}
@@ -281,15 +284,15 @@ const HistoryDetail = () => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                                {(order.status === 1 || order.status === 2) && (<Button
+                                {(status === 1 || status === 2) && (<Button
                                     style={{ margin: 10 }}
                                     variant="contained"
                                     className={classes.button}
-                                    onClick={() => handleUpdate(order.id, order.status)}
+                                    onClick={() => handleUpdate(order.id, status)}
                                 >
                                     CẬP NHẬT TRẠNG THÁI
                                 </Button>)}
-                                {order.status === 1 && (<Button
+                                {status === 1 && (<Button
                                     style={{ margin: 10 }}
                                     variant="contained"
                                     color="secondary"

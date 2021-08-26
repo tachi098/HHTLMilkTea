@@ -260,7 +260,7 @@ const Order = () => {
     const fields = [
         { name: "id", lable: "Số Hóa Đơn", dir: "desc" },
         { name: "createdAt", lable: "Ngày đặt hàng", dir: "asc" },
-        { name: "noteOrder", lable: "Lưu ý", dir: "asc" },
+        { name: "userId", lable: "Khách hàng", dir: "asc" },
         { name: "payment", lable: "Thanh toán", dir: "asc" },
         { name: "totalPrice", lable: "Tổng tiền", dir: "asc" },
         { lable: "Trạng Thái" },
@@ -296,7 +296,7 @@ const Order = () => {
     const handleShippingStatus = (id) => {
         confirmAlert({
             title: "CẬP NHẬT TRẠNG THÁI",
-            message: "Bạn muốn chuyển sang trạng thái VẬN CHUYỂN?",
+            message: "Bạn muốn chuyển sang trạng thái GIAO HÀNG?",
             buttons: [
                 {
                     label: "Có",
@@ -399,7 +399,7 @@ const Order = () => {
                                                         <BarCode value={order.id} className={classes.barCode} />
                                                     </TableCell>
                                                     <TableCell>{moment(order.createdAt).format("YYYY-MM-DD")}</TableCell>
-                                                    <TableCell>{order.noteOrder}</TableCell>
+                                                    <TableCell>{order.userId.fullName}</TableCell>
                                                     <TableCell>
                                                         {order.payment === 1 && (
                                                             <Typography
@@ -541,7 +541,7 @@ const Order = () => {
                                                         <BarCode value={order.id} />
                                                     </TableCell>
                                                     <TableCell>{moment(order.createdAt).format("YYYY-MM-DD")}</TableCell>
-                                                    <TableCell>{order.noteOrder}</TableCell>
+                                                    <TableCell>{order.userId.fullName}</TableCell>
                                                     <TableCell>
                                                         {order.payment === 1 && (
                                                             <Typography
@@ -650,7 +650,7 @@ const Order = () => {
                                                         <BarCode value={order.id} />
                                                     </TableCell>
                                                     <TableCell>{moment(order.createdAt).format("YYYY-MM-DD")}</TableCell>
-                                                    <TableCell>{order.noteOrder}</TableCell>
+                                                    <TableCell>{order.userId.fullName}</TableCell>
                                                     <TableCell>
                                                         {order.payment === 1 && (
                                                             <Typography
