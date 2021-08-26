@@ -6,7 +6,8 @@ const initialState = {
     listSuccess: [],
     totalPagesSuccess: 1,
     listFail: [],
-    totalPagesFail: 1
+    totalPagesFail: 1,
+    revenue: []
 };
 
 const OrderSlice = createSlice({

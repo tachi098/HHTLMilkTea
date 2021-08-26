@@ -4,6 +4,7 @@ import Deposits from "./Deposits"
 import Orders from "./Order"
 import clsx from 'clsx';
 
+
 const useStyles = makeStyles((theme) => ({
     appBarSpacer: theme.mixins.toolbar,
     fixedHeight: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+    
     return (
         <Grid container spacing={3}>
             {/* Chart */}

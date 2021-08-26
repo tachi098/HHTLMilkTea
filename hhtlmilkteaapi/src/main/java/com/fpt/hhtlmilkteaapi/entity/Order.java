@@ -52,7 +52,7 @@ public class Order implements Serializable {
     @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
     private int notification;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     private Date createdAt;
 
     @CreationTimestamp
@@ -96,4 +96,17 @@ public class Order implements Serializable {
         this.shipping = shipping;
     }
 
+    public Order(String id, String address, String phone, int payment, int status, String noteOrder, long memberVip, User userId, int totalPrice, int shipping, Date createdAt) {
+        this.id = id;
+        this.address = address;
+        this.phone = phone;
+        this.payment = payment;
+        this.status = status;
+        this.noteOrder = noteOrder;
+        this.memberVip = memberVip;
+        this.userId = userId;
+        this.totalPrice = totalPrice;
+        this.shipping = shipping;
+        this.createdAt = createdAt;
+    }
 }
