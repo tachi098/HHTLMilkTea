@@ -9,24 +9,6 @@ const api = axios.create({
   },
 });
 
-// const storageGet = async (key) => {
-//   try {
-//     const result = await AsyncStorage.getItem(key);
-//     return result;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-api.interceptors.request.use(async (config) => {
-  const getUser = await AsyncStorage.getItem("user");
-  if (getUser && getUser.token) {
-    config.headers.authorization = `Bearer ${getUser.token}`
-  }
-  console.log("config: ", config)
-  return config;
-});
-
 api.interceptors.response.use(
   (response) => {
     return new Promise((resolve, reject) => {

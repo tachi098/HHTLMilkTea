@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Alert,
     Dimensions,
     Image,
     SafeAreaView,
@@ -35,6 +36,8 @@ const HomeScreen = ({ navigation }) => {
     const [keyword, setKeyword] = useState("");
     const [name, setName] = useState("")
     const dispatch = useDispatch();
+
+    const auth = useSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(
@@ -96,11 +99,34 @@ const HomeScreen = ({ navigation }) => {
         );
     };
     const Card = ({ item }) => {
+
+        const onDetail = () => {
+            if (auth?.user?.token) {
+                navigation.navigate('DetailsScreen', item)
+            } else {
+                Alert.alert(
+                    'Notification',
+                    'Please Singin! Do you want redirect to SignIn? ',
+                    [
+                        {
+                            text: 'Yes',
+                            onPress: () => navigation.navigate("SignIn")
+                        },
+                        {
+                            text: 'No',
+                            style: 'cancel'
+                        },
+                    ],
+                    { cancelable: false },
+                );
+            }
+        }
+
         return (
             <TouchableHighlight
                 underlayColor={COLORS.white}
                 activeOpacity={0.9}
-                onPress={() => navigation.navigate('DetailsScreen', item)}>
+                onPress={onDetail}>
                 <View style={style.card}>
                     <View style={{ alignItems: 'center', top: -40 }}>
                         <Image source={{ uri: item?.linkImage }} style={{ height: 120, width: 120 }} />
@@ -123,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableHighlight >
         );
     };
     return (

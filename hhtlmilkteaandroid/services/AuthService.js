@@ -10,9 +10,6 @@ class AuthService {
   };
 
   logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("groupMember");
-    localStorage.removeItem("member");
   };
 
   checkEmail = (data) => {

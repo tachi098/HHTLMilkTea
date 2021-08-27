@@ -12,6 +12,7 @@ const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
     const auth = useSelector((state) => state.auth);
+    const { quantity } = useSelector((state) => state.order);
 
     return (
         <Tab.Navigator
@@ -22,9 +23,10 @@ const BottomNavigator = () => {
                     elevation: 0,
                 },
                 showLabel: false,
-            }}>
+            }}
+        >
             <Tab.Screen
-                name="HomeScreen"
+                name="Home "
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
@@ -39,10 +41,11 @@ const BottomNavigator = () => {
                     tabBarIcon: ({ color }) => (
                         <Icon name="shopping-cart" color={color} size={28} />
                     ),
+                    tabBarBadge: auth?.user?.token ? quantity : "0"
                 }}
             />
             <Tab.Screen
-                name="Favorite"
+                name="Wishlist"
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
@@ -62,7 +65,7 @@ const BottomNavigator = () => {
                 />
             ) : (
                 <Tab.Screen
-                    name="User"
+                    name="SignIn"
                     component={SignInScreen}
                     options={{
                         tabBarIcon: ({ color }) => (
