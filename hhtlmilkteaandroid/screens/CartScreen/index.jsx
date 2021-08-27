@@ -3,14 +3,30 @@ import { SafeAreaView, StyleSheet, View, Text, Image } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
-import foods from '../../consts/foods';
 import { PrimaryButton } from '../../components/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { OrderDelteOrderDetail, OrderUpdateQuantity } from '../../store/actions/OrderAction';
 
 const CartScreen = ({ navigation }) => {
+
+    const { order, totalPrice } = useSelector((state) => state.order);
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    const onHandleUpdateQuantity = (orderDetailId, action) => {
+        dispatch(
+            OrderUpdateQuantity({ orderDetailId, action }, `Bearer ${auth?.user?.token}`)
+        );
+    };
+
+    const onHandleDeleteOrderDetail = (id) => {
+        dispatch(OrderDelteOrderDetail(id, `Bearer ${auth?.user?.token}`));
+    };
+
     const CartCard = ({ item }) => {
         return (
             <View style={style.cartCard}>
-                <Image source={item.image} style={{ height: 80, width: 80 }} />
+                <Image source={{ uri: item.product.linkImage }} style={{ height: 80, width: 80 }} />
                 <View
                     style={{
                         height: 100,
@@ -18,17 +34,20 @@ const CartScreen = ({ navigation }) => {
                         paddingVertical: 20,
                         flex: 1,
                     }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.product.title}</Text>
                     <Text style={{ fontSize: 13, color: COLORS.grey }}>
-                        {item.ingredients}
+                        {item.sizeOptionId}{" "}
+                        {item.addOptionId !== "" &&
+                            ": " + item.addOptionId}
                     </Text>
-                    <Text style={{ fontSize: 17, fontWeight: 'bold' }}>${item.price}</Text>
+                    <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{(item.priceCurrent * item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
                 </View>
                 <View style={{ marginRight: 20, alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>3</Text>
+                    <Icon name="clear" size={25} color="red" style={{ marginLeft: 60 }} onPress={() => onHandleDeleteOrderDetail(item.id)} />
+                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{item.quantity}</Text>
                     <View style={style.actionBtn}>
-                        <Icon name="remove" size={25} color={COLORS.white} />
-                        <Icon name="add" size={25} color={COLORS.white} />
+                        <Icon name="remove" size={25} color={COLORS.white} onPress={() => { if (item.quantity > 1) { onHandleUpdateQuantity(item.id, "minus") } }} />
+                        <Icon name="add" size={25} color={COLORS.white} onPress={() => onHandleUpdateQuantity(item.id, "plus")} />
                     </View>
                 </View>
             </View>
@@ -43,7 +62,8 @@ const CartScreen = ({ navigation }) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 80 }}
-                data={foods}
+                data={order.orderDetails}
+                keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => <CartCard item={item} />}
                 ListFooterComponentStyle={{ paddingHorizontal: 20, marginTop: 20 }}
                 ListFooterComponent={() => (
@@ -57,7 +77,7 @@ const CartScreen = ({ navigation }) => {
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
                                 Total Price
                             </Text>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>$50</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
                         </View>
                         <View style={{ marginHorizontal: 30 }}>
                             <PrimaryButton title="CHECKOUT" />
@@ -76,7 +96,7 @@ const style = StyleSheet.create({
         marginHorizontal: 20,
     },
     cartCard: {
-        height: 100,
+        height: 150,
         elevation: 15,
         borderRadius: 10,
         backgroundColor: COLORS.white,

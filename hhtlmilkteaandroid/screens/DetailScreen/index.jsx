@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
 import { PrimaryButton } from '../../components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useDispatch, useSelector } from 'react-redux';
+import { OrderAddActionMobile } from '../../store/actions/OrderAction';
 
 const DetailsScreen = ({ navigation, route }) => {
     const item = route.params;
@@ -15,6 +16,8 @@ const DetailsScreen = ({ navigation, route }) => {
     const [selectedAdd, setSelectedAdd] = useState([]);
     const [currentPrice, setCurrentPrice] = useState(item.price);
     const [count, setCount] = useState(1);
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     const onHandleSelectAdd = item => {
         if (!selectedAdd.includes(item)) {
@@ -46,7 +49,7 @@ const DetailsScreen = ({ navigation, route }) => {
 
     const onSubmit = () => {
         const product = JSON.stringify(item);
-        const userId = 1;
+        const userId = auth?.user?.id;
         const sizeOption = selectedSize?.name ? selectedSize.name : "";
         const quantity = count;
 
@@ -71,7 +74,12 @@ const DetailsScreen = ({ navigation, route }) => {
         const priceCurrent = currentPrice;
         const note = "";
         const data = { product, userId, sizeOption, quantity, additionOption, priceCurrent, note }
-        console.log(data);
+        // const username = auth?.user?.username;
+        // const orderID = order?.id;
+        // const type = "team";
+        // dispatch(OrderAddAction(data, { username, type, orderID }));
+        dispatch(OrderAddActionMobile(data, `Bearer ${auth?.user?.token}`));
+        navigation.navigate("Home ");
     };
 
     return (

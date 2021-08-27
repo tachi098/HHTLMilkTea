@@ -1,86 +1,65 @@
-const { View, Text, TextInput, TouchableOpacity, StyleSheet, AsyncStorage } = require("react-native")
+const { View, Text, TextInput, TouchableOpacity, StyleSheet } = require("react-native")
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthLoginAction } from './../../store/actions/AuthAction'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { OrderFindAction } from "./../../store/actions/OrderAction"
 
 const SignInScreen = ({ navigation }) => {
 
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
     const [message, setMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
-    const onSubmit = (data) => {
-        AuthLoginAction(data)(dispatch).then((res) => {
-            if (Object.is(401, res.error)) {
-                setMessage("Tài khoản hoặc mật khẩu không đúng");
-                return;
+
+    const onSubmit = () => {
+        if (username !== "") {
+            if (password !== "") {
+                const data = { username: username, password: password };
+                AuthLoginAction(data)(dispatch).then((res) => {
+                    if (Object.is(401, res.error)) {
+                        setMessage("Username or password not correct");
+                        return;
+                    }
+                    if (res.roles.includes("ROLE_ADMIN")) {
+                        setMessage("Username or password not correct");
+                        return;
+                    }
+                    if (res.roles.includes("ROLE_USER")) {
+                        OrderFindAction(res.id, `Bearer ${res?.token}`)(dispatch)
+                        navigation.navigate("Home ")
+                    }
+                });
+            } else {
+                setMessage("Password must not be blank")
             }
-            if (res.roles.includes("ROLE_ADMIN")) {
-                setMessage("Tài khoản hoặc mật khẩu không đúng");
-                return;
-            }
-            if (res.roles.includes("ROLE_USER")) {
-                AsyncStorage.setItem("user", JSON.stringify(auth.user));
-                AsyncStorage.removeItem("groupMember");
-                AsyncStorage.removeItem("member");
-                navigation.navigate("HomeScreen")
-            }
-        });
+        } else {
+            setMessage("Username must not be blank")
+        }
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.logo}>Login</Text>
-            <View style={styles.inputView} >
-                <Controller
-                    style={styles.inputText}
-                    placeholderTextColor="#003f5c"
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                        <TextInput
-                            placeholder="Enter Username"
-                            onBlur={onBlur}
-                            onChangeText={value => onChange(value)}
-                            value={value}
-                        />
-                    )}
-                    name="username"
-                    rules={{ required: true }}
-                    defaultValue=""
-                />
-            </View>
-            {errors.username && <Text style={{ color: 'red', marginBottom: 10 }}>Username is required.</Text>}
-            <View style={styles.inputView} >
-                <Controller
-                    style={styles.inputText}
-                    placeholderTextColor="#003f5c"
-                    control={control}
-                    render={({ onChange, onBlur, value }) => (
-                        <TextInput
-                            placeholder="Enter Password"
-                            secureTextEntry={true}
-                            onBlur={onBlur}
-                            onChangeText={value => onChange(value)}
-                            value={value}
-                        />
-                    )}
-                    name="password"
-                    rules={{ required: true }}
-                    defaultValue=""
-                />
-            </View>
-            {errors.password && <Text style={{ color: 'red' }}>Password is required.</Text>}
-
             {message.length > 0 && <Text style={{ color: 'red', marginBottom: 10 }}>{message}</Text>}
+            <View style={styles.inputView} >
+                <TextInput
+                    placeholder="Enter Username"
+                    onChangeText={value => setUsername(value)}
+                />
+            </View>
+            <View style={styles.inputView} >
+                <TextInput
+                    secureTextEntry={true}
+                    placeholder="Enter password"
+                    onChangeText={value => setPassword(value)}
+                />
+            </View>
 
-            <TouchableOpacity style={styles.loginBtn}>
-                <Text style={styles.loginText} onPress={handleSubmit(onSubmit)}>LOGIN</Text>
+            <TouchableOpacity style={styles.loginBtn} onPress={onSubmit}>
+                <Text style={styles.loginText} >LOGIN</Text>
             </TouchableOpacity>
         </View>
     )
@@ -97,7 +76,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 50,
         color: "#F9813A",
-        marginBottom: 40
+        marginBottom: 20
     },
     inputView: {
         width: "80%",
@@ -125,7 +104,7 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 40,
+        marginTop: 20,
         marginBottom: 10
     },
     loginText: {
