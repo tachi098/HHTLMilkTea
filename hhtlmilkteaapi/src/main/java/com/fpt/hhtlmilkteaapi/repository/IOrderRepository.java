@@ -35,4 +35,6 @@ public interface IOrderRepository extends JpaRepository<Order, String> {
 
     @Query(value = "select * from hhtlmilktea.order order by id desc limit 5", nativeQuery = true)
     List<Order> lastFiveOrders();
+
+    Order findByIdEquals(String id);
 }

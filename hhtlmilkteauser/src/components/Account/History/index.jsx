@@ -87,6 +87,9 @@ const useStyles = makeStyles((theme) => ({
         "& svg": {
             width: 150,
         },
+    },
+    card: {
+        minHeight: '400px'
     }
 }));
 
@@ -315,7 +318,7 @@ const History = () => {
             </AntTabs>
             <TabPanel value={valueTab} index={0}>
                 <div className={classes.orderDetail}>
-                    <Card >
+                    <Card className={classes.card}>
                         {listProcess.length > 0 && (
                             <>
                                 <Typography className={classes.titleOrder} component={'span'}>
@@ -378,7 +381,10 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 1 &&
                                                             (
@@ -500,7 +506,10 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 3 &&
                                                             (
@@ -545,7 +554,7 @@ const History = () => {
             </TabPanel>
             <TabPanel value={valueTab} index={2}>
                 <div className={classes.orderDetail}>
-                    <Card >
+                    <Card>
                         {listFail.length > 0 && (
                             <>
                                 <Typography className={classes.titleOrder} component={'span'}>
@@ -608,7 +617,10 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 4 && (
                                                             <Chip

@@ -416,7 +416,10 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 1 &&
                                                             (
@@ -442,25 +445,25 @@ const Order = () => {
                                                             }}
                                                             onClick={() => history.push("/order/detail", { order: order })}
                                                         />
-                                                        {order.status===1 && (
+                                                        {order.status === 1 && (
                                                             <CreateOutlined
-                                                            style={{
-                                                                color: "#3F51B5",
-                                                                cursor: "pointer",
-                                                                marginRight: 10,
-                                                            }}
-                                                            onClick={() => handleShippingStatus(order.id)}
-                                                        />
+                                                                style={{
+                                                                    color: "#3F51B5",
+                                                                    cursor: "pointer",
+                                                                    marginRight: 10,
+                                                                }}
+                                                                onClick={() => handleShippingStatus(order.id)}
+                                                            />
                                                         )}
-                                                        {order.status===2 && (
+                                                        {order.status === 2 && (
                                                             <CreateOutlined
-                                                            style={{
-                                                                color: "#3F51B5",
-                                                                cursor: "pointer",
-                                                                marginRight: 10,
-                                                            }}
-                                                            onClick={() => handleCompleteStatus(order.id)}
-                                                        />
+                                                                style={{
+                                                                    color: "#3F51B5",
+                                                                    cursor: "pointer",
+                                                                    marginRight: 10,
+                                                                }}
+                                                                onClick={() => handleCompleteStatus(order.id)}
+                                                            />
                                                         )}
                                                         {order.status === 1 && order.payment === 1 && (
                                                             <DeleteOutline
@@ -558,7 +561,10 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 3 &&
                                                             (
@@ -577,7 +583,7 @@ const Order = () => {
                                                             }}
                                                             onClick={() => history.push("/order/detail", { order: order })}
                                                         />
-                                                        
+
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -667,7 +673,10 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice}</TableCell>
+                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                        style: "currency",
+                                                        currency: "VND",
+                                                    })}</TableCell>
                                                     <TableCell>
                                                         {order.status === 4 && (
                                                             <Chip

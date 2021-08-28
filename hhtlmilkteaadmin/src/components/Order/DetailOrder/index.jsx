@@ -91,7 +91,10 @@ const useStyles = makeStyles((theme) => ({
     },
     table: {
         borderBottom: 0
-    }
+    },
+    cellWithoutBorder: {
+        borderBottom: "none"
+    },
 }));
 
 const HistoryDetail = () => {
@@ -183,7 +186,7 @@ const HistoryDetail = () => {
                         <Grid container spacing={3}>
                             <Grid item md={12} xl={12} sm={12} className={classes.wrapBarCode}>Mã đơn hàng: <BarCode value={order.id} /></Grid>
                             <Grid item md={6} xl={6} sm={12}>Ngày đặt hàng: {moment(order.createdAt).format("YYYY-MM-DD")}</Grid>
-                            <Grid item md={6} xl={6} sm={12}>Lưu ý thêm: {order.noteOrder}</Grid>
+                            <Grid item md={6} xl={6} sm={12}>Lưu ý thêm: {order.noteOrder ?order.noteOrder : "Không có lưu ý"}</Grid>
                             <Grid item md={6} xl={6} sm={12}>Phương thức thanh toán:
                                 {order.payment === 1 && (
                                     <span
@@ -267,19 +270,81 @@ const HistoryDetail = () => {
                                                             <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{item.quantity}</p>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell align="center">{(item.product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
-                                                    <TableCell align="center">{(item.product.price * item.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center" translate="no">{(item.product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                    <TableCell align="center" translate="no">{(item.product.price * item.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
                                                 </TableRow>
                                             )) : (
                                                 <TableRow>
-                                                    <TableCell colSpan={6} align="center"><b style={{ color: 'red' }}>Không có sản phẩm trong giỏ hàng</b></TableCell>
+                                                    <TableCell colSpan={5} align="center"><b style={{ color: 'red' }}>Không có sản phẩm trong giỏ hàng</b></TableCell>
                                                 </TableRow>
                                             )
                                             }
+                                            {order?.groupMembers?.length > 0 &&
+                                                order?.groupMembers?.map((item) => (
+                                                    item?.groupOrderDetails.map((detail) => (
+                                                        <TableRow key={detail.id}>
+                                                            <TableCell align="center">
+                                                                <img alt={detail.product.name} src={detail.product.linkImage} width={100} />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p>{detail.product.name}</p>
+                                                                <span style={{ fontSize: 12, color: 'red' }}>{detail.sizeOptionId} {detail.addOptionId !== "" && ": " + detail.addOptionId}</span>
+                                                            </TableCell>
+                                                            <TableCell align="center">
+                                                                <div style={{ display: 'flex', marginTop: -10, marginLeft: -20 }}>
+                                                                    <p style={{ marginLeft: 20, marginRight: 20, fontSize: 16 }}>{detail.quantity}</p>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell align="center" translate="no">{(detail.product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                            <TableCell align="center" translate="no">{(detail.product.price * detail.quantity).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ))}
 
+<TableRow>
+                                                <TableCell colSpan={3} className={classes.cellWithoutBorder} />
+                                                <TableCell className={classes.cellWithoutBorder} >
+                                                    <b style={{ paddingLeft: 130 }}>Tạm tính:</b>
+                                                </TableCell>
+                                                <TableCell align="right" className={classes.cellWithoutBorder}>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice + order.memberVip - order.shipping) / 1.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                </TableCell>
+                                            </TableRow>
                                             <TableRow>
-                                                <TableCell colSpan={5}><b>Tổng tiền thanh toán</b></TableCell>
-                                                <TableCell align="right"><b>{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b></TableCell>
+                                                <TableCell colSpan={3} className={classes.cellWithoutBorder} />
+                                                <TableCell className={classes.cellWithoutBorder}>
+                                                    <b style={{ paddingLeft: 130 }}>Thuế (5%):</b>
+                                                </TableCell>
+                                                <TableCell align="right" className={classes.cellWithoutBorder}>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice + order.memberVip - order.shipping) / 1.05 * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell colSpan={3} className={classes.cellWithoutBorder} />
+                                                <TableCell className={classes.cellWithoutBorder}>
+                                                    <b style={{ paddingLeft: 130 }}>Phí vận chuyển:</b>
+                                                </TableCell>
+                                                <TableCell align="right" className={classes.cellWithoutBorder}>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.shipping).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell colSpan={3} />
+                                                <TableCell>
+                                                    <b style={{ paddingLeft: 130 }}>Giảm giá:</b>
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.memberVip).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell colSpan={3} />
+                                                <TableCell>
+                                                    <b style={{ fontSize: 20, paddingLeft: 130 }}>Tổng tiền thanh toán:</b>
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <b style={{ fontSize: 20, paddingRight: 45 }} translate="no">{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                </TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
