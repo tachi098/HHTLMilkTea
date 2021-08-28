@@ -102,6 +102,7 @@ const ReturnVNPay = () => {
       ) {
         dispatch(checkoutOrder(order));
         localStorage.removeItem("order");
+        localStorage.removeItem("order-cod");
       }
       setMessage("success");
     } else {

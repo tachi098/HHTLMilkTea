@@ -107,12 +107,14 @@ const ReturnMomo = () => {
       ) {
         dispatch(checkoutOrder(order));
         localStorage.removeItem("order");
+        localStorage.removeItem("order-cod");
       } else if (
         Object.is(payment, "cod") &&
         localStorage.getItem("order-cod")
       ) {
         dispatch(checkoutOrder(orderCod));
         localStorage.removeItem("order-cod");
+        localStorage.removeItem("order");
       }
       setMessage("success");
     } else {
