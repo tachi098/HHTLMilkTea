@@ -251,7 +251,7 @@ const Wishlist = () => {
           const type = "team";
           const orderID = groupMember?.orderID;
           GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-        }, 750);
+        }, 500);
       }
 
       if (auth?.user?.token) {
@@ -260,7 +260,7 @@ const Wishlist = () => {
           const type = "team";
           const orderID = order?.id;
           GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-        }, 750);
+        }, 500);
       }
     }
   }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
@@ -547,10 +547,13 @@ const Wishlist = () => {
                             >
                               {item.name +
                                 " + " +
-                                (item.price ? item.price : 0).toLocaleString(
-                                  "it-IT",
-                                  { style: "currency", currency: "VND" }
-                                )}
+                                (item.price
+                                  ? item.price
+                                  : 0
+                                ).toLocaleString("it-IT", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
                             </div>
                           ))}
                         </div>
@@ -612,10 +615,13 @@ const Wishlist = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {(currentPrice ? currentPrice * count : 0).toLocaleString(
-                        "it-IT",
-                        { style: "currency", currency: "VND" }
-                      )}
+                      {(currentPrice
+                        ? currentPrice * count
+                        : 0
+                      ).toLocaleString("it-IT", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
                     </Typography>
                   </div>
                 </Grid>
