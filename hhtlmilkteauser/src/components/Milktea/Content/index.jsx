@@ -213,6 +213,8 @@ const Content = () => {
 
   const { order } = useSelector((state) => state.order);
 
+  const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
+
   useEffect(() => {
     dispatch(CategoryListAction());
     dispatch(
@@ -226,7 +228,14 @@ const Content = () => {
   }, [dispatch, valueToOrderBy, valueToSortDir, keyword, valueCategory]);
 
   const handleClickOpen = (item) => {
-    if (auth?.user?.token || localStorage.getItem("member")) {
+    if (
+      auth?.user?.token ||
+      (localStorage.getItem("member") &&
+        dataGroupOrderDetails?.groupOrderInfoResponses &&
+        dataGroupOrderDetails?.groupOrderInfoResponses.some(
+          (a) => a.username === localStorage.getItem("member")
+        ))
+    ) {
       setProductSelect(item);
       setCurrentPrice(
         item.price * (item?.saleOff?.discount ? 1 - item?.saleOff?.discount : 1)
@@ -656,13 +665,13 @@ const Content = () => {
                             >
                               {item.name +
                                 " + " +
-                                (item.price
-                                  ? item.price
-                                  : 0
-                                ).toLocaleString("it-IT", {
-                                  style: "currency",
-                                  currency: "VND",
-                                })}
+                                (item.price ? item.price : 0).toLocaleString(
+                                  "it-IT",
+                                  {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }
+                                )}
                             </div>
                           ))}
                         </div>
@@ -727,13 +736,13 @@ const Content = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {(currentPrice
-                        ? currentPrice * count
-                        : 0
-                      ).toLocaleString("it-IT", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                      {(currentPrice ? currentPrice * count : 0).toLocaleString(
+                        "it-IT",
+                        {
+                          style: "currency",
+                          currency: "VND",
+                        }
+                      )}
                     </Typography>
                   </div>
                 </Grid>

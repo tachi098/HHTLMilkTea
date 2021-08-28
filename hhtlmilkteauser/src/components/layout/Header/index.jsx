@@ -204,7 +204,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
   const { customer, wishlist } = useSelector((state) => state.customer);
   const { order, quantity } = useSelector((state) => state.order);
   const { shortUrl } = useSelector((state) => state.groupOrder);
-  const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState(null);
+  // const [dataGroupOrderDetails, setDataGroupOrderDetails] = useState({});
+  const { dataGroupOrderDetails } = useSelector((state) => state.groupOrder);
 
   const [open, setOpen] = React.useState(false);
 
@@ -237,10 +238,6 @@ const Header = ({ isOpen, onHandleOpen }) => {
     setOpenModal(false);
   };
 
-  // useEffect(() => {
-  //   document.querySelector(".MuiBadge-badge").setAttribute("translate", "no");
-  // }, []);
-
   useEffect(() => {
     const setParams = () => {
       return new Promise((resolve, reject) => {
@@ -251,81 +248,84 @@ const Header = ({ isOpen, onHandleOpen }) => {
             new URLSearchParams(search).get("orderID") &&
             Object.is(localStorage.getItem("user"), null)
           ) {
+            const username = new URLSearchParams(search).get("username");
+            const type = "team";
+            const orderID = new URLSearchParams(search).get("orderID");
+            GroupOrderFindAllAction({ username, type, orderID })(dispatch);
             resolve(
               localStorage.setItem(
                 "groupMember",
                 JSON.stringify({
-                  username: new URLSearchParams(search).get("username"),
-                  type: new URLSearchParams(search).get("type"),
-                  orderID: new URLSearchParams(search).get("orderID"),
+                  username: username,
+                  type: type,
+                  orderID: orderID,
                 })
               )
             );
           } else {
             resolve();
           }
-        }, 750);
+        }, 500);
       });
     };
 
-    setParams().then((res) => {
-      if (
-        !Object.is(localStorage.getItem("member"), null) &&
-        !Object.is(localStorage.getItem("groupMember"), null)
-        //   ||
-        // !Object.is(localStorage.getItem("user"), null)
-      ) {
-        // history.replace("/milktea");
-        return;
-      }
-      //  else {
-      //   // history.replace("/home");
-      //   return;
-      // }
-    });
+    setParams();
 
     return () => setParams();
-  }, [history, search]);
+  }, [dispatch, history, search]);
 
   useEffect(() => {
     setTimeout(() => {
+      if (localStorage.getItem("member")) {
+        const groupMember = JSON.parse(localStorage.getItem("groupMember"));
+        const username = groupMember?.username;
+        const type = "team";
+        const orderID = groupMember?.orderID;
+        GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+      }
+
       let onConnected = () => {
         console.log("Connected!!");
 
         let wsUsername = `${auth?.user?.username}/data`;
 
-        if (localStorage.getItem("groupMember")) {
+        if (localStorage.getItem("member")) {
           wsUsername = `${
             JSON.parse(localStorage.getItem("groupMember"))?.username
           }/data`;
         }
 
-        client.subscribe(wsUsername, async function(msg) {
+        client.subscribe(wsUsername, function(msg) {
           if (msg.body) {
-            var jsonBody = await JSON.parse(msg.body);
-            // console.log(jsonBody);
+            var jsonBody = JSON.parse(msg.body);
+            // console.log("hoaipx: ", jsonBody);
 
-            if (
-              jsonBody?.groupOrderInfoResponses === null &&
-              jsonBody?.totalPriceGroup === 0 &&
-              localStorage.getItem("member") &&
-              localStorage.getItem("groupMember")
-            ) {
-              localStorage.removeItem("member");
-              localStorage.removeItem("groupMember");
-              window.location.reload();
+            // if (
+            //   jsonBody?.groupOrderInfoResponses === null &&
+            //   jsonBody?.totalPriceGroup === 0 &&
+            //   localStorage.getItem("member") &&
+            //   localStorage.getItem("groupMember")
+            // ) {
+            //   localStorage.removeItem("member");
+            //   localStorage.removeItem("groupMember");
+            //   window.location.reload();
+            // }
+
+            // if (
+            //   jsonBody?.groupOrderInfoResponses === null &&
+            //   jsonBody?.totalPriceGroup === 0 &&
+            //   localStorage.getItem("user")
+            // ) {
+            //   window.location.reload();
+            // }
+
+            if (jsonBody && jsonBody.constructor === Object) {
+              GroupOrderSaveStateAction(jsonBody)(dispatch);
+              // setDataGroupOrderDetails(jsonBody);
             }
 
-            if (
-              jsonBody?.groupOrderInfoResponses === null &&
-              jsonBody?.totalPriceGroup === 0 &&
-              localStorage.getItem("user")
-            ) {
-              window.location.reload();
-            }
-
-            GroupOrderSaveStateAction(jsonBody)(dispatch);
-            setDataGroupOrderDetails(jsonBody);
+            // GroupOrderSaveStateAction(jsonBody)(dispatch);
+            // setDataGroupOrderDetails(jsonBody);
           }
         });
       };
@@ -336,7 +336,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
       const client = new Client({
         brokerURL: SOCKET_URL,
-        reconnectDelay: 5000,
+        reconnectDelay: 10000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
         onConnect: onConnected,
@@ -344,7 +344,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
       });
 
       client.activate();
-    }, 750);
+    }, 500);
   }, [auth.token, auth?.user?.username, dispatch]);
 
   useEffect(() => {
@@ -470,12 +470,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
     </div>
   );
 
-  useEffect(() => {
-    const username = auth?.user?.username;
-    const type = "team";
-    const orderID = order?.id;
-    GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-  }, [auth?.user?.username, dispatch, order?.id]);
+  // useEffect(() => {
+  //   const username = auth?.user?.username;
+  //   const type = "team";
+  //   const orderID = order?.id;
+  //   GroupOrderFindAllAction({ username, type, orderID })(dispatch);
+  // }, [auth?.user?.username, dispatch, order?.id]);
 
   const handleDrawerOpenGroup = () => {
     const groupMember = JSON.parse(localStorage.getItem("groupMember"));
@@ -618,6 +618,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   return (
     <AppBar style={{ backgroundColor: "white" }}>
+      {/* {console.log("cl: ", dataGroupOrderDetails)} */}
+      {/* {console.log("cl: ", wishlist && wishlist?.quantity)} */}
       <Toolbar className={classes.toolbar}>
         <MoreVertIcon
           className={classes.btnResponsive}
@@ -660,7 +662,9 @@ const Header = ({ isOpen, onHandleOpen }) => {
           </span>
           <span translate="no">
             <Badge
-              badgeContent={wishlist !== null ? wishlist?.quantity : 0}
+              badgeContent={
+                wishlist && wishlist?.quantity ? wishlist?.quantity : 0
+              }
               color="secondary"
               style={{ marginRight: 20 }}
             >
@@ -672,15 +676,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
               />
             </Badge>
           </span>
-
-          {dataGroupOrderDetails &&
-            Object.values(dataGroupOrderDetails?.groupOrderInfoResponses) && (
+          {dataGroupOrderDetails?.groupOrderInfoResponses &&
+            dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0 && (
               <>
-                {Object.values(
-                  dataGroupOrderDetails?.groupOrderInfoResponses
-                ).findIndex(
+                {dataGroupOrderDetails?.groupOrderInfoResponses.some(
                   (a) => a.username === localStorage.getItem("member")
-                ) !== -1 && (
+                ) && (
                   <span translate="no">
                     <Badge
                       badgeContent={
@@ -704,50 +705,32 @@ const Header = ({ isOpen, onHandleOpen }) => {
                 )}
               </>
             )}
-
-          {dataGroupOrderDetails && (
-            <>
-              {auth?.user?.token && order?.orderDetails?.length > 0 && (
-                <span translate="no">
-                  <Badge
-                    badgeContent={
-                      dataGroupOrderDetails &&
-                      (dataGroupOrderDetails?.groupOrderInfoResponses?.length >
-                      0
-                        ? dataGroupOrderDetails?.groupOrderInfoResponses
-                            ?.length - 1
-                        : 0)
-                    }
-                    color="secondary"
-                    style={{ marginRight: 20 }}
-                  >
-                    <GroupAddIcon
-                      style={{ color: "#416c48", cursor: "pointer" }}
-                      aria-haspopup="true"
-                      onClick={handleDrawerOpenGroup}
-                    />
-                  </Badge>
-                </span>
-              )}
-            </>
-          )}
-
-          {/* <Badge
-            badgeContent={
-              dataGroupOrderDetails &&
-              (dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0
-                ? dataGroupOrderDetails?.groupOrderInfoResponses?.length - 1
-                : 0)
-            }
-            color="secondary"
-            style={{ marginRight: 20 }}
-          >
-            <GroupAddIcon
-              style={{ color: "#416c48", cursor: "pointer" }}
-              aria-haspopup="true"
-              onClick={handleDrawerOpenGroup}
-            />
-          </Badge> */}
+          {dataGroupOrderDetails?.groupOrderInfoResponses &&
+            dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0 && (
+              <>
+                {auth?.user?.token && order?.orderDetails?.length > 0 && (
+                  <span translate="no">
+                    <Badge
+                      badgeContent={
+                        dataGroupOrderDetails?.groupOrderInfoResponses?.length >
+                        0
+                          ? dataGroupOrderDetails?.groupOrderInfoResponses
+                              ?.length - 1
+                          : 0
+                      }
+                      color="secondary"
+                      style={{ marginRight: 20 }}
+                    >
+                      <GroupAddIcon
+                        style={{ color: "#416c48", cursor: "pointer" }}
+                        aria-haspopup="true"
+                        onClick={handleDrawerOpenGroup}
+                      />
+                    </Badge>
+                  </span>
+                )}
+              </>
+            )}
 
           <Badge style={{ position: "relative" }}>
             {/* <div id="google_translate_element"></div> */}
@@ -1028,7 +1011,8 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
         <Divider style={{ marginTop: 10 }} />
         <div style={{ marginTop: 10, overflowY: "scroll", height: 550 }}>
-          {dataGroupOrderDetails &&
+          {dataGroupOrderDetails?.groupOrderInfoResponses &&
+            dataGroupOrderDetails?.groupOrderInfoResponses?.length > 0 &&
             dataGroupOrderDetails?.groupOrderInfoResponses?.map(
               (item, index) => (
                 <div key={index}>

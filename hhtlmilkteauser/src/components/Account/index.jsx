@@ -78,7 +78,7 @@ const Account = () => {
           const type = "team";
           const orderID = groupMember?.orderID;
           GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-        }, 750);
+        }, 500);
       }
 
       if (auth?.user?.token) {
@@ -87,7 +87,7 @@ const Account = () => {
           const type = "team";
           const orderID = order?.id;
           GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-        }, 750);
+        }, 500);
       }
     }
   }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);

@@ -46,9 +46,6 @@ const Home = () => {
       new URLSearchParams(search).get("type") &&
       new URLSearchParams(search).get("orderID") &&
       Object.is(localStorage.getItem("user"), null)
-      // new URLSearchParams(search).get("username") &&
-      // new URLSearchParams(search).get("username") !==
-      //   JSON.parse(localStorage.getItem("groupMember"))?.username
     ) {
       localStorage.removeItem("member"); // remove if have new link share
     }
@@ -63,15 +60,11 @@ const Home = () => {
       ) {
         setOpenModalJoin(true);
       }
-    }, 750);
+    }, 500);
   }, [history, search]);
 
   useEffect(() => {
-    if (
-      (!Object.is(localStorage.getItem("member", null)) &&
-        !Object.is(localStorage.getItem("member"), null)) ||
-      (auth?.user?.token && order?.id)
-    ) {
+    if (localStorage.getItem("member") || (auth?.user?.token && order?.id)) {
       setTimeout(() => {
         const groupMember = JSON.parse(localStorage.getItem("groupMember"));
         const username = groupMember
@@ -81,7 +74,7 @@ const Home = () => {
         const orderID = groupMember ? groupMember?.orderID : order?.id;
         GroupOrderFindAllAction({ username, type, orderID })(dispatch);
         setOpenModalJoin(false);
-      }, 750);
+      }, 500);
     }
   }, [auth?.user?.token, auth?.user?.username, dispatch, member, order?.id]);
 
@@ -115,7 +108,7 @@ const Home = () => {
             setOpenModalJoin(false);
             history.replace("/home");
             window.location.reload();
-          }, 750);
+          }, 500);
         }
       });
     } else {

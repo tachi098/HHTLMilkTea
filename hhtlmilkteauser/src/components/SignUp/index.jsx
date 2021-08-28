@@ -60,7 +60,7 @@ const SignUp = () => {
         const type = "team";
         const orderID = groupMember?.orderID;
         GroupOrderFindAllAction({ username, type, orderID })(dispatch);
-      }, 750);
+      }, 500);
     }
   }, [dispatch]);
 
