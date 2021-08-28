@@ -175,12 +175,9 @@ const Profile = () => {
                                     name="email"
                                     label="Địa chỉ email"
                                     fullWidth
-                                    defaultValue={customer.email}
-                                    inputRef={register({ required: "Email không được để trống", pattern: { value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, message: "Email không hợp lệ" } })}
+                                    value={customer.email}
+                                    disabled={true}
                                 />
-                                {errors.email?.message &&
-                                    <FormHelperText style={{ color: 'red' }} id="component-error-text">{errors.email?.message}</FormHelperText>
-                                }
                             </Grid>
                         </Grid>
                         <Grid item md={4} xs={12} sm={12} style={{ paddingLeft: 30, paddingTop: 20 }}>
@@ -204,7 +201,7 @@ const Profile = () => {
                                     }
 
                                     <Button color="secondary" variant="contained" component="span" className={classes.btnUpload}>
-                                        Tải ảnh
+                                        Tải ảnh lên
                                     </Button>
                                 </label>
                             </Grid>

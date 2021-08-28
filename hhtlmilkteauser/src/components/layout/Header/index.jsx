@@ -887,6 +887,12 @@ const Header = ({ isOpen, onHandleOpen }) => {
                     >
                       <MenuItem>Lịch sử mua hàng</MenuItem>
                     </Link>
+                    <Link
+                      to="/account/voucher"
+                      style={{ textDecoration: "none", color: "black" }}
+                    >
+                      <MenuItem>Voucher</MenuItem>
+                    </Link>
                     <MenuItem onClick={onHandleLogout}>Đăng xuất</MenuItem>
                   </Menu>
                 </>

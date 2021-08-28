@@ -20,7 +20,7 @@ const Deposits = () => {
     <React.Fragment>
       <Title>Doanh thu hôm nay</Title>
       <Typography component="p" variant="h4">
-        {revenueToday} VNĐ
+        {revenueToday.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
       </Typography>
     </React.Fragment>
   );

@@ -6,12 +6,13 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './../Title';
-import { Typography, Chip, Paper, TableContainer } from '@material-ui/core';
+import { Typography, Chip, Paper, TableHead, TableContainer } from '@material-ui/core';
+import { Visibility } from '@material-ui/icons'
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import BarCode from "react-barcode";
-import TableHeader from "../../TableHeader";
 import { LastFiveOrders } from '../../../store/actions/RevenueAction';
+import { useHistory } from 'react-router';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,28 +30,29 @@ const Orders = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { listLastFiveOrders } = useSelector((state) => state.revenue);
-  const fields = [
-    { name: "id", lable: "Số Hóa Đơn" },
-    { name: "createdAt", lable: "Ngày đặt hàng" },
-    { name: "userId", lable: "Khách hàng" },
-    { name: "payment", lable: "Thanh toán" },
-    { name: "totalPrice", lable: "Tổng tiền" },
-    { lable: "Trạng Thái" },
-  ];
 
   useEffect(() => {
     dispatch(LastFiveOrders());
   });
 
-  console.log(listLastFiveOrders);
+  const history = useHistory();
   return (
     <React.Fragment>
       <Title>Đơn hàng mới nhất</Title>
       <TableContainer component={Paper}>
         <Table style={{ minWidth: 650 }} aria-label="simple table">
-          <TableHeader
-            fields={fields}
-          />
+          <TableHead>
+            <TableRow>
+              <TableCell>Số Hóa Đơn</TableCell>
+              <TableCell>Ngày đặt hàng</TableCell>
+              <TableCell>Số Hóa Đơn</TableCell>
+              <TableCell>Khách hàng</TableCell>
+              <TableCell>Thanh toán</TableCell>
+              <TableCell>Tổng tiền</TableCell>
+              <TableCell>Chi tiết</TableCell>
+            </TableRow>
+          </TableHead>
+
           <TableBody>
             {listLastFiveOrders.map((order) => (
               <TableRow key={order.id}>
@@ -75,7 +77,10 @@ const Orders = () => {
                     </Typography>
                   )}
                 </TableCell>
-                <TableCell>{order.totalPrice}</TableCell>
+                <TableCell translate="no">{order.totalPrice.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}</TableCell>
                 <TableCell>
                   {order.status === 1 &&
                     (
@@ -104,6 +109,16 @@ const Orders = () => {
                       style={{ backgroundColor: "red", color: "white" }}
                     />
                   )}
+                </TableCell>
+                <TableCell>
+                  <Visibility
+                    style={{
+                      color: "grey",
+                      cursor: "pointer",
+                      marginRight: 10,
+                    }}
+                    onClick={() => history.push("/order/detail", { order: order })}
+                  />
                 </TableCell>
               </TableRow>
             ))}
