@@ -16,7 +16,7 @@ import {
   Chip,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { ListItemIcon, ListItemText } from "@material-ui/core";
 import ChildCareIcon from "@material-ui/icons/ChildCare";
 import HomeIcon from "@material-ui/icons/Home";
@@ -84,6 +84,7 @@ const DetailUser = () => {
 
   const location = useLocation();
   const [user] = useState(location?.state?.user);
+  const history = useHistory();
 
   const fields = [
     { lable: "Mã Đơn Hàng" },
@@ -241,7 +242,7 @@ const DetailUser = () => {
                             <TableCell>
                               {Object.is(order.status, 1) ? (
                                 <Chip
-                                  label="Chưa làm"
+                                  label="Đang xử lý"
                                   style={{
                                     backgroundColor: "#9500AE",
                                     color: "white",
@@ -249,7 +250,7 @@ const DetailUser = () => {
                                 />
                               ) : Object.is(order.status, 2) ? (
                                 <Chip
-                                  label="Vận chuyển"
+                                  label="Đang giao hàng"
                                   style={{
                                     backgroundColor: "orange",
                                     color: "white",
@@ -265,7 +266,7 @@ const DetailUser = () => {
                                 />
                               ) : (
                                 <Chip
-                                  label="Lỗi"
+                                  label="Đã huỷ"
                                   style={{
                                     backgroundColor: "red",
                                     color: "white",
@@ -290,7 +291,8 @@ const DetailUser = () => {
                                   position: "relative",
                                   right: 35,
                                 }}
-                                onClick={() => console.log(order)}
+                                onClick={() => history.push("/order/detail", { order: { ...order, userId: user } })}
+                              // onClick={() => console.log({ order: { ...order, userId: user } })}
                               />
                             </TableCell>
                           </TableRow>

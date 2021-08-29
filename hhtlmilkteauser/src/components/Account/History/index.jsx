@@ -180,9 +180,9 @@ const History = () => {
     const [valueToOrderByProcess, setValueToOrderByProcess] = useState("id");
     const [valueToOrderBySuccess, setValueToOrderBySuccess] = useState("id");
     const [valueToOrderByFail, setValueToOrderByFail] = useState("id");
-    const [valueToSortDirProcess, setValueToSortDirProcess] = useState("asc");
-    const [valueToSortDirSuccess, setValueToSortDirSuccess] = useState("asc");
-    const [valueToSortDirFail, setValueToSortDirFail] = useState("asc");
+    const [valueToSortDirProcess, setValueToSortDirProcess] = useState("desc");
+    const [valueToSortDirSuccess, setValueToSortDirSuccess] = useState("desc");
+    const [valueToSortDirFail, setValueToSortDirFail] = useState("desc");
     const [pageSizeProcess, setPageSizeProcess] = useState(3);
     const [pageSizeSuccess, setPageSizeSuccess] = useState(3);
     const [pageSizeFail, setPageSizeFail] = useState(3);
@@ -424,7 +424,7 @@ const History = () => {
                                 </TableContainer>
 
                                 <Pagination
-                                    style={{ marginTop: 50 }}
+                                    style={{ marginTop: 50, marginBottom: 10, marginLeft: 10 }}
                                     color="primary"
                                     shape="rounded"
                                     count={totalPagesProcess}
@@ -535,7 +535,7 @@ const History = () => {
                                     </Table>
                                 </TableContainer>
                                 <Pagination
-                                    style={{ marginTop: 50 }}
+                                    style={{ marginTop: 50, marginBottom: 10, marginLeft: 10 }}
                                     color="primary"
                                     shape="rounded"
                                     count={totalPagesSuccess}
@@ -645,7 +645,7 @@ const History = () => {
                                     </Table>
                                 </TableContainer>
                                 <Pagination
-                                    style={{ marginTop: 50 }}
+                                    style={{ marginTop: 50, marginBottom: 10, marginLeft: 10 }}
                                     color="primary"
                                     shape="rounded"
                                     count={totalPagesFail}

@@ -68,12 +68,29 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: 10,
   },
+  titleContainer: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 25,
+    marginBottom: 25,
+  },
+  reportTitle: {
+    color: "#006E4E",
+    letterSpacing: 4,
+    fontSize: 25,
+    textAlign: "center",
+    textTransform: "uppercase",
+  },
 });
 
 const Report = ({ user }) => (
   <Document>
     <Page size="A4" style={styles.page} wrap>
       <Image style={styles.logo} src={Logo} />
+      <View style={styles.titleContainer}>
+        <Text style={styles.reportTitle}>Thông tin người dùng</Text>
+      </View>
       <View style={styles.wrapDate}>
         <Text>Ngày xuất: </Text>
         <Text>

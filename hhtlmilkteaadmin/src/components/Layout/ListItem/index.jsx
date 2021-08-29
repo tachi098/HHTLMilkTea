@@ -6,13 +6,12 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import PeopleIcon from "@material-ui/icons/People";
 import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
-import { Euro, FormatAlignCenter } from "@material-ui/icons";
+import { Euro } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import LoupeIcon from "@material-ui/icons/Loupe";
 import LocalDrinkIcon from "@material-ui/icons/LocalDrink";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import { Link } from "react-router-dom";
-import { Divider } from "@material-ui/core";
 
 const MainListItems = () => {
   return (
@@ -95,8 +94,7 @@ const MainListItems = () => {
           <ListItemText primary="Vòng Quay" />
         </ListItem>
       </Link>
-      <Divider />
-
+      {/* 
       <Link to="/form" style={{ textDecoration: "none", color: "black" }}>
         <ListItem button>
           <ListItemIcon>
@@ -112,7 +110,7 @@ const MainListItems = () => {
           </ListItemIcon>
           <ListItemText primary="Table" />
         </ListItem>
-      </Link>
+      </Link> */}
     </div>
   );
 };
