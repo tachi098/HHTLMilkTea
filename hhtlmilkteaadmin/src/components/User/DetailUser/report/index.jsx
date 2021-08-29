@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -54,6 +54,8 @@ const styles = StyleSheet.create({
     height: 100,
   },
   wrapDate: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     marginTop: 30,
     marginBottom: 30,
   },
@@ -73,7 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     marginTop: 25,
-    marginBottom: 25,
   },
   reportTitle: {
     color: "#006E4E",
@@ -82,12 +83,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textTransform: "uppercase",
   },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  headerContainer: {
+    marginLeft: 200,
+  },
 });
 
 const Report = ({ user }) => (
   <Document>
     <Page size="A4" style={styles.page} wrap>
-      <Image style={styles.logo} src={Logo} />
+      <View style={styles.header}>
+        <Image style={styles.logo} src={Logo} />
+        <View style={styles.headerContainer}>
+          <Text>
+            Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
+            Minh
+          </Text>
+          <Text>Số điện thoại: + 028 3846 0846</Text>
+          <Text>Email: fptaptech@gmail.com</Text>
+        </View>
+      </View>
       <View style={styles.titleContainer}>
         <Text style={styles.reportTitle}>Thông tin người dùng</Text>
       </View>

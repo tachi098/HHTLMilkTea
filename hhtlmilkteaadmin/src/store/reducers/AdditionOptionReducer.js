@@ -22,11 +22,14 @@ const additionOptionSlice = createSlice({
             state.additionOptions.push(action.payload);
         },
         additionOptionDelete(state, action) {
-            const { id, deletedAt } = action.payload;
-            const existingAdditionOption = state.additionOptions.find((additionOption) => additionOption.id === id);
-            if (existingAdditionOption) {
-                existingAdditionOption.deletedAt = deletedAt;
-            }
+            // const { id, deletedAt } = action.payload;
+            // const existingAdditionOption = state.additionOptions.find((additionOption) => additionOption.id === id);
+            // if (existingAdditionOption) {
+            //     existingAdditionOption.deletedAt = deletedAt;
+            // }
+
+            state.additionOptions = action.payload.content;
+            state.totalPages = action.payload.totalPages;
         },
         additionOptionUpdate(state, action) {
             const { id, name } = action.payload;

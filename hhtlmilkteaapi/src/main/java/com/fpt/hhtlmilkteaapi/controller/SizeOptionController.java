@@ -1,7 +1,9 @@
 package com.fpt.hhtlmilkteaapi.controller;
 
+import com.fpt.hhtlmilkteaapi.entity.Product;
 import com.fpt.hhtlmilkteaapi.entity.SizeOption;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
+import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.repository.ISizeOptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -21,6 +26,9 @@ public class SizeOptionController {
 
     @Autowired
     private ISizeOptionRepository sizeOptionRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @GetMapping("/list")
     public ResponseEntity<?> getSizeOptions() {
@@ -43,6 +51,7 @@ public class SizeOptionController {
         Page<SizeOption> sizeOptions = "".equals(keyword) ?
                 sizeOptionRepository.findAll(pageable) :
                 sizeOptionRepository.findSizeOptionsByNameLike("%" + keyword + "%", pageable);
+
         return ResponseEntity.ok(sizeOptions);
     }
 
@@ -67,12 +76,28 @@ public class SizeOptionController {
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> deleteSizeOptionsById(@PathVariable Long id) {
         SizeOption sizeOptions = sizeOptionRepository.findById(id).get();
-        if (sizeOptions.getDeletedAt() == null) {
-            sizeOptions.setDeletedAt(new Date());
-        } else {
-            sizeOptions.setDeletedAt(null);
+//        if (sizeOptions.getDeletedAt() == null) {
+//            sizeOptions.setDeletedAt(new Date());
+//        } else {
+//            sizeOptions.setDeletedAt(null);
+//        }
+//        sizeOptionRepository.save(sizeOptions);
+        List<Product> products = productRepository.findAll();
+
+        for(Product product: products){
+            if(product.getSizeOptions().contains(sizeOptions)){
+                product.setSizeOptions(product.getSizeOptions().stream().filter(s -> s.getId() != sizeOptions.getId()).collect(Collectors.toSet()));
+                productRepository.save(product);
+            }
         }
-        sizeOptionRepository.save(sizeOptions);
-        return new ResponseEntity(sizeOptions, HttpStatus.OK);
+
+        Pageable pageable = PageRequest.of(
+                1 - 1, 3,
+                 Sort.by("id").descending()
+        );
+
+        sizeOptionRepository.delete(sizeOptions);
+
+        return new ResponseEntity(sizeOptionRepository.findAll(pageable), HttpStatus.OK);
     }
 }

@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import { useHistory } from "react-router-dom";
-import { CreateOutlined, DeleteOutline, Replay } from "@material-ui/icons";
+import { CreateOutlined, DeleteOutline } from "@material-ui/icons";
 import {
   AdditionOptionPageAction,
   AdditionOptionDeleteAction,
@@ -121,13 +121,13 @@ const AdditionOption = () => {
   const onhandleDelete = (id) => {
     confirmAlert({
       title: "Thông báo",
-      message: "Bạn có chắc muốn cập nhật trạng thái?",
+      message: "Bạn có chắc muốn xoá?",
       buttons: [
         {
           label: "Có",
           onClick: () => {
             dispatch(AdditionOptionDeleteAction(id));
-            Notification.success("Đã cập nhật thành công!");
+            Notification.success("Đã xoá thành công!");
           },
         },
         {
@@ -272,17 +272,12 @@ const AdditionOption = () => {
                     }}
                     onClick={() => onhandleUpdate(u)}
                   />
-                  {u.deletedAt ? (
-                    <Replay
-                      style={{ cursor: "pointer", color: "green" }}
-                      onClick={() => onhandleDelete(u.id)}
-                    />
-                  ) : (
-                    <DeleteOutline
-                      style={{ color: "red", cursor: "pointer" }}
-                      onClick={() => onhandleDelete(u.id)}
-                    />
-                  )}
+
+                  <DeleteOutline
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={() => onhandleDelete(u.id)}
+                  />
+
                 </TableCell>
               </TableRow>
             ))}
