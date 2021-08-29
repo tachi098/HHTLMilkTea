@@ -21,11 +21,13 @@ const sizeOptionReducerSlice = createSlice({
             state.sizeOptions.push(action.payload);
         },
         sizeOptionsDelete(state, action) {
-            const { id, deletedAt } = action.payload;
-            const existingSizeOptions = state.sizeOptions.find((sizeOption) => sizeOption.id === id);
-            if (existingSizeOptions) {
-                existingSizeOptions.deletedAt = deletedAt;
-            }
+            // const { id, deletedAt } = action.payload;
+            // const existingSizeOptions = state.sizeOptions.find((sizeOption) => sizeOption.id === id);
+            // if (existingSizeOptions) {
+            //     existingSizeOptions.deletedAt = deletedAt;
+            // }
+            state.sizeOptions = action.payload.content;
+            state.totalPages = action.payload.totalPages;
         },
         sizeOptionsUpdate(state, action) {
             const { id, name } = action.payload;

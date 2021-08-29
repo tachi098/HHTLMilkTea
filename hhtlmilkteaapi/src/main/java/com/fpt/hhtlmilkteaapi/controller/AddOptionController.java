@@ -1,8 +1,10 @@
 package com.fpt.hhtlmilkteaapi.controller;
 
 import com.fpt.hhtlmilkteaapi.entity.AdditionOption;
+import com.fpt.hhtlmilkteaapi.entity.Product;
 import com.fpt.hhtlmilkteaapi.payload.response.MessageResponse;
 import com.fpt.hhtlmilkteaapi.repository.IAddOptionRepository;
+import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -21,6 +25,9 @@ public class AddOptionController {
 
     @Autowired
     private IAddOptionRepository addOptionRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @GetMapping("/list")
     public ResponseEntity<?> getAdditionOptions() {
@@ -67,12 +74,22 @@ public class AddOptionController {
     @PutMapping("/delete/{id}")
     public ResponseEntity<?> deleteAdditionOptionsById(@PathVariable Long id) {
         AdditionOption additionOption = addOptionRepository.findById(id).get();
-        if (additionOption.getDeletedAt() == null) {
-            additionOption.setDeletedAt(new Date());
-        } else {
-            additionOption.setDeletedAt(null);
+        List<Product> products = productRepository.findAll();
+
+        for(Product product: products){
+            if(product.getAdditionOptions().contains(additionOption)){
+                product.setAdditionOptions(product.getAdditionOptions().stream().filter(s -> s.getId() != additionOption.getId()).collect(Collectors.toSet()));
+                productRepository.save(product);
+            }
         }
-        addOptionRepository.save(additionOption);
-        return new ResponseEntity(additionOption, HttpStatus.OK);
+
+        Pageable pageable = PageRequest.of(
+                1 - 1, 3,
+                Sort.by("id").descending()
+        );
+
+        addOptionRepository.delete(additionOption);
+
+        return new ResponseEntity(addOptionRepository.findAll(pageable), HttpStatus.OK);
     }
 }
