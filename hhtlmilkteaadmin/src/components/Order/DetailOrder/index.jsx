@@ -131,14 +131,14 @@ const HistoryDetail = () => {
         dispatch(OrderStatusUpdate({ id, status: 2 }));
         setStatus(2);
         //history.push("/order/")
-        Notification.success("Đã hủy thành công");
+        Notification.success("Đã cập nhật thành công");
     };
 
     const handleCompleteStatus = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 3 }));
         setStatus(3);
         //history.push("/order/")
-        Notification.success("Đã hủy thành công");
+        Notification.success("Đã cập nhật thành công");
     };
 
     const handleUpdate = (id, status) => {
@@ -186,7 +186,7 @@ const HistoryDetail = () => {
                         <Grid container spacing={3}>
                             <Grid item md={12} xl={12} sm={12} className={classes.wrapBarCode}>Mã đơn hàng: <BarCode value={order.id} /></Grid>
                             <Grid item md={6} xl={6} sm={12}>Ngày đặt hàng: {moment(order.createdAt).format("YYYY-MM-DD")}</Grid>
-                            <Grid item md={6} xl={6} sm={12}>Lưu ý thêm: {order.noteOrder ?order.noteOrder : "Không có lưu ý"}</Grid>
+                            <Grid item md={6} xl={6} sm={12}>Lưu ý thêm: {order.noteOrder ? order.noteOrder : "Không có lưu ý"}</Grid>
                             <Grid item md={6} xl={6} sm={12}>Phương thức thanh toán:
                                 {order.payment === 1 && (
                                     <span
@@ -301,7 +301,7 @@ const HistoryDetail = () => {
                                                     ))
                                                 ))}
 
-<TableRow>
+                                            <TableRow>
                                                 <TableCell colSpan={3} className={classes.cellWithoutBorder} />
                                                 <TableCell className={classes.cellWithoutBorder} >
                                                     <b style={{ paddingLeft: 130 }}>Tạm tính:</b>

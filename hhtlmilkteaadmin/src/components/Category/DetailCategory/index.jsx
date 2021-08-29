@@ -80,7 +80,7 @@ const DetailCategory = () => {
           document={<Report category={category} />}
           fileName="report"
         >
-          <Avatar style={{ cursor: "pointer", backgroundColor: "#FC8400" }}>
+          <Avatar style={{ cursor: "pointer", backgroundColor: "#FC8400", marginBottom: 10 }}>
             <PictureAsPdfIcon />
           </Avatar>
         </PDFDownloadLink>
