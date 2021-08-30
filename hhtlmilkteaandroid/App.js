@@ -9,6 +9,7 @@ import BottomNavigator from './routes/BottomNavigation'
 import DetailsScreen from './screens/DetailScreen'
 import { Provider } from 'react-redux';
 import store from './store'
+import PaymentScreen from './screens/PaymentScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ const App = () => {
           <Stack.Screen name="BoardScreen" component={OnBoardScreen} />
           <Stack.Screen name="Home" component={BottomNavigator} />
           <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+          <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
