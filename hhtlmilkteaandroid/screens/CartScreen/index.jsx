@@ -115,7 +115,8 @@ const style = StyleSheet.create({
         marginHorizontal: 20,
     },
     cartCard: {
-        height: 190,
+        paddingTop: 20,
+        height: 180,
         elevation: 15,
         borderRadius: 10,
         backgroundColor: COLORS.white,
@@ -123,7 +124,6 @@ const style = StyleSheet.create({
         marginHorizontal: 20,
         paddingHorizontal: 10,
         flexDirection: 'row',
-        alignItems: 'center',
     },
     actionBtn: {
         width: 80,
