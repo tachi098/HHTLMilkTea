@@ -1,5 +1,6 @@
 // import GroupOrderService from "../../services/GroupOrderService";
 import OrderService from "../../services/OrderService";
+import { profileuser } from "../reducers/UserReducer";
 import {
   add,
   find,
@@ -49,6 +50,19 @@ export const OrderDelteOrderDetail = (
     await OrderService.delete(id, jwt)
       .then((response) => dispatch(deleteOrderDetail(response.data)))
       .catch((error) => console.error(error));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const checkoutOrder = (data, jwt) => async (dispatch) => {
+  try {
+    data.team = false;
+
+    const res = await OrderService.checkout(data, jwt);
+    dispatch(checkoutSuccess(res.data));
+    dispatch(profileuser(res.data));
+    return res;
   } catch (error) {
     console.error(error);
   }

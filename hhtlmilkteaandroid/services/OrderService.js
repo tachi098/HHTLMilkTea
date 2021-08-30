@@ -29,8 +29,12 @@ class OrderService {
             }
         })
     }
-    checkout = (data) => {
-        return api.put('/order/checkout', data)
+    checkout = (data, jwt) => {
+        return api.put('/order/checkout', data, {
+            headers: {
+                authorization: jwt
+            }
+        })
     }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View, Text, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, Image, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
@@ -53,6 +53,25 @@ const CartScreen = ({ navigation }) => {
             </View>
         );
     };
+
+    const onsubmit = () => {
+        if (totalPrice > 0) {
+            navigation.navigate("PaymentScreen")
+        } else {
+            Alert.alert(
+                'Notification',
+                'Must have at least a product in your cart, Keep Buying ',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => navigation.navigate("Home ")
+                    },
+                ],
+                { cancelable: false },
+            );
+        }
+    }
+
     return (
         <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
             <View style={style.header}>
@@ -62,29 +81,29 @@ const CartScreen = ({ navigation }) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 80 }}
-                data={order.orderDetails}
+                data={order?.orderDetails}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => <CartCard item={item} />}
                 ListFooterComponentStyle={{ paddingHorizontal: 20, marginTop: 20 }}
-                ListFooterComponent={() => (
-                    <View>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginVertical: 15,
-                            }}>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                                Total Price
-                            </Text>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
-                        </View>
-                        <View style={{ marginHorizontal: 30 }}>
-                            <PrimaryButton title="CHECKOUT" />
-                        </View>
-                    </View>
-                )}
             />
+            <View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginVertical: 15,
+                        justifyContent: 'space-between',
+                        marginLeft: 20,
+                        marginRight: 20
+                    }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+                        Total Price
+                    </Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+                </View>
+                <View style={{ marginHorizontal: 30, marginBottom: 10 }}>
+                    <PrimaryButton title="CHECKOUT" onPress={onsubmit} />
+                </View>
+            </View>
         </SafeAreaView>
     );
 };
@@ -96,7 +115,7 @@ const style = StyleSheet.create({
         marginHorizontal: 20,
     },
     cartCard: {
-        height: 150,
+        height: 190,
         elevation: 15,
         borderRadius: 10,
         backgroundColor: COLORS.white,
