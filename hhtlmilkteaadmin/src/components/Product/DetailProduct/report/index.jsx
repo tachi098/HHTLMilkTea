@@ -9,7 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import Logo from "./../../../../assets/img/Milktea.jpg";
 import Moment from "react-moment";
-// import { styles } from "./style";
+import JsBarcode from "jsbarcode"
 
 Font.register({
   family: "Roboto",
@@ -89,68 +89,80 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   headerContainer: {
-    marginLeft: 200,
+    marginLeft: 40,
   },
 });
 
-const Report = ({ product }) => (
-  <Document>
-    <Page size="A4" style={styles.page} wrap>
-      <View style={styles.header}>
-        <Image style={styles.logo} src={Logo} />
-        <View style={styles.headerContainer}>
-          <Text>
-            Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
-            Minh
-          </Text>
-          <Text>Số điện thoại: + 028 3846 0846</Text>
-          <Text>Email: fptaptech@gmail.com</Text>
+const Report = ({ product }) => {
+
+  let canvas;
+  canvas = document.createElement('canvas');
+  JsBarcode(canvas, product.id);
+  const qr = canvas.toDataURL();
+
+  return (
+    <Document >
+      <Page size="A4" style={styles.page} wrap>
+        <View style={styles.header}>
+          <Image style={styles.logo} src={Logo} />
+          <View style={styles.headerContainer}>
+            <Text>
+              Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
+              Minh
+            </Text>
+            <Text>Số điện thoại: + 028 3846 0846</Text>
+            <Text>Email: fptaptech@gmail.com</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.titleContainer}>
-        <Text style={styles.reportTitle}>Thông tin sản phẩm</Text>
-      </View>
-      <View style={styles.wrapDate}>
-        <Text>Ngày xuất: </Text>
-        <Text>
-          <Moment format="DD/MM/YYYY HH:mm:ss" date={new Date()} />
-        </Text>
-      </View>
-      <View style={styles.wrapInfo}>
-        <View style={styles.wrapAvatarInfo}>
-          <Image src={product?.linkImage} />
+        <View style={styles.titleContainer}>
+          <Text style={styles.reportTitle}>Thông tin sản phẩm</Text>
+        </View>
+        <View style={styles.wrapDate}>
+          <Text>Ngày xuất: </Text>
+          <Text>
+            <Moment format="DD/MM/YYYY HH:mm:ss" date={new Date()} />
+          </Text>
+        </View>
+        <View style={styles.wrapInfo}>
+          <View style={styles.wrapAvatarInfo}>
+            <Image src={product?.linkImage} />
+          </View>
+          <View>
+            <View style={styles.wrapField}>
+              <Text>Tên sản phẩm: </Text>
+              <Text>
+                {
+                  product?.name
+                }
+              </Text>
+            </View>
+            <View style={styles.wrapField}>
+              <Text>Giá: </Text>
+              <Text>{product?.price}</Text>
+            </View>
+            <View style={styles.wrapField}>
+              <Text>Nội dung: </Text>
+              <Text>{product?.title}</Text>
+            </View>
+            <View style={styles.wrapField}>
+              <Text>Loại sản phẩm: </Text>
+              <Text>{product?.categoryId?.name}</Text>
+            </View>
+            <View style={styles.wrapField}>
+              <Text>Mã sản phẩm: </Text>
+              <Image src={qr} style={{ width: 120, height: 60 }} />
+            </View>
+          </View>
         </View>
         <View>
-          <View style={styles.wrapField}>
-            <Text>Tên sản phẩm: </Text>
-            <Text>
-              {
-                product?.name
-              }
-            </Text>
-          </View>
-          <View style={styles.wrapField}>
-            <Text>Giá: </Text>
-            <Text>{product?.price}</Text>
-          </View>
-          <View style={styles.wrapField}>
-            <Text>Nội dung: </Text>
-            <Text>{product?.title}</Text>
-          </View>
-          <View style={styles.wrapField}>
-            <Text>Loại sản phẩm: </Text>
-            <Text>{product?.categoryId?.name}</Text>
-          </View>
+          <hr style={{ marginTop: 50, height: 1, backgroundColor: "#006E4E" }} />
+          <Text style={{ textAlign: "center", color: "#006E4E" }}>
+            HHTLMilktea
+          </Text>
         </View>
-      </View>
-      <View>
-        <hr style={{ marginTop: 50, height: 1, backgroundColor: "#006E4E" }} />
-        <Text style={{ textAlign: "center", color: "#006E4E" }}>
-          HHTLMilktea
-        </Text>
-      </View>
-    </Page>
-  </Document>
-);
+      </Page>
+    </Document >
+  )
+}
 
 export default Report;

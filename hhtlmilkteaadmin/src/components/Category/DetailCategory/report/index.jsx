@@ -11,7 +11,17 @@ Font.register({
 const Report = ({ category }) => (
   <Document>
     <Page size="A4" style={styles.page} wrap>
-      <Image style={styles.logo} src={Logo} />
+      <View style={styles.header}>
+        <Image style={styles.logo} src={Logo} />
+        <View style={styles.headerContainer}>
+          <Text>
+            Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
+            Minh
+          </Text>
+          <Text>Số điện thoại: + 028 3846 0846</Text>
+          <Text>Email: fptaptech@gmail.com</Text>
+        </View>
+      </View>
       <View style={styles.titleContainer}>
         <Text style={styles.reportTitle}>Danh sách Loại Sản Phẩm</Text>
       </View>
@@ -24,14 +34,7 @@ const Report = ({ category }) => (
           <Moment format="yyyy-MM-DD hh:mm:ss" date={new Date()} />
         </Text>
       </View>
-      <View style={styles.headerContainer}>
-        <Text>
-          Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
-          Minh
-        </Text>
-        <Text>Số điện thoại: + 028 3846 0846</Text>
-        <Text>Email: fptaptech@gmail.com</Text>
-      </View>
+
       <View style={styles.tableContainer}>
         <View style={styles.container}>
           <Text style={styles.img}>Hình Ảnh</Text>

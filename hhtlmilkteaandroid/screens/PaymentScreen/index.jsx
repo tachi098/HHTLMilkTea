@@ -8,6 +8,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import MapView from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux';
 import { checkoutOrder } from '../../store/actions/OrderAction';
+import { setLocationAction } from '../../store/actions/LocationAction';
 
 const PaymentScreen = ({ navigation }) => {
 
@@ -22,7 +23,7 @@ const PaymentScreen = ({ navigation }) => {
     const auth = useSelector((state) => state.auth);
     const { order, totalPrice } = useSelector((state) => state.order);
     const dispatch = useDispatch();
-
+    const { locationPoint } = useSelector(state => state.location);
 
     useEffect(() => {
 
@@ -39,16 +40,29 @@ const PaymentScreen = ({ navigation }) => {
                 return;
             }
 
-            let location = await Location.getCurrentPositionAsync({});
-            let geo = await Location.reverseGeocodeAsync({
-                latitude: location.coords.latitude, longitude: location.coords.longitude
+            let destination = {};
+            await Location.getCurrentPositionAsync({}).then(res => {
+                Location.reverseGeocodeAsync({
+                    latitude: res.coords.latitude, longitude: res.coords.longitude
+                }).then(geo => {
+                    setAddress(geo[0].street + ", " + geo[0].subregion + ", " + geo[0].region)
+                });
+
+                destination = { latitude: res.coords.latitude, longitude: res.coords.longitude }
+                setLocationAction(destination)(dispatch);
+                setLocation(destination);
+            }).catch(err => {
+                console.log("test")
+                Location.reverseGeocodeAsync({
+                    latitude: locationPoint.latitude, longitude: locationPoint.longitude
+                }).then(geo => {
+                    setAddress(geo[0].street + ", " + geo[0].subregion + ", " + geo[0].region)
+                });
+
+                destination = { latitude: locationPoint.latitude, longitude: locationPoint.longitude }
+                setLocation(destination);
             });
 
-
-            setAddress(geo[0].street + ", " + geo[0].subregion + ", " + geo[0].region)
-            let destination = { latitude: location.coords.latitude, longitude: location.coords.longitude }
-
-            setLocation(destination);
             return destination;
         })().then(res => fetchDistanceBetweenPoints(origin.latitude, origin.longitude, res.latitude, res.longitude));
     }, [])

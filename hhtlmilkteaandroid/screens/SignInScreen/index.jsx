@@ -2,8 +2,8 @@ const { View, Text, TextInput, TouchableOpacity, StyleSheet } = require("react-n
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthLoginAction } from './../../store/actions/AuthAction'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { OrderFindAction } from "./../../store/actions/OrderAction"
+import { GetWishlist } from "./../../store/actions/WishlistAction"
 
 const SignInScreen = ({ navigation }) => {
 
@@ -29,6 +29,7 @@ const SignInScreen = ({ navigation }) => {
                     }
                     if (res.roles.includes("ROLE_USER")) {
                         OrderFindAction(res.id, `Bearer ${res?.token}`)(dispatch)
+                        GetWishlist(res.username, `Bearer ${res?.token}`)(dispatch)
                         navigation.navigate("Home ")
                     }
                 });

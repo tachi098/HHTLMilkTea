@@ -6,6 +6,7 @@ import { PrimaryButton } from '../../components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import { OrderAddActionMobile } from '../../store/actions/OrderAction';
+import { udpateWishlist } from '../../store/actions/WishlistAction';
 
 const DetailsScreen = ({ navigation, route }) => {
     const item = route.params;
@@ -18,6 +19,7 @@ const DetailsScreen = ({ navigation, route }) => {
     const [count, setCount] = useState(1);
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const { wishlist } = useSelector((state) => state.user)
 
     const onHandleSelectAdd = item => {
         if (!selectedAdd.includes(item)) {
@@ -74,13 +76,21 @@ const DetailsScreen = ({ navigation, route }) => {
         const priceCurrent = currentPrice;
         const note = "";
         const data = { product, userId, sizeOption, quantity, additionOption, priceCurrent, note }
-        // const username = auth?.user?.username;
-        // const orderID = order?.id;
-        // const type = "team";
-        // dispatch(OrderAddAction(data, { username, type, orderID }));
         dispatch(OrderAddActionMobile(data, `Bearer ${auth?.user?.token}`));
         navigation.navigate("Home ");
     };
+
+    const onHandleWishList = () => {
+        const userId = auth.user.id;
+        dispatch(udpateWishlist({ userId: userId, productId: item.id }, `Bearer ${auth?.user?.token}`));
+
+    };
+
+    const onHandleWishListSelected = () => {
+        const userId = auth.user.id;
+        dispatch(udpateWishlist({ userId: userId, productId: item.id }, `Bearer ${auth?.user?.token}`));
+    };
+
 
     return (
         <SafeAreaView style={{ backgroundColor: COLORS.white }}>
@@ -110,9 +120,18 @@ const DetailsScreen = ({ navigation, route }) => {
                             style={{ fontSize: 25, fontWeight: 'bold', color: COLORS.primary }}>
                             {item.title}
                         </Text>
-                        <View style={style.iconContainer}>
-                            <Icon name="favorite-border" color={COLORS.white} size={25} />
-                        </View>
+                        {
+                            wishlist?.products?.map((w) => w.id).includes(item?.id) ? (
+                                <View style={style.iconContainerSelected} >
+                                    <Icon name="favorite-border" color={COLORS.white} size={25} onPress={onHandleWishListSelected} />
+                                </View>
+                            ) : (
+                                <View style={style.iconContainer} >
+                                    <Icon name="favorite-border" color={COLORS.primary} size={25} onPress={onHandleWishList} />
+                                </View>
+                            )
+                        }
+
                     </View>
                     {sizes?.length > 0 &&
                         (<View>
@@ -201,6 +220,16 @@ const style = StyleSheet.create({
         borderRadius: 30,
     },
     iconContainer: {
+        borderColor: COLORS.primary,
+        borderWidth: 2,
+        backgroundColor: COLORS.white,
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+    },
+    iconContainerSelected: {
         backgroundColor: COLORS.primary,
         height: 50,
         width: 50,

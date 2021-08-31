@@ -74,40 +74,50 @@ const CartScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
-            <View style={style.header}>
-                <Icon name="arrow-back-ios" size={28} onPress={navigation.goBack} />
-                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Cart</Text>
-            </View>
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 80 }}
-                data={order?.orderDetails}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => <CartCard item={item} />}
-                ListFooterComponentStyle={{ paddingHorizontal: 20, marginTop: 20 }}
-            />
-            <View>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        marginVertical: 15,
-                        justifyContent: 'space-between',
-                        marginLeft: 20,
-                        marginRight: 20
-                    }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                        Total Price
-                    </Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+            {auth?.user?.token ? (
+                <>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: 80 }}
+                        data={order?.orderDetails}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item }) => <CartCard item={item} />}
+                        ListFooterComponentStyle={{ paddingHorizontal: 20, marginTop: 20 }}
+                    />
+                    <View>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                marginVertical: 15,
+                                justifyContent: 'space-between',
+                                marginLeft: 20,
+                                marginRight: 20
+                            }}>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+                                Total Price
+                            </Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+                        </View>
+                        <View style={{ marginHorizontal: 30, marginBottom: 10 }}>
+                            <PrimaryButton title="CHECKOUT" onPress={onsubmit} />
+                        </View>
+                    </View>
+                </>
+            ) : (
+                <View style={style.container}>
+                    <Text >Please Signin</Text>
                 </View>
-                <View style={{ marginHorizontal: 30, marginBottom: 10 }}>
-                    <PrimaryButton title="CHECKOUT" onPress={onsubmit} />
-                </View>
-            </View>
+            )}
         </SafeAreaView>
     );
 };
 const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     header: {
         paddingVertical: 20,
         flexDirection: 'row',
