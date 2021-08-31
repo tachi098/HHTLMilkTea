@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   headerContainer: {
-    marginLeft: 200,
+    marginLeft: 40,
   },
 });
 

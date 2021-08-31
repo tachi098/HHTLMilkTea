@@ -11,7 +11,17 @@ Font.register({
 const Report = ({ listRevenue, year, sum }) => (
     <Document>
         <Page size="A4" style={styles.page} wrap>
-            <Image style={styles.logo} src={Logo} />
+            <View style={styles.header}>
+                <Image style={styles.logo} src={Logo} />
+                <View style={styles.headerContainer}>
+                    <Text>
+                        Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
+                        Minh
+                    </Text>
+                    <Text>Số điện thoại: + 028 3846 0846</Text>
+                    <Text>Email: fptaptech@gmail.com</Text>
+                </View>
+            </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.reportTitle}>DOANH THU NĂM {year}</Text>
             </View>
@@ -20,14 +30,6 @@ const Report = ({ listRevenue, year, sum }) => (
                 <Text>
                     <Moment format="yyyy-MM-DD hh:mm:ss" date={new Date()} />
                 </Text>
-            </View>
-            <View style={styles.headerContainer}>
-                <Text>
-                    Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
-                    Minh
-                </Text>
-                <Text>Số điện thoại: + 028 3846 0846</Text>
-                <Text>Email: fptaptech@gmail.com</Text>
             </View>
             <View style={styles.tableContainer}>
                 <View style={styles.container}>
@@ -40,14 +42,15 @@ const Report = ({ listRevenue, year, sum }) => (
                 <View key={index}>
                     <View style={styles.row}>
                         <Text style={styles.monthItem}>{item.month}</Text>
-                        <Text style={styles.revenueItem}>{item.revenue} VNĐ</Text>
+                        {/* <Text style={styles.revenueItem}> {item.revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VNĐ</Text> */}
+                        <Text style={styles.revenueItem}> {item.revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VNĐ</Text>
                     </View>
                 </View>
             ))}
 
             <View>
                 <Text style={{ textAlign: "right", color: "#ff0000", paddingRight: "10", fontWeight: "bold", fontSize: 20 }}>
-                    Tổng doanh thu: {sum} VNĐ
+                    Tổng doanh thu: {sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VNĐ
                 </Text>
             </View>
 

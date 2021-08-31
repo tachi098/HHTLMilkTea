@@ -7,12 +7,14 @@ import CartScreen from '../screens/CartScreen';
 import SignInScreen from '../screens/SignInScreen';
 import { useSelector } from 'react-redux';
 import UserDetailScreen from '../screens/UserDetailScreen';
+import WishlistScreen from '../screens/WishlistScreen';
 
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
     const auth = useSelector((state) => state.auth);
     const { quantity } = useSelector((state) => state.order);
+    const { wishlist } = useSelector((state) => state.user);
 
     return (
         <Tab.Navigator
@@ -41,16 +43,17 @@ const BottomNavigator = () => {
                     tabBarIcon: ({ color }) => (
                         <Icon name="shopping-cart" color={color} size={28} />
                     ),
-                    tabBarBadge: auth?.user?.token ? quantity : "0"
+                    tabBarBadge: auth?.user?.token && quantity
                 }}
             />
             <Tab.Screen
                 name="Wishlist"
-                component={HomeScreen}
+                component={WishlistScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Icon name="favorite" color={color} size={28} />
                     ),
+                    tabBarBadge: auth?.user?.token && wishlist?.quantity
                 }}
             />
             {auth?.user?.token ? (

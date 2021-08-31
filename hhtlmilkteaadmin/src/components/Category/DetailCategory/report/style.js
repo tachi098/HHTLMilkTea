@@ -9,8 +9,8 @@ export const styles = {
         flexDirection: "column",
     },
     logo: {
-        width: 100,
-        height: 100,
+        width: 70,
+        height: 70,
         marginLeft: "auto",
         marginRight: "auto",
     },
@@ -43,8 +43,13 @@ export const styles = {
     label: {
         width: 60,
     },
+    header: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
     headerContainer: {
-        marginTop: 36,
+        marginLeft: 40,
     },
     billTo: {
         marginTop: 20,

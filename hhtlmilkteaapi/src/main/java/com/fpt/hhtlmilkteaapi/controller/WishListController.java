@@ -1,10 +1,13 @@
 package com.fpt.hhtlmilkteaapi.controller;
 
 import com.fpt.hhtlmilkteaapi.entity.Product;
+import com.fpt.hhtlmilkteaapi.entity.User;
 import com.fpt.hhtlmilkteaapi.entity.Wishlist;
 import com.fpt.hhtlmilkteaapi.payload.request.WishlistRequest;
+import com.fpt.hhtlmilkteaapi.payload.response.UserReponse;
 import com.fpt.hhtlmilkteaapi.payload.response.WishlistResponse;
 import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
+import com.fpt.hhtlmilkteaapi.repository.IUserRepository;
 import com.fpt.hhtlmilkteaapi.repository.IWishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,9 @@ public class WishListController {
 
     @Autowired
     private IProductRepository productRepository;
+
+    @Autowired
+    private IUserRepository userRepository;
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -81,5 +87,28 @@ public class WishListController {
         wishlistResponse.setProducts(products);
         wishlistResponse.setQuantity(products.size());
         return  ResponseEntity.ok(wishlistResponse);
+    }
+
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getWishlistByUsername(@PathVariable String username){
+
+        WishlistResponse wishlistResponse = new WishlistResponse();
+
+        User user = userRepository.findByUsername(username).get();
+
+        // Get all wishlist
+        List<Wishlist> wishlists = wishlistRepository.findAllByUserId(user.getId());
+        List<Product> products = new ArrayList<>();
+
+        for(Wishlist wl : wishlists) {
+            products.add(productRepository.findById(wl.getProductId()).get());
+        }
+
+
+        wishlistResponse.setProducts(products);
+        wishlistResponse.setQuantity(products.size());
+
+        return ResponseEntity.ok(wishlistResponse);
     }
 }
