@@ -26,6 +26,7 @@ const Wishlist = React.lazy(() => import("./components/Wishlist"));
 const PaymentForm = React.lazy(() => import("./components/PaymentForm"));
 const ReturnMomo = React.lazy(() => import("./components/ReturnMomo"));
 const AboutUs = React.lazy(() => import("./components/AboutUs"));
+const Game = React.lazy(() => import("./components/Game"));
 
 const App = () => {
   return (
@@ -78,6 +79,9 @@ const App = () => {
                 </Route>
                 <Route path={"/about"} exact>
                   <AboutUs />
+                </Route>
+                <Route path={"/game"} exact>
+                  <Game />
                 </Route>
 
                 <PrivateRoute

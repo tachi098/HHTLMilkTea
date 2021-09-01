@@ -60,6 +60,7 @@ const sections = [
   { title: "SẢN PHẨM", url: "/product" },
   { title: "VÒNG QUAY MAY MẮN", url: "/spinner" },
   { title: "VỀ CHÚNG TÔI", url: "/about" },
+  { title: "TRÒ CHƠI", url: "/game" },
 ];
 
 const drawerWidth = 500;
