@@ -353,6 +353,27 @@ public class OrderController {
         order.setDeletedAt(new Date());
         orderRepository.save(order);
 
+        // Find totalPrice
+        long total = 0;
+        for (OrderDetail orderDetailnew : order.getOrderDetails()) {
+            total += (orderDetailnew.getPriceCurrent() * orderDetailnew.getQuantity());
+        }
+
+        //Update memberVip
+        if(status == 3) {
+            User user = userRepository.findById(order.getUserId().getId()).get();
+            MemberVip memberVip = user.getMemberVip();
+            if (memberVip == null) {
+            memberVip = new MemberVip(0, user);
+            }
+
+            memberVip.setMark(memberVip.getMark() + total/100);
+        memberVipRepository.save(memberVip);
+
+        user.setMemberVip(memberVip);
+        userRepository.save(user);
+        }
+
         return ResponseEntity.ok(orderRepository.save(order));
     }
 
@@ -393,7 +414,13 @@ public class OrderController {
         if (memberVip == null) {
             memberVip = new MemberVip(0, user);
         }
-        memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotal() / 100) - checkoutRequest.getMemberVip());
+
+        if(payment == 2) {
+            memberVip.setMark(memberVip.getMark() + (checkoutRequest.getTotal() / 100) - checkoutRequest.getMemberVip());
+        }else{
+            memberVip.setMark(memberVip.getMark() - checkoutRequest.getMemberVip());
+        }
+
         memberVipRepository.save(memberVip);
 
         user.setMemberVip(memberVip);
