@@ -40,7 +40,7 @@ const Page404 = () => {
   }, [auth?.user?.token, auth?.user?.username, dispatch, order, order?.id]);
 
   return (
-    <div style={{ fontSize: "100%", lineHeight: 1.5 }}>
+    <div style={{ fontSize: "100%", lineHeight: 1.5, minHeight: "60vh" }}>
       <h3
         style={{
           textAlign: "center",
