@@ -49,6 +49,9 @@ public class Order implements Serializable {
     @ColumnDefault("true")
     private boolean team;
 
+    @ColumnDefault("false")
+    private boolean rating;
+
     @ColumnDefault("0") // 0: chưa có gì hết, 1: thông báo để hiển thị, 2: đã xem
     private int notification;
 
