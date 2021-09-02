@@ -9,6 +9,7 @@ import SizeOptionReducer from "./reducers/SizeOptionReducer";
 import ProductReducer from "./reducers/ProductReducer";
 import OrderReducer from "./reducers/OrderReducer";
 import RevenueReducer from "./reducers/RevenueReducer";
+import RatingReducer from "./reducers/RatingReducer";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     saleOff: SaleOffReducer,
     additionOption: AdditionOptionReducer,
     sizeOption: SizeOptionReducer,
+    rating: RatingReducer,
   },
 });
 

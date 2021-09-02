@@ -21,8 +21,18 @@ public class Rating {
     private String content;
 
     @ColumnDefault("0")
-    private double rate;
+    private int rate;
 
     @NonNull
     private String username;
+
+    @NonNull
+    private String orderId;
+
+    public Rating(String content, int rate, @NonNull String username, @NonNull String orderId) {
+        this.content = content;
+        this.rate = rate;
+        this.username = username;
+        this.orderId = orderId;
+    }
 }
