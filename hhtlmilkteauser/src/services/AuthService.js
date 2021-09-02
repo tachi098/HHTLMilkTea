@@ -16,6 +16,7 @@ class AuthService {
     localStorage.removeItem("map");
     localStorage.removeItem("group");
     localStorage.removeItem("reset-pass");
+    localStorage.removeItem("email");
   };
 
   checkEmail = (data) => {

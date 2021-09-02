@@ -67,7 +67,6 @@ const Forget = () => {
   const [message, setMessage] = useState("");
   const [lock, setLock] = useState(false);
   const [lockButton, setLockButton] = useState(false);
-  const [dataOld, setDataOld] = useState("");
   const { register, handleSubmit, errors } = useForm();
 
   //support group member
@@ -102,6 +101,7 @@ const Forget = () => {
         AuthResetPassAction({ email, password })(dispatch).then((res) => {
           if (Object.is(res.data, "OK")) {
             localStorage.removeItem("reset-pass");
+            localStorage.removeItem("email");
             Notification.success("Hệ thống đã duyệt, bạn có thể đổi mật khẩu");
             history.replace("/forget");
           }
@@ -137,10 +137,10 @@ const Forget = () => {
   }, [lockButton, timeLeft]);
 
   const onSubmit = (data) => {
-    setDataOld(Object.is(dataOld, "") ? data : dataOld);
-    AuthCheckEmailAction(Object.is(dataOld, "") ? data : dataOld)(
-      dispatch
-    ).then((res) => {
+    if (data?.email === undefined && localStorage.getItem("email")) {
+      data.email = localStorage.getItem("email");
+    }
+    AuthCheckEmailAction(data)(dispatch).then((res) => {
       if (Object.is(res.message, "Email này đã đăng ký")) {
         setMessage("");
         setLock(true);
@@ -148,9 +148,7 @@ const Forget = () => {
         setTimeLeft(10);
         localStorage.setItem("reset-pass", new Date().getTime());
 
-        const emailGenerate = Object.is(dataOld, "")
-          ? data?.email
-          : dataOld?.email;
+        const emailGenerate = data?.email;
         const passGenerate = makePass(10);
         const urlGenerate = `${window.location.href}?email=${emailGenerate}&password=${passGenerate}&confirm=true`;
         send(
@@ -165,12 +163,14 @@ const Forget = () => {
         )
           .then((response) => {
             console.log("SUCCESS!", response.status, response.text);
+            localStorage.setItem("email", emailGenerate);
           })
           .catch((err) => {
             console.log("FAILED...", err);
           });
       } else {
         setMessage(res.message);
+        localStorage.removeItem("email");
       }
     });
   };

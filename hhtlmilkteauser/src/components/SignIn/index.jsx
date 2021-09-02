@@ -66,6 +66,7 @@ const SignIn = () => {
         localStorage.removeItem("map");
         localStorage.removeItem("group");
         localStorage.removeItem("reset-pass");
+        localStorage.removeItem("email");
         history.push("/home");
         // window.location.href = "/home"
       }
