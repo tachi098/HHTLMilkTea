@@ -131,6 +131,7 @@ const HistoryDetail = () => {
   };
   const [open, setOpen] = useState(false);
   const auth = useSelector((state) => state.auth);
+  const customer = useSelector((state) => state.customer);
 
   const handleDelete = (id) => {
     confirmAlert({
@@ -162,19 +163,19 @@ const HistoryDetail = () => {
 
   const [rate, setRate] = useState(null);
   const [rateChange, setRateChange] = useState(null);
-  const [content , setContent] = useState("");
+  const [content, setContent] = useState("");
 
   const onHandleRating = () => {
-      const data = {
-        rate: rate,
-        content: content,
-        username: auth.user.username,
-        orderId : order.id
-      }
-      setOpen(false);
-      setCheckRate(true);
-      dispatch(RatingAddAction(data));
-      Notification.success("Đánh giá thành công!");
+    const data = {
+      rate: rate,
+      content: content,
+      username: auth.user.username,
+      orderId: order.id
+    }
+    setOpen(false);
+    setCheckRate(true);
+    dispatch(RatingAddAction(data));
+    Notification.success("Đánh giá thành công!");
   }
 
   return (
@@ -532,13 +533,13 @@ const HistoryDetail = () => {
                         color="primary"
                         className={classes.button}
                         onClick={handleClickOpen}
-                        disabled={ order.rating === true ? true: checkRate}
+                        disabled={customer?.customer?.orders?.find((o) => Object.is(o.id, location?.state?.order.id)).rating === true ? true : checkRate}
                       >
                         Đánh giá
                       </Button>
                     )}
 
-                    {order.status === 3 && (!order.rating && !checkRate) &&(
+                    {order.status === 3 && (!customer?.customer?.orders?.find((o) => Object.is(o.id, location?.state?.order.id)).rating && !checkRate) && (
                       <p style={{ color: "red", fontSize: 16, marginTop: 20 }}>
                         Đánh giá để nhận ngay 100 điểm
                       </p>
@@ -575,7 +576,7 @@ const HistoryDetail = () => {
                 <StarIcon
                   className={
                     index + 1 <= rateChange ||
-                    (index + 1 <= rate && rateChange === null)
+                      (index + 1 <= rate && rateChange === null)
                       ? classes.starSelected
                       : classes.star
                   }
@@ -593,23 +594,23 @@ const HistoryDetail = () => {
               {rate === 1 && rateChange === null
                 ? "Rất tệ"
                 : rate === 2 && rateChange === null
-                ? "Tệ"
-                : rate === 3 && rateChange === null
-                ? "Ổn"
-                : rate === 4 && rateChange === null
-                ? "Tốt"
-                : rate === 5 && rateChange === null && "Tuyệt vời"}
+                  ? "Tệ"
+                  : rate === 3 && rateChange === null
+                    ? "Ổn"
+                    : rate === 4 && rateChange === null
+                      ? "Tốt"
+                      : rate === 5 && rateChange === null && "Tuyệt vời"}
             </p>
             <p style={{ marginLeft: 30, fontSize: 16 }}>
               {rateChange === 1
                 ? "Rất tệ"
                 : rateChange === 2
-                ? "Tệ"
-                : rateChange === 3
-                ? "Ổn"
-                : rateChange === 4
-                ? "Tốt"
-                : rateChange === 5 && "Tuyệt vời"}
+                  ? "Tệ"
+                  : rateChange === 3
+                    ? "Ổn"
+                    : rateChange === 4
+                      ? "Tốt"
+                      : rateChange === 5 && "Tuyệt vời"}
             </p>
           </div>
 
@@ -624,7 +625,7 @@ const HistoryDetail = () => {
               minRows={5}
               placeholder="Đánh giá của bạn về chất lượng của chúng tôi?"
               fullWidth
-              onChange={e => {setContent(e.target.value)}}
+              onChange={e => { setContent(e.target.value) }}
             />
           </div>
 
