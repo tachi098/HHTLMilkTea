@@ -52,6 +52,7 @@ import { Client } from "@stomp/stompjs";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
 import GoogleTranslate from "../../GoogleTranslate";
+import { getRatings } from "../../../store/actions/RatingAction";
 
 const sections = [
   { title: "TRANG CHỦ", url: "/home" },
@@ -217,6 +218,10 @@ const Header = ({ isOpen, onHandleOpen }) => {
 
   const { search } = window.location;
 
+  useEffect(() => {
+    dispatch(getRatings())
+  }, [dispatch])
+
   const handleOpenModal = () => {
     let longUrl = `http://${window.location.host}?username=${auth?.user?.username}&type=team&orderID=${order?.id}`;
     if (
@@ -291,12 +296,11 @@ const Header = ({ isOpen, onHandleOpen }) => {
         let wsUsername = `${auth?.user?.username}/data`;
 
         if (localStorage.getItem("member")) {
-          wsUsername = `${
-            JSON.parse(localStorage.getItem("groupMember"))?.username
-          }/data`;
+          wsUsername = `${JSON.parse(localStorage.getItem("groupMember"))?.username
+            }/data`;
         }
 
-        client.subscribe(wsUsername, function(msg) {
+        client.subscribe(wsUsername, function (msg) {
           if (msg.body) {
             var jsonBody = JSON.parse(msg.body);
             // console.log("hoaipx: ", jsonBody);
@@ -683,27 +687,27 @@ const Header = ({ isOpen, onHandleOpen }) => {
                 {dataGroupOrderDetails?.groupOrderInfoResponses.some(
                   (a) => a.username === localStorage.getItem("member")
                 ) && (
-                  <span translate="no">
-                    <Badge
-                      badgeContent={
-                        dataGroupOrderDetails &&
-                        (dataGroupOrderDetails?.groupOrderInfoResponses
-                          ?.length > 0
-                          ? dataGroupOrderDetails?.groupOrderInfoResponses
+                    <span translate="no">
+                      <Badge
+                        badgeContent={
+                          dataGroupOrderDetails &&
+                          (dataGroupOrderDetails?.groupOrderInfoResponses
+                            ?.length > 0
+                            ? dataGroupOrderDetails?.groupOrderInfoResponses
                               ?.length - 1
-                          : 0)
-                      }
-                      color="secondary"
-                      style={{ marginRight: 20 }}
-                    >
-                      <GroupAddIcon
-                        style={{ color: "#416c48", cursor: "pointer" }}
-                        aria-haspopup="true"
-                        onClick={handleDrawerOpenGroup}
-                      />
-                    </Badge>
-                  </span>
-                )}
+                            : 0)
+                        }
+                        color="secondary"
+                        style={{ marginRight: 20 }}
+                      >
+                        <GroupAddIcon
+                          style={{ color: "#416c48", cursor: "pointer" }}
+                          aria-haspopup="true"
+                          onClick={handleDrawerOpenGroup}
+                        />
+                      </Badge>
+                    </span>
+                  )}
               </>
             )}
           {dataGroupOrderDetails?.groupOrderInfoResponses &&
@@ -714,9 +718,9 @@ const Header = ({ isOpen, onHandleOpen }) => {
                     <Badge
                       badgeContent={
                         dataGroupOrderDetails?.groupOrderInfoResponses?.length >
-                        0
+                          0
                           ? dataGroupOrderDetails?.groupOrderInfoResponses
-                              ?.length - 1
+                            ?.length - 1
                           : 0
                       }
                       color="secondary"
@@ -1128,7 +1132,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                           <div style={{ display: "flex", marginLeft: 20 }}>
                             {Object.is(
                               customer?.fullName ||
-                                localStorage.getItem("member"),
+                              localStorage.getItem("member"),
                               item.username
                             ) ? (
                               <div
@@ -1161,7 +1165,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                             </p>
                             {Object.is(
                               customer?.fullName ||
-                                localStorage.getItem("member"),
+                              localStorage.getItem("member"),
                               item.username
                             ) ? (
                               <div
@@ -1183,7 +1187,7 @@ const Header = ({ isOpen, onHandleOpen }) => {
                           </div>
                           {Object.is(
                             customer?.fullName ||
-                              localStorage.getItem("member"),
+                            localStorage.getItem("member"),
                             item.username
                           ) ? (
                             <DeleteOutline

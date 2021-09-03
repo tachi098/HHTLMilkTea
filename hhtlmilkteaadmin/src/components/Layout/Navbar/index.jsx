@@ -24,6 +24,7 @@ import { AuthLogoutAction } from "../../../store/actions/AuthAction";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import Logo from "./../../../assets/img/Milktea.gif";
 import { Client } from "@stomp/stompjs";
+import { RatingListAction } from "../../../store/actions/RatingAction";
 
 const SOCKET_URL = "ws://localhost:8080/ws/message";
 
@@ -33,6 +34,10 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [anchorElLogout, setAnchorElLogout] = useState(null);
   const [data, setData] = useState();
+
+  useEffect(() => {
+    dispatch(RatingListAction())
+  }, [dispatch])
 
   useEffect(() => {
     let onConnected = () => {

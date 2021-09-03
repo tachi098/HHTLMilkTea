@@ -17,7 +17,7 @@ public class Rating {
     @NonNull
     private long id;
 
-    @Column(length = 1000)
+    @Column(length = 10000)
     private String content;
 
     @ColumnDefault("0")

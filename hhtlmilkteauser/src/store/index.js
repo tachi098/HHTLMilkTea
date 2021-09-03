@@ -9,6 +9,7 @@ import SpinnerReducer from "./reducers/SpinnerReducer";
 import WheelReducer from "./reducers/WheelReducer";
 import VoucherReducer from "./reducers/VoucherReducer";
 import GroupOrderReducer from "./reducers/GroupOrderReducer";
+import RatingReducer from "./reducers/RatingReducer";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     wheel: WheelReducer,
     voucher: VoucherReducer,
     groupOrder: GroupOrderReducer,
+    rating: RatingReducer,
   },
 });
 

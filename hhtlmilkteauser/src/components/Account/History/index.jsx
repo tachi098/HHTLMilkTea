@@ -186,6 +186,7 @@ const History = () => {
     const [pageSizeProcess, setPageSizeProcess] = useState(3);
     const [pageSizeSuccess, setPageSizeSuccess] = useState(3);
     const [pageSizeFail, setPageSizeFail] = useState(3);
+
     useEffect(() => {
         dispatch(
             HistoryListProcess({

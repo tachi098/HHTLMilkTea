@@ -10,10 +10,11 @@ import TableRow from '@material-ui/core/TableRow';
 import { useHistory, useLocation } from "react-router";
 import BarCode from "react-barcode";
 import moment from "moment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { OrderStatusUpdate } from "../../../store/actions/OrderAction";
 import { confirmAlert } from "react-confirm-alert";
 import Notification from "./../../../common/Notification";
+import StarIcon from "@material-ui/icons/Star";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -95,6 +96,14 @@ const useStyles = makeStyles((theme) => ({
     cellWithoutBorder: {
         borderBottom: "none"
     },
+    star: {
+        color: "#e4e5e9",
+        fontSize: 40,
+    },
+    starSelected: {
+        color: "#ffc107",
+        fontSize: 40,
+    },
 }));
 
 const HistoryDetail = () => {
@@ -104,6 +113,9 @@ const HistoryDetail = () => {
     const [status, setStatus] = useState(order.status);
     const dispatch = useDispatch();
     const history = useHistory();
+    const { ratings } = useSelector((state) => state.rating);
+
+
     const handleOnDelete = (id) => {
         dispatch(OrderStatusUpdate({ id, status: 4 }));
         setStatus(4);
@@ -240,6 +252,27 @@ const HistoryDetail = () => {
                             </Grid>
                         </Grid>
                     </Typography>
+
+                    {
+                        ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)) && (
+                            <React.Fragment >
+                                <div style={{ marginTop: 10, marginLeft: 20 }}>
+                                    <Typography variant="h6" >Đánh giá</Typography>
+                                    {[...Array(ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).rate)].map((item, index) => (
+                                        <StarIcon key={index} className={classes.starSelected} />
+                                    ))}
+                                    {[...Array(5 - ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).rate)].map((item, index) => (
+                                        <StarIcon key={index} className={classes.star} />
+                                    ))}
+                                    <Typography variant="body1"><b>Nội dung đánh giá: </b></Typography>
+                                    <div style={{ height: 80, overflow: "scroll", width: 500 }}>
+                                        <p >{ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).content}</p>
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                        )
+                    }
+
                     <React.Fragment>
                         <Grid container spacing={3} style={{ marginTop: 10 }}>
                             <Grid item xs={12} md={12}>

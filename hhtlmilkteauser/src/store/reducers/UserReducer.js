@@ -30,8 +30,9 @@ const userSlice = createSlice({
       state.customer = {};
       state.wishlist = null;
     },
-    ratingCustomer: (state) => {
+    ratingCustomer: (state, action) => {
       state.customer.memberVip.mark = state.customer.memberVip.mark + 100;
+      state.customer.orders.find((o) => Object.is(o.id, action.payload.orderId)).rating = true
     }
   },
 });

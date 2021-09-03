@@ -149,9 +149,12 @@ const HistoryDetail = () => {
     });
   };
 
+
+
   // Rating
 
   const [checkRate, setCheckRate] = useState(false);
+  const { ratings } = useSelector((state) => state.rating);
 
   const handleClose = () => {
     setOpen(false);
@@ -254,6 +257,27 @@ const HistoryDetail = () => {
               </Grid>
             </Grid>
           </Typography>
+
+          {
+            ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)) && (
+              <React.Fragment >
+                <div style={{ marginTop: 10, marginLeft: 20 }}>
+                  <Typography variant="h6" >Đánh giá</Typography>
+                  {[...Array(ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).rate)].map((item, index) => (
+                    <StarIcon key={index} className={classes.starSelected} />
+                  ))}
+                  {[...Array(5 - ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).rate)].map((item, index) => (
+                    <StarIcon key={index} className={classes.star} />
+                  ))}
+                  <Typography variant="body1"><b>Nội dung đánh giá: </b></Typography>
+                  <div style={{ height: 80, overflow: "scroll", width: 500 }}>
+                    <p >{ratings.find((r) => Object.is(r.orderId, location?.state?.order.id)).content}</p>
+                  </div>
+                </div>
+              </React.Fragment>
+            )
+          }
+
           <React.Fragment>
             <Grid container spacing={3} style={{ marginTop: 10 }}>
               <Grid item xs={12} md={12}>
@@ -619,6 +643,7 @@ const HistoryDetail = () => {
               <b>Ghi chú: </b>
             </Typography>
             <TextField
+              style={{ height: 120, overflowY: "scroll" }}
               multiline
               rowsmin={5}
               aria-label="minimum height"
@@ -631,7 +656,7 @@ const HistoryDetail = () => {
 
           <div
             style={{
-              marginTop: 10,
+              marginTop: 30,
               display: "flex",
               justifyContent: "space-between",
             }}
