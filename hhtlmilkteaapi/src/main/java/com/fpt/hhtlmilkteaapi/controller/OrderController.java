@@ -396,7 +396,11 @@ public class OrderController {
         String note = checkoutRequest.getNote();
 
         //Update order
-        order.setStatus(1);
+        if(payment == 1){
+            order.setStatus(1);
+        }else {
+            order.setStatus(3);
+        }
         order.setNotification(1);
         order.setAddress(address);
         order.setNoteOrder(note);
