@@ -23,7 +23,8 @@ public class Constant {
             "/api/voucher/**",
             "/shared/**",
             "/api/grouporder/**",
-            "/api/revenue/**"
+            "/api/revenue/**",
+            "/api/rating/**"
     };
 
 }

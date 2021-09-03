@@ -40,6 +40,9 @@ const orderSlice = createSlice({
       state.quantity = 0;
       state.totalPrice = 0;
     },
+    ratingOrder(state){
+      state.order.rating = true;
+    }
   },
 });
 
@@ -51,5 +54,6 @@ export const {
   update,
   checkoutSuccess,
   logoutOrder,
+  ratingOrder,
 } = actions;
 export default reducer;

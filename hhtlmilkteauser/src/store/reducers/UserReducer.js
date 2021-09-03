@@ -30,6 +30,9 @@ const userSlice = createSlice({
       state.customer = {};
       state.wishlist = null;
     },
+    ratingCustomer: (state) => {
+      state.customer.memberVip.mark = state.customer.memberVip.mark + 100;
+    }
   },
 });
 
@@ -41,5 +44,6 @@ export const {
   deleteProductWishlist,
   profileuser,
   logoutCustomer,
+  ratingCustomer,
 } = actions;
 export default reducer;

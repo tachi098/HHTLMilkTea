@@ -11,6 +11,7 @@ import CategoryIcon from "@material-ui/icons/Category";
 import LoupeIcon from "@material-ui/icons/Loupe";
 import LocalDrinkIcon from "@material-ui/icons/LocalDrink";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import StarIcon from '@material-ui/icons/Star';
 import { Link } from "react-router-dom";
 
 const MainListItems = () => {
@@ -75,6 +76,15 @@ const MainListItems = () => {
             <AttachMoneyIcon style={{ marginLeft: 5 }} />
           </ListItemIcon>
           <ListItemText primary="Sale OFF" />
+        </ListItem>
+      </Link>
+
+      <Link to="/rating" style={{ textDecoration: "none", color: "black" }}>
+        <ListItem button>
+          <ListItemIcon>
+            <StarIcon style={{ marginLeft: 5 }} />
+          </ListItemIcon>
+          <ListItemText primary="Rate Star" />
         </ListItem>
       </Link>
 
