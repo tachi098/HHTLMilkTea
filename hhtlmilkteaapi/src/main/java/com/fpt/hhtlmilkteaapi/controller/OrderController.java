@@ -374,6 +374,20 @@ public class OrderController {
         userRepository.save(user);
         }
 
+        if(status == 4) {
+            User user = userRepository.findById(order.getUserId().getId()).get();
+            MemberVip memberVip = user.getMemberVip();
+            if (memberVip == null) {
+                memberVip = new MemberVip(0, user);
+            }
+
+            memberVip.setMark(memberVip.getMark() + order.getMemberVip());
+            memberVipRepository.save(memberVip);
+
+            user.setMemberVip(memberVip);
+            userRepository.save(user);
+        }
+
         return ResponseEntity.ok(orderRepository.save(order));
     }
 
@@ -399,7 +413,7 @@ public class OrderController {
         if(payment == 1){
             order.setStatus(1);
         }else {
-            order.setStatus(3);
+            order.setStatus(2);
         }
         order.setNotification(1);
         order.setAddress(address);

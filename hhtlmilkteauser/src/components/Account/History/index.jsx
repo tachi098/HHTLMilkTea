@@ -275,19 +275,19 @@ const History = () => {
         { lable: "Hành Động" },
     ];
 
-    const handleOnDelete = (id) => {
-        dispatch(OrderStatusUpdate({ id, status: 4 }));
+    const handleOnDelete = (id, memberVip) => {
+        dispatch(OrderStatusUpdate({ id, status: 4 }, memberVip));
         Notification.success("Đã hủy thành công");
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = (id, memberVip) => {
         confirmAlert({
             title: "THÔNG BÁO",
             message: "Bạn có chắc muốn hủy đơn hàng này không?",
             buttons: [
                 {
                     label: "Có",
-                    onClick: () => handleOnDelete(id),
+                    onClick: () => handleOnDelete(id, memberVip),
                 },
                 {
                     label: "Không",
@@ -414,7 +414,7 @@ const History = () => {
                                                         {order.status === 1 && order.payment === 1 && (
                                                             <DeleteOutline
                                                                 style={{ color: "red", cursor: "pointer" }}
-                                                                onClick={() => handleDelete(order.id)}
+                                                                onClick={() => handleDelete(order.id, order.memberVip)}
                                                             />
                                                         )}
                                                     </TableCell>

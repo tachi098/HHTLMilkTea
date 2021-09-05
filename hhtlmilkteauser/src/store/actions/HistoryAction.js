@@ -1,5 +1,6 @@
 import { getListProcess, getListFail, getListSuccess, onStatus } from "./../reducers/HistoryReducer";
 import HistoryService from "./../../services/HistoryService";
+import { statusOrderCustomer } from "../reducers/UserReducer";
 
 export const HistoryListProcess = (query) => async (dispatch) => {
     try {
@@ -31,11 +32,11 @@ export const HistoryListFail = (query) => async (dispatch) => {
     }
 };
 
-export const OrderStatusUpdate = (data) => async (dispatch) => {
+export const OrderStatusUpdate = (data, memberVip) => async (dispatch) => {
     try {
-        await HistoryService.updateStatus(data)
-            .then((res) => dispatch(onStatus(res.data)))
-            .catch((err) => console.error(err));
+        const res = await HistoryService.updateStatus(data)
+        dispatch(onStatus(res.data));
+        dispatch(statusOrderCustomer(memberVip))
     } catch (error) {
         console.error(error);
     }

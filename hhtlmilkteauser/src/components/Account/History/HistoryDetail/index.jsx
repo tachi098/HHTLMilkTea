@@ -124,8 +124,8 @@ const HistoryDetail = () => {
   const [order] = useState(location?.state?.order);
   const dispatch = useDispatch();
   const history = useHistory();
-  const handleOnDelete = (id) => {
-    dispatch(OrderStatusUpdate({ id, status: 4 }));
+  const handleOnDelete = (id, memberVip) => {
+    dispatch(OrderStatusUpdate({ id, status: 4 }, memberVip));
     history.push("/account/history/");
     Notification.success("Đã hủy thành công");
   };
@@ -133,14 +133,14 @@ const HistoryDetail = () => {
   const auth = useSelector((state) => state.auth);
   const customer = useSelector((state) => state.customer);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id, memberVip) => {
     confirmAlert({
       title: "THÔNG BÁO",
       message: "Bạn có chắc muốn hủy đơn hàng này không?",
       buttons: [
         {
           label: "Có",
-          onClick: () => handleOnDelete(id),
+          onClick: () => handleOnDelete(id, memberVip),
         },
         {
           label: "Không",
@@ -509,7 +509,7 @@ const HistoryDetail = () => {
                       <TableRow>
                         <TableCell colSpan={3} />
                         <TableCell>
-                          <b style={{ fontSize: 20, paddingLeft: 130 }}>
+                          <b style={{ fontSize: 20, paddingLeft: 0 }}>
                             Tổng tiền thanh toán:
                           </b>
                         </TableCell>
@@ -535,7 +535,7 @@ const HistoryDetail = () => {
                       variant="contained"
                       color="secondary"
                       className={classes.button}
-                      onClick={() => handleDelete(order.id)}
+                      onClick={() => handleDelete(order.id, order.memberVip)}
                     >
                       Hủy đơn hàng
                     </Button>
