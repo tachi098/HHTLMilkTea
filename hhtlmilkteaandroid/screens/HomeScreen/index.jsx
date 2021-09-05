@@ -53,6 +53,7 @@ const HomeScreen = ({ navigation }) => {
     const onHandleChangeCate = (category, index) => {
         setSelectedCategoryIndex(index);
         setValueCategory(category.name === "Milktea" ? "" : category.name);
+        setKeyword();
     }
 
     const ListCategories = () => {

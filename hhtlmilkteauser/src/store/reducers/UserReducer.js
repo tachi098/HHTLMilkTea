@@ -33,6 +33,9 @@ const userSlice = createSlice({
     ratingCustomer: (state, action) => {
       state.customer.memberVip.mark = state.customer.memberVip.mark + 100;
       state.customer.orders.find((o) => Object.is(o.id, action.payload.orderId)).rating = true
+    },
+    statusOrderCustomer: (state, action) => {
+      state.customer.memberVip.mark = state.customer.memberVip.mark + action.payload;
     }
   },
 });
@@ -45,6 +48,7 @@ export const {
   deleteProductWishlist,
   profileuser,
   logoutCustomer,
+  statusOrderCustomer,
   ratingCustomer,
 } = actions;
 export default reducer;

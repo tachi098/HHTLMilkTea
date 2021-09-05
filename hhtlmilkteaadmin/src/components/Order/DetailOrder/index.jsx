@@ -1,4 +1,4 @@
-import { Button, Grid, makeStyles, Typography, CssBaseline, Chip } from "@material-ui/core"
+import { Button, Grid, makeStyles, Typography, CssBaseline, Chip, Avatar } from "@material-ui/core"
 import React, { useState } from "react"
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -15,6 +15,10 @@ import { OrderStatusUpdate } from "../../../store/actions/OrderAction";
 import { confirmAlert } from "react-confirm-alert";
 import Notification from "./../../../common/Notification";
 import StarIcon from "@material-ui/icons/Star";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import Report from "./report";
+import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
+
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -194,6 +198,14 @@ const HistoryDetail = () => {
                     <Typography component="h1" variant="h4" align="center">
                         Đơn Hàng
                     </Typography>
+                    <PDFDownloadLink
+                        document={<Report order={order} />}
+                        fileName="report"
+                    >
+                        <Avatar style={{ cursor: "pointer", backgroundColor: "#FC8400", marginBottom: 10, marginLeft: 20 }}>
+                            <PictureAsPdfIcon />
+                        </Avatar>
+                    </PDFDownloadLink>
                     <Typography variant="h6" className={classes.title}>
                         <Grid container spacing={3}>
                             <Grid item md={12} xl={12} sm={12} className={classes.wrapBarCode}>Mã đơn hàng: <BarCode value={order.id} /></Grid>
@@ -340,7 +352,7 @@ const HistoryDetail = () => {
                                                     <b style={{ paddingLeft: 130 }}>Tạm tính:</b>
                                                 </TableCell>
                                                 <TableCell align="right" className={classes.cellWithoutBorder}>
-                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice + order.memberVip - order.shipping) / 1.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                             <TableRow>
@@ -349,7 +361,7 @@ const HistoryDetail = () => {
                                                     <b style={{ paddingLeft: 130 }}>Thuế (5%):</b>
                                                 </TableCell>
                                                 <TableCell align="right" className={classes.cellWithoutBorder}>
-                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice + order.memberVip - order.shipping) / 1.05 * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.totalPrice * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                             <TableRow>
@@ -376,7 +388,7 @@ const HistoryDetail = () => {
                                                     <b style={{ fontSize: 20, paddingLeft: 130 }}>Tổng tiền thanh toán:</b>
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    <b style={{ fontSize: 20, paddingRight: 45 }} translate="no">{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ fontSize: 20, paddingRight: 45 }} translate="no">{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>
