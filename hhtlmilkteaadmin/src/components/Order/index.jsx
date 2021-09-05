@@ -416,7 +416,7 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>

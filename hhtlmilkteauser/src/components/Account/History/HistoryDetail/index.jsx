@@ -434,15 +434,12 @@ const HistoryDetail = () => {
                           className={classes.cellWithoutBorder}
                         >
                           <b style={{ paddingRight: 45 }} translate="no">
-                            {(
-                              (order.totalPrice +
-                                order.memberVip -
-                                order.shipping) /
-                              1.05
-                            ).toLocaleString("it-IT", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
+                            {
+                              (order.totalPrice
+                              ).toLocaleString("it-IT", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
                           </b>
                         </TableCell>
                       </TableRow>
@@ -459,16 +456,12 @@ const HistoryDetail = () => {
                           className={classes.cellWithoutBorder}
                         >
                           <b style={{ paddingRight: 45 }} translate="no">
-                            {(
-                              ((order.totalPrice +
-                                order.memberVip -
-                                order.shipping) /
-                                1.05) *
-                              0.05
-                            ).toLocaleString("it-IT", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
+                            {
+                              (order.totalPrice * 0.05
+                              ).toLocaleString("it-IT", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
                           </b>
                         </TableCell>
                       </TableRow>
@@ -518,7 +511,7 @@ const HistoryDetail = () => {
                             style={{ fontSize: 20, paddingRight: 45 }}
                             translate="no"
                           >
-                            {order.totalPrice.toLocaleString("it-IT", {
+                            {(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
                               style: "currency",
                               currency: "VND",
                             })}
