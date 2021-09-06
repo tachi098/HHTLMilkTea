@@ -29,6 +29,7 @@ import BarCode from "react-barcode";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import Report from "./report";
+import Logo from "./../../../assets/img/Milktea.gif";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -109,8 +110,8 @@ const DetailUser = () => {
             <Grid item md={3}>
               <div className={classes.wrapAvatar}>
                 <Avatar
-                  src={user?.linkImage}
-                  alt={user?.nameImage}
+                  src={user?.linkImage ?? Logo}
+                  alt={user?.nameImage ?? "logo"}
                   className={classes.avatar}
                 />
                 <Typography variant="h6" component="p">
@@ -291,8 +292,12 @@ const DetailUser = () => {
                                   position: "relative",
                                   right: 35,
                                 }}
-                                onClick={() => history.push("/order/detail", { order: { ...order, userId: user } })}
-                              // onClick={() => console.log({ order: { ...order, userId: user } })}
+                                onClick={() =>
+                                  history.push("/order/detail", {
+                                    order: { ...order, userId: user },
+                                  })
+                                }
+                                // onClick={() => console.log({ order: { ...order, userId: user } })}
                               />
                             </TableCell>
                           </TableRow>

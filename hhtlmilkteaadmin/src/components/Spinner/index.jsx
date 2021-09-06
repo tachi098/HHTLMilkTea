@@ -151,10 +151,10 @@ const Spinner = () => {
   };
 
   const handleOnSubmit = (data) => {
-    setIsLoadingNew(false);
     setError(true);
     if (!Object.is(data.name, "")) {
       dispatch(SpinnerSaveAction(data));
+      setIsLoadingNew(false);
       setError(false);
     }
   };

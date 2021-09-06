@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     height: 100,
   },
   wrapDate: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 30,
     marginBottom: 30,
   },
@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   headerContainer: {
     marginLeft: 40,
@@ -100,8 +100,8 @@ const Report = ({ user }) => (
         <Image style={styles.logo} src={Logo} />
         <View style={styles.headerContainer}>
           <Text>
-            Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí
-            Minh
+            Địa chỉ: 590 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ
+            Chí Minh
           </Text>
           <Text>Số điện thoại: + 028 3846 0846</Text>
           <Text>Email: fptaptech@gmail.com</Text>
@@ -118,7 +118,10 @@ const Report = ({ user }) => (
       </View>
       <View style={styles.wrapInfo}>
         <View style={styles.wrapAvatarInfo}>
-          <Image src={user?.linkImage} style={styles.avatar} />
+          <Image
+            src={user?.linkImage ? user?.linkImage : Logo}
+            style={styles.avatar}
+          />
           <Text style={styles.fullName}>{user?.fullName}</Text>
           <Text style={styles.mark}>Điểm: {user?.memberVip?.mark ?? "0"}</Text>
         </View>
