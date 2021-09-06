@@ -382,7 +382,7 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>
@@ -444,7 +444,7 @@ const History = () => {
             </TabPanel>
             <TabPanel value={valueTab} index={1} >
                 <div className={classes.orderDetail}>
-                    <Card >
+                    <Card className={classes.card}>
                         {listSuccess.length > 0 && (
                             <>
                                 <Typography className={classes.titleOrder} component={'span'}>
@@ -507,7 +507,7 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>
@@ -555,7 +555,7 @@ const History = () => {
             </TabPanel>
             <TabPanel value={valueTab} index={2}>
                 <div className={classes.orderDetail}>
-                    <Card>
+                    <Card className={classes.card}>
                         {listFail.length > 0 && (
                             <>
                                 <Typography className={classes.titleOrder} component={'span'}>
@@ -618,7 +618,7 @@ const History = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{order.totalPrice.toLocaleString("it-IT", {
+                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>
