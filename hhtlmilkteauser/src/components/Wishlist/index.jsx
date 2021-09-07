@@ -160,9 +160,8 @@ const useStyles = makeStyles((theme) => ({
   },
   itemTag: {
     backgroundColor: "#416c48",
-    padding: "3px 18px",
+    padding: "3px 8px",
     color: "white",
-    marginTop: "5%",
     marginLeft: "5%",
     position: "absolute",
     fontSize: 9,
@@ -273,12 +272,15 @@ const Wishlist = () => {
   const handleClickOpen = (item) => {
     if (auth?.user?.token) {
       setProductSelect(item);
-      setCurrentPrice(item.price);
+      setCurrentPrice(
+        item.price * (item?.saleOff?.discount ? 1 - item?.saleOff?.discount : 1)
+      );
       const items = [...item.sizeOptions];
-      setSize(items.sort((a, b) => a.id - b.id));
-      setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
+      setSize(items.sort((a, b) => a.price - b.price));
+      setSelectedSize(items.sort((a, b) => a.price - b.price)[0]);
       setCount(1);
       setOpen(true);
+      setSelectedAdd([]);
     } else {
       Notification.error("Vui lòng đăng nhập trước khi mua hàng!");
     }
@@ -302,7 +304,11 @@ const Wishlist = () => {
 
   const onHandleSelectSize = (item) => {
     setSelectedSize(item);
-    var price = productSelect.price;
+    var price =
+      productSelect.price *
+      (productSelect?.saleOff?.discount
+        ? 1 - productSelect?.saleOff?.discount
+        : 1);
     price += item.price;
     price += selectedAdd.reduce((a, b) => a + (b["price"] || 0), 0);
     setCurrentPrice(price);
@@ -397,6 +403,14 @@ const Wishlist = () => {
                         wishlist?.products?.map((item) => (
                           <TableRow key={item.id}>
                             <TableCell align="center">
+                              {item?.saleOff?.discount && (
+                                <span
+                                  className={classes.itemTag}
+                                  style={{ backgroundColor: "red" }}
+                                >
+                                  Giảm giá {item?.saleOff?.discount * 100}%
+                                </span>
+                              )}
                               <img
                                 alt={item.name}
                                 src={item.linkImage}
@@ -407,7 +421,12 @@ const Wishlist = () => {
                               <p>{item.name}</p>
                             </TableCell>
                             <TableCell align="center">
-                              {item.price.toLocaleString("it-IT", {
+                              {(
+                                item.price *
+                                (item?.saleOff?.discount
+                                  ? 1 - item?.saleOff?.discount
+                                  : 1)
+                              ).toLocaleString("it-IT", {
                                 style: "currency",
                                 currency: "VND",
                               })}

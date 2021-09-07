@@ -241,10 +241,11 @@ const Content = () => {
         item.price * (item?.saleOff?.discount ? 1 - item?.saleOff?.discount : 1)
       );
       const items = [...item.sizeOptions];
-      setSize(items.sort((a, b) => a.id - b.id));
-      setSelectedSize(items.sort((a, b) => a.id - b.id)[0]);
+      setSize(items.sort((a, b) => a.price - b.price));
+      setSelectedSize(items.sort((a, b) => a.price - b.price)[0]);
       setCount(1);
       setOpen(true);
+      setSelectedAdd([]);
     } else {
       Notification.error("Vui lòng đăng nhập trước khi mua hàng!");
     }
@@ -345,7 +346,7 @@ const Content = () => {
     if (auth?.user) {
       data.userId = auth.user.id;
     }
-    data.sizeOption = selectedSize.name;
+    data.sizeOption = !Object.is(selectedSize, undefined) ? selectedSize.name : "";
     data.quantity = count;
 
     if (localStorage.getItem("member")) {
@@ -488,7 +489,7 @@ const Content = () => {
                   ""
                 )}
                 {wishlist?.products?.length > 0 &&
-                wishlist?.products?.map((w) => w.id).includes(product?.id) ? (
+                  wishlist?.products?.map((w) => w.id).includes(product?.id) ? (
                   <FavoriteIcon
                     className={classes.iconWishListSelected}
                     style={{ cursor: "pointer" }}
@@ -613,32 +614,38 @@ const Content = () => {
                   </Typography>
 
                   <div style={{ height: 300, width: 400, overflowY: "scroll" }}>
-                    <div style={{ display: "flex", marginTop: 40 }}>
-                      <Typography
-                        style={{ marginRight: 60, fontFamily: "sans-serif" }}
-                      >
-                        <b>Kích thước: </b>
-                      </Typography>
-                      <div style={{ marginLeft: -42, marginTop: -10 }}>
-                        {size?.map((item) => (
-                          <div
-                            key={item.id}
-                            size="small"
-                            color="primary"
-                            className={
-                              selectedSize?.id === item.id
-                                ? classes.btnSelected
-                                : classes.btnNotSelected
-                            }
-                            onClick={() => {
-                              onHandleSelectSize(item);
-                            }}
+
+
+                    {
+                      productSelect?.sizeOptions?.length > 0 && (
+                        <div style={{ display: "flex", marginTop: 40 }}>
+                          <Typography
+                            style={{ marginRight: 60, fontFamily: "sans-serif" }}
                           >
-                            {item.name}
+                            <b>Kích thước: </b>
+                          </Typography>
+                          <div style={{ marginLeft: -42, marginTop: -10 }}>
+                            {size?.map((item) => (
+                              <div
+                                key={item.id}
+                                size="small"
+                                color="primary"
+                                className={
+                                  selectedSize?.id === item.id
+                                    ? classes.btnSelected
+                                    : classes.btnNotSelected
+                                }
+                                onClick={() => {
+                                  onHandleSelectSize(item);
+                                }}
+                              >
+                                {item.name}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
+                        </div>
+                      )
+                    }
 
                     {productSelect?.additionOptions?.length > 0 && (
                       <div style={{ display: "flex", marginTop: 20 }}>
@@ -655,7 +662,7 @@ const Content = () => {
                               color="primary"
                               className={
                                 selectedAdd.length > 0 &&
-                                selectedAdd.includes(item)
+                                  selectedAdd.includes(item)
                                   ? classes.btnSelected
                                   : classes.btnNotSelected
                               }
