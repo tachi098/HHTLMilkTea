@@ -43,9 +43,13 @@ const ProductSlice = createSlice({
       state.products = action.payload.content;
       state.totalPages = action.payload.totalPages;
     },
+    deleteSaleOffProduct: (state, action) => {
+      state.products = action.payload.content;
+      state.totalPages = action.payload.totalPages;
+    },
   },
 });
 
 const { reducer, actions } = ProductSlice;
-export const { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct } = actions;
+export const { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct, deleteSaleOffProduct } = actions;
 export default reducer;
