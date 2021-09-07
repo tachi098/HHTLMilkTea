@@ -7,6 +7,10 @@ import com.fpt.hhtlmilkteaapi.repository.IProductRepository;
 import com.fpt.hhtlmilkteaapi.repository.ISaleOffRepository;
 import com.fpt.hhtlmilkteaapi.repository.ISizeOptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +30,17 @@ public class SaleOffController {
     private IProductRepository productRepository;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getSaleOffs() {
+    public ResponseEntity<?> getSaleOffs(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int pageSize,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Pageable pageable = PageRequest.of(
+                page - 1, pageSize,
+                "asc".equals(sortDir) ? Sort.by(sortField).descending() : Sort.by(sortField).ascending()
+        );
+
         Date date = new Date();
         Timestamp timeNow = new Timestamp(date.getTime());
 
@@ -38,7 +52,7 @@ public class SaleOffController {
             }
         }
 
-        return ResponseEntity.ok(saleOffRepository.findAll());
+        return ResponseEntity.ok(saleOffRepository.findAll(pageable));
     }
 
     @PostMapping("/add")
@@ -57,10 +71,21 @@ public class SaleOffController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteSaleOff(@PathVariable Long id) {
+    public ResponseEntity<?> deleteSaleOff(@PathVariable Long id,
+                                           @RequestParam(defaultValue = "1") int page,
+                                           @RequestParam(defaultValue = "3") int pageSize,
+                                           @RequestParam(defaultValue = "id") String sortField,
+                                           @RequestParam(defaultValue = "asc") String sortDir) {
+
+        Pageable pageable = PageRequest.of(
+                page - 1, pageSize,
+                "asc".equals(sortDir) ? Sort.by(sortField).descending() : Sort.by(sortField).ascending()
+        );
+
 
         SaleOff saleOff = saleOffRepository.findById(id).get();
         saleOffRepository.delete(saleOff);
-        return ResponseEntity.ok(saleOff);
+
+        return ResponseEntity.ok(productRepository.findProductBySaleOffNotNull(pageable));
     }
 }

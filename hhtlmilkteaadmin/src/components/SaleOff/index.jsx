@@ -19,7 +19,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import { useHistory } from "react-router-dom";
 import { DeleteOutline } from "@material-ui/icons";
-import { SaleOffDeleteAction } from "./../../store/actions/SaleOffAction";
+import {
+  SaleOffListAction,
+  SaleOffDeleteAction,
+} from "./../../store/actions/SaleOffAction";
 import { ProductSaleOff } from "./../../store/actions/ProductAction";
 import Logo from "./../../assets/img/Milktea.gif";
 import { confirmAlert } from "react-confirm-alert";
@@ -73,6 +76,10 @@ const SaleOff = () => {
   const [keyword, setKeyword] = useState("");
   const [discount, setDiscount] = useState(0);
   const [pageSize, setPageSize] = useState(3);
+
+  useEffect(() => {
+    dispatch(SaleOffListAction());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -184,7 +191,7 @@ const SaleOff = () => {
       >
         <Grid
           item
-          md={9}
+          md={7}
           xl={12}
           sm={12}
           style={{
@@ -203,7 +210,6 @@ const SaleOff = () => {
               flexDirection: "row-reverse",
               alignItems: "center",
             }}
-            className={classes.form}
           >
             <TextField
               id="outlined-select-currency"
@@ -212,7 +218,6 @@ const SaleOff = () => {
               value={discount}
               onChange={handleChangeDiscount}
               helperText="Chọn discount để lọc sản phẩm"
-              variant="outlined"
             >
               {discounts.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -225,7 +230,7 @@ const SaleOff = () => {
 
         <Grid
           item
-          md={3}
+          md={5}
           xl={12}
           sm={12}
           style={{
@@ -237,7 +242,6 @@ const SaleOff = () => {
         >
           <FormControl
             style={{
-              marginTop: 16,
               marginLeft: 10,
               display: "flex",
               width: "100%",
