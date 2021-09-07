@@ -21,4 +21,5 @@ public interface IProductRepository extends JpaRepository<Product, String> {
     Page<Product> findProductBySaleOffDiscountLike(Double discount, Pageable pageable);
     Page<Product> findProductBySaleOff_EndDateGreaterThan(Timestamp timeNow, Pageable pageable);
     Page<Product> findProductBySaleOffNull(Pageable pageable);
+    Page<Product> findProductBySaleOffNotNull(Pageable pageable);
 }
