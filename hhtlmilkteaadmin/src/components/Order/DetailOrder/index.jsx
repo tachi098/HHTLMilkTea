@@ -352,7 +352,7 @@ const HistoryDetail = () => {
                                                     <b style={{ paddingLeft: 130 }}>Tạm tính:</b>
                                                 </TableCell>
                                                 <TableCell align="right" className={classes.cellWithoutBorder}>
-                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice - order.shipping + order.memberVip) / 1.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                             <TableRow>
@@ -361,7 +361,7 @@ const HistoryDetail = () => {
                                                     <b style={{ paddingLeft: 130 }}>Thuế (5%):</b>
                                                 </TableCell>
                                                 <TableCell align="right" className={classes.cellWithoutBorder}>
-                                                    <b style={{ paddingRight: 45 }} translate="no">{(order.totalPrice * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ paddingRight: 45 }} translate="no">{((order.totalPrice - order.shipping + order.memberVip) / 1.05 * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                             <TableRow>
@@ -388,7 +388,7 @@ const HistoryDetail = () => {
                                                     <b style={{ fontSize: 20, paddingLeft: 130 }}>Tổng tiền thanh toán:</b>
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    <b style={{ fontSize: 20, paddingRight: 45 }} translate="no">{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
+                                                    <b style={{ fontSize: 20, paddingRight: 45 }} translate="no">{(order.totalPrice).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</b>
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>

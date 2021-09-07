@@ -84,11 +84,11 @@ const Report = ({ order }) => {
         ))}
 
         <View style={{ marginTop: 20 }}>
-          <Text>Tạm tính: {order.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
-          <Text>Thuế (5%): {(order.totalPrice * 0.05).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+          <Text>Tạm tính: {((order.totalPrice - order.shipping + order.memberVip) / 1.05).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+          <Text>Thuế (5%): {((order.totalPrice - order.shipping + order.memberVip) / 1.05 * 0.05).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
           <Text>Phí vận chuyển: {order.shipping.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
           <Text>Giảm giá: {order.memberVip.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
-          <Text>Tổng tiền thanh toán: {(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
+          <Text>Tổng tiền thanh toán: {(order.totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</Text>
         </View>
 
         <View>

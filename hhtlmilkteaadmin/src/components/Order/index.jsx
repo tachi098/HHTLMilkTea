@@ -416,7 +416,7 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
+                                                    <TableCell>{(order.totalPrice).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>
@@ -561,7 +561,7 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
+                                                    <TableCell>{(order.totalPrice).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>
@@ -673,7 +673,7 @@ const Order = () => {
                                                             </Typography>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
+                                                    <TableCell>{(order.totalPrice).toLocaleString("it-IT", {
                                                         style: "currency",
                                                         currency: "VND",
                                                     })}</TableCell>

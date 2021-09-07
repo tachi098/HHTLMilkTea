@@ -435,7 +435,7 @@ const HistoryDetail = () => {
                         >
                           <b style={{ paddingRight: 45 }} translate="no">
                             {
-                              (order.totalPrice
+                              ((order.totalPrice - order.shipping + order.memberVip) / 1.05
                               ).toLocaleString("it-IT", {
                                 style: "currency",
                                 currency: "VND",
@@ -457,7 +457,7 @@ const HistoryDetail = () => {
                         >
                           <b style={{ paddingRight: 45 }} translate="no">
                             {
-                              (order.totalPrice * 0.05
+                              ((order.totalPrice - order.shipping + order.memberVip) / 1.05 * 0.05
                               ).toLocaleString("it-IT", {
                                 style: "currency",
                                 currency: "VND",
@@ -511,7 +511,7 @@ const HistoryDetail = () => {
                             style={{ fontSize: 20, paddingRight: 45 }}
                             translate="no"
                           >
-                            {(order.shipping + order.totalPrice - order.memberVip + order.totalPrice * 0.05).toLocaleString("it-IT", {
+                            {(order.totalPrice).toLocaleString("it-IT", {
                               style: "currency",
                               currency: "VND",
                             })}
