@@ -19,10 +19,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import { useHistory } from "react-router-dom";
 import { DeleteOutline } from "@material-ui/icons";
-import {
-  SaleOffListAction,
-  SaleOffDeleteAction,
-} from "./../../store/actions/SaleOffAction";
+import { SaleOffDeleteAction } from "./../../store/actions/SaleOffAction";
 import { ProductSaleOff } from "./../../store/actions/ProductAction";
 import Logo from "./../../assets/img/Milktea.gif";
 import { confirmAlert } from "react-confirm-alert";
@@ -78,32 +75,25 @@ const SaleOff = () => {
   const [pageSize, setPageSize] = useState(3);
 
   useEffect(() => {
-    dispatch(SaleOffListAction());
-  }, [dispatch]);
-
-  useEffect(
-    () => {
-      dispatch(
-        ProductSaleOff({
-          page,
-          sortField: valueToOrderBy,
-          sortDir: valueToSortDir,
-          keyword,
-          pageSize,
-          discount,
-        })
-      );
-    }
-    // [
-    //   dispatch,
-    //   page,
-    //   valueToOrderBy,
-    //   valueToSortDir,
-    //   keyword,
-    //   pageSize,
-    //   discount,
-    // ]
-  );
+    dispatch(
+      ProductSaleOff({
+        page,
+        sortField: valueToOrderBy,
+        sortDir: valueToSortDir,
+        keyword,
+        pageSize,
+        discount,
+      })
+    );
+  }, [
+    dispatch,
+    page,
+    valueToOrderBy,
+    valueToSortDir,
+    keyword,
+    pageSize,
+    discount,
+  ]);
 
   const handleRequestSort = (property) => {
     const isAscending =
@@ -288,8 +278,6 @@ const SaleOff = () => {
           <TableBody>
             {products.map((u) => (
               <TableRow key={u.id}>
-                {/* {u.saleOff ? (
-                  <> */}
                 <TableCell component="th" scope="row">
                   <img
                     alt=""
@@ -318,8 +306,6 @@ const SaleOff = () => {
                     onClick={() => onhandleDelete(u.saleOff.id)}
                   />
                 </TableCell>
-                {/* </>
-                ) : null} */}
               </TableRow>
             ))}
           </TableBody>

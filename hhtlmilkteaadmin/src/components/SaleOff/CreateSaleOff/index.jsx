@@ -90,7 +90,7 @@ const CreateSaleOff = () => {
     "12",
   ];
   const monthValue = months[new Date().getMonth().toString()];
-  const dayValue = (new Date().getDate() + 1).toString();
+  const dayValue = (new Date().getDate() + 1).toString().padStart(2, "0");
 
   const {
     register,

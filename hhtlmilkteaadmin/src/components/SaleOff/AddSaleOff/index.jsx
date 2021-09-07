@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { SaleOffListAction } from "../../../store/actions/SaleOffAction";
+// import { SaleOffListAction } from "../../../store/actions/SaleOffAction";
 import { ShowProductSaleOff } from "../../../store/actions/ProductAction";
 import Logo from "./../../../assets/img/Milktea.gif";
 import Pagination from "@material-ui/lab/Pagination";
@@ -80,7 +80,6 @@ const AddSaleOff = () => {
   const [pageSize, setPageSize] = useState(3);
 
   useEffect(() => {
-    dispatch(SaleOffListAction());
     dispatch(
       ShowProductSaleOff({
         page,
