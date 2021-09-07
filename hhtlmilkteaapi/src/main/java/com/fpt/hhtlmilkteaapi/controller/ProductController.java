@@ -140,6 +140,9 @@ public class ProductController {
             for (int i = 0; i < productRequest.getSizeOptions().size(); i++) {
                 sizeOptions.add(objectMapper.readValue(productRequest.getSizeOptions().get(i).toString(), SizeOption.class));
             }
+            if(!sizeOptions.contains(sizeOptionRepository.findById(1L).get())){
+                sizeOptions.add(sizeOptionRepository.findById(1L).get());
+            }
         } else {
             sizeOptions = null;
         }
