@@ -107,7 +107,7 @@ const EditSizeOption = () => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Typography variant="h4">Cập nhật Topping</Typography>
+          <Typography variant="h4">Cập nhật Size</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item md={8} xs={12}>
@@ -118,7 +118,7 @@ const EditSizeOption = () => {
                   style={{ display: "none" }}
                 />
                 <TextField
-                  label="Nhập tên Topping"
+                  label="Nhập tên size"
                   style={{ marginTop: 10 }}
                   defaultValue={sizeOption.name}
                   fullWidth
@@ -130,12 +130,12 @@ const EditSizeOption = () => {
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Nhập tên Topping
+                    Nhập tên size
                   </FormHelperText>
                 )}
 
                 <TextField
-                  label="Nhập tên Topping"
+                  label="Nhập tên size"
                   style={{ marginTop: 10 }}
                   defaultValue={sizeOption.price}
                   fullWidth
@@ -148,7 +148,7 @@ const EditSizeOption = () => {
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Nhập Giá Topping
+                    Nhập Giá size
                   </FormHelperText>
                 )}
               </Grid>
