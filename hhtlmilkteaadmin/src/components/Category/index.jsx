@@ -227,7 +227,7 @@ const Category = () => {
               color="primary"
               onClick={onHandleRedirect}
             >
-              Thêm sản phẩm
+              Thêm loại sản phẩm
             </Button>
 
             <Select

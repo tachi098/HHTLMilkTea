@@ -476,18 +476,18 @@ const Content = () => {
           <Grid item key={product.id} xs={12} sm={6} md={3}>
             <Card className={classes.card}>
               <div className={classes.itemHeader}>
-                {newProductId === product.id ? (
+                {newProductId === product.id && (
                   <span className={classes.itemTag}>Món mới</span>
-                ) : product?.saleOff?.discount ? (
-                  <span
-                    className={classes.itemTag}
-                    style={{ backgroundColor: "red" }}
-                  >
-                    Giảm giá {product?.saleOff?.discount * 100}%
-                  </span>
-                ) : (
-                  ""
                 )}
+                {
+                  product?.saleOff?.discount && (
+                    <span
+                      className={classes.itemTag}
+                      style={{ backgroundColor: "red" }}
+                    >
+                      Giảm giá {product?.saleOff?.discount * 100}%
+                    </span>
+                  )}
                 {wishlist?.products?.length > 0 &&
                   wishlist?.products?.map((w) => w.id).includes(product?.id) ? (
                   <FavoriteIcon

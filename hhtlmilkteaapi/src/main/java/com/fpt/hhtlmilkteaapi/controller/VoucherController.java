@@ -77,13 +77,20 @@ public class VoucherController {
         codeRepository.save(code);
 
         User user = userRepository.findByUsername(voucherRequest.getUsername()).get();
-        MemberVip memberVip = memberVipRepository.findByUser(user).get();
+
+        MemberVip memberVip = user.getMemberVip();
+        if (memberVip == null) {
+            memberVip = new MemberVip(0, user);
+        }
+
+//        MemberVip memberVip = memberVipRepository.findByUser(user).get();
         memberVip.setMark(memberVip.getMark() + code.getMark());
         memberVipRepository.save(memberVip);
 
         // List codes news after update deletedAt
         List<Code> codes = codeRepository.findAllByEndDateGreaterThanEqualAndDeletedAtNullAndUsername(new Date(), voucherRequest.getUsername());
         User userNew = userRepository.findByUsername(voucherRequest.getUsername()).get();
+        userNew.setMemberVip(memberVip);
 
 
         // Get all wishlist of user by id
