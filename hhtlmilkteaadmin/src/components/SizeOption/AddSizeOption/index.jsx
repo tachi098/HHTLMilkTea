@@ -90,14 +90,21 @@ const CreateSizeOption = () => {
                   fullWidth
                   name="price"
                   type="number"
-                  inputRef={register({ required: true })}
+                  inputRef={register({
+                    required: "Giá không được để trống",
+                    validate: (value) => {
+                      if (value > 50000 || value < 5000) {
+                        return "Giá phải từ 5.000 VND - 50.000 VND";
+                      }
+                    },
+                  })}
                 />
-                {errors.price && (
+                {errors.price?.message && (
                   <FormHelperText
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Không Được Để Trống
+                    {errors.price?.message}
                   </FormHelperText>
                 )}
               </Grid>
