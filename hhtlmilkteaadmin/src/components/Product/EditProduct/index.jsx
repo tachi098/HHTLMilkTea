@@ -370,6 +370,11 @@ const EditProduct = () => {
                       value: /^[0-9]+$/i,
                       message: "Giá không hợp lệ",
                     },
+                    validate: (value) => {
+                      if (value > 300000 || value < 10000) {
+                        return "Giá phải từ 10.000 VND - 300.000 VND";
+                      }
+                    },
                   })}
                 />
                 {errors.price?.message && (

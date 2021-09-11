@@ -298,7 +298,13 @@ const AddProduct = () => {
                                     style={{ marginTop: 10 }}
                                     fullWidth
                                     name="price"
-                                    inputRef={register({ required: "Nhập giá sản phẩm", pattern: { value: /^[0-9]+$/i, message: "Giá không hợp lệ" } })}
+                                    inputRef={register({
+                                        required: "Nhập giá sản phẩm", pattern: { value: /^[0-9]+$/i, message: "Giá không hợp lệ" }, validate: (value) => {
+                                            if (value > 300000 || value < 10000) {
+                                                return "Giá phải từ 10.000 VND - 300.000 VND";
+                                            }
+                                        },
+                                    })}
                                 />
                                 {errors.price?.message &&
                                     <FormHelperText style={{ color: 'red' }} id="component-error-text">{errors.price?.message}</FormHelperText>
