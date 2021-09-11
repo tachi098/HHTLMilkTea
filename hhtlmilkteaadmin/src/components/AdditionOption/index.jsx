@@ -249,7 +249,14 @@ const AdditionOption = () => {
             {additionOptions.map((u) => (
               <TableRow key={u.id}>
                 <TableCell>{u.name}</TableCell>
-                <TableCell>{u.price} VND</TableCell>
+                <TableCell>
+                  {u.price
+                    .toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })
+                    .toString()}
+                </TableCell>
                 <TableCell>
                   {u.deletedAt ? (
                     <Chip
@@ -277,7 +284,6 @@ const AdditionOption = () => {
                     style={{ color: "red", cursor: "pointer" }}
                     onClick={() => onhandleDelete(u.id)}
                   />
-
                 </TableCell>
               </TableRow>
             ))}
