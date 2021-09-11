@@ -18,10 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Pagination from "@material-ui/lab/Pagination";
 import TableHeader from "../TableHeader";
 import { useHistory } from "react-router-dom";
-import {
-  CreateOutlined,
-  DeleteOutline,
-} from "@material-ui/icons";
+import { CreateOutlined, DeleteOutline } from "@material-ui/icons";
 import {
   SizeOptionPageAction,
   SizeOptionDeleteAction,
@@ -250,7 +247,14 @@ const SizeOption = () => {
             {sizeOptions.map((u) => (
               <TableRow key={u.id}>
                 <TableCell>{u.name}</TableCell>
-                <TableCell>{u.price}</TableCell>
+                <TableCell>
+                  {u.price
+                    .toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })
+                    .toString()}
+                </TableCell>
                 <TableCell>
                   {u.deletedAt ? (
                     <Chip
@@ -267,7 +271,6 @@ const SizeOption = () => {
 
                 {u.id !== 1 && (
                   <TableCell>
-
                     <CreateOutlined
                       style={{
                         color: "#3F51B5",
@@ -281,8 +284,7 @@ const SizeOption = () => {
                       onClick={() => onhandleDelete(u.id)}
                     />
                   </TableCell>
-                )
-                }
+                )}
               </TableRow>
             ))}
           </TableBody>

@@ -135,20 +135,27 @@ const EditAdditionOption = () => {
                 )}
 
                 <TextField
-                  label="Nhập tên Topping"
+                  label="Nhập giá Topping"
                   style={{ marginTop: 10 }}
                   defaultValue={additionOption.price}
                   fullWidth
                   name="price"
                   type="number"
-                  inputRef={register({ required: true })}
+                  inputRef={register({
+                    required: "Giá không được để trống",
+                    validate: (value) => {
+                      if (value > 50000 || value < 5000) {
+                        return "Giá phải từ 5.000 VND - 50.000 VND";
+                      }
+                    },
+                  })}
                 />
-                {errors.price && (
+                {errors.price?.message && (
                   <FormHelperText
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Nhập Giá Topping
+                    {errors.price?.message}
                   </FormHelperText>
                 )}
               </Grid>
