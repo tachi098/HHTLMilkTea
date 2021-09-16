@@ -28,7 +28,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { CategoryListAction } from "./../../../store/actions/CategoryAction";
 import { AdditionOptionListAction } from "./../../../store/actions/AdditionOptionAction";
 import { SizeOptionAction } from "./../../../store/actions/SizeOptionAction";
-import { updateProduct } from "./../../../store/actions/ProductAction";
+import { getAllProducts, updateProduct } from "./../../../store/actions/ProductAction";
 import Notification from "./../../../common/Notification";
 
 const useStyles = makeStyles((theme) => ({
@@ -104,12 +104,15 @@ const EditProduct = () => {
 
   const { sizeOptions } = useSelector((state) => state.sizeOption);
 
+  const { productsAll } = useSelector((state) => state.product);
+
   var addOptionLeft = location.state.addition;
 
   var sizeOptionLeft = location.state.size;
 
   //get list category, addOption, sizeOption
   useEffect(() => {
+    dispatch(getAllProducts());
     dispatch(CategoryListAction());
     dispatch(AdditionOptionListAction());
     dispatch(SizeOptionAction());
@@ -348,14 +351,20 @@ const EditProduct = () => {
                   defaultValue={product.name}
                   fullWidth
                   name="name"
-                  inputRef={register({ required: true })}
+                  inputRef={register({
+                    required: "Nhập tên sản phẩm", validate: (value) => {
+                      if (productsAll.filter(p => p.name === value).length === 1 && product.name !== value) {
+                        return "Tên sản phẩm đã tồn tại";
+                      }
+                    },
+                  })}
                 />
-                {errors.name && (
+                {errors.name?.message && (
                   <FormHelperText
                     style={{ color: "red" }}
                     id="component-error-text"
                   >
-                    Nhập tên sản phẩm
+                    {errors.name?.message}
                   </FormHelperText>
                 )}
                 <TextField

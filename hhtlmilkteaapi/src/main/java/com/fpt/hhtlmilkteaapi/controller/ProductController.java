@@ -49,6 +49,12 @@ public class ProductController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(productRepository.findAll());
+    }
+
     @GetMapping("/list")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getProducts(

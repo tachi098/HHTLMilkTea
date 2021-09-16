@@ -7,7 +7,7 @@ import { SizeOptionAction } from "./../../../store/actions/SizeOptionAction"
 import { useForm } from "react-hook-form";
 import React from "react";
 import { ErrorOutline } from "@material-ui/icons"
-import { addProduct } from "./../../../store/actions/ProductAction"
+import { addProduct, getAllProducts } from "./../../../store/actions/ProductAction"
 import { useHistory } from "react-router-dom";
 import Notification from "./../../../common/Notification"
 
@@ -85,6 +85,7 @@ const AddProduct = () => {
 
     //get list category, addOption, sizeOption
     useEffect(() => {
+        dispatch(getAllProducts());
         dispatch(CategoryListAction());
         dispatch(AdditionOptionListAction());
         dispatch(SizeOptionAction());
@@ -123,6 +124,8 @@ const AddProduct = () => {
     const [left, setLeft] = useState([]);
     const [right, setRight] = useState([]);
     const [addOpen, setaddOpen] = useState(0);
+    const { productsAll } = useSelector((state) => state.product);
+
 
     const handleClose = () => {
         setOpen(false);
@@ -289,9 +292,15 @@ const AddProduct = () => {
                                     style={{ marginTop: 10 }}
                                     fullWidth
                                     name="name"
-                                    inputRef={register({ required: true })} />
-                                {errors.name &&
-                                    <FormHelperText style={{ color: 'red' }} id="component-error-text">Nhập tên sản phẩm</FormHelperText>
+                                    inputRef={register({
+                                        required: "Nhập tên sản phẩm", validate: (value) => {
+                                            if (productsAll.filter(p => p.name === value).length === 1) {
+                                                return "Tên sản phẩm đã tồn tại";
+                                            }
+                                        },
+                                    })} />
+                                {errors.name?.message &&
+                                    <FormHelperText style={{ color: 'red' }} id="component-error-text">{errors.name?.message}</FormHelperText>
                                 }
 
                                 <TextField label="Nhập giá tiền"

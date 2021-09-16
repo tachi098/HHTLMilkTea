@@ -83,6 +83,7 @@ const Product = () => {
   const [name, setName] = useState("");
   const [pageSize, setPageSize] = useState(3);
 
+
   useEffect(() => {
     dispatch(CategoryListAction());
     dispatch(AdditionOptionListAction());

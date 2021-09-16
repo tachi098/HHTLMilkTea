@@ -1,4 +1,4 @@
-import { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct } from "./../reducers/ProductReducer";
+import { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct, getAll } from "./../reducers/ProductReducer";
 import ProductService from "./../../services/ProductService";
 
 export const ProductGetAll = (query) => async (dispatch) => {
@@ -87,6 +87,16 @@ export const ShowProductSaleOff = (query) => async (dispatch) => {
   try {
     await ProductService.showSaleOffProduct(query)
       .then((res) => dispatch(getSaleOffProduct(res.data)))
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getAllProducts = () => async (dispatch) => {
+  try {
+    await ProductService.productGetAll()
+      .then((res) => dispatch(getAll(res.data)))
       .catch((err) => console.error(err));
   } catch (error) {
     console.error(error);

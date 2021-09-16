@@ -19,6 +19,9 @@ class ProductService {
     showSaleOffProduct = (query) => {
         return api.get("/product/saleoff?saleOff=add", { params: query });
     };
+    productGetAll = () => {
+        return api.get("/product/getAll");
+    }
 }
 
 export default new ProductService();
