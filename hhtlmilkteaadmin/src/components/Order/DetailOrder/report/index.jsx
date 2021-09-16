@@ -33,7 +33,7 @@ const Report = ({ order }) => {
           </View>
         </View>
         <View style={styles.titleContainer}>
-          <Text style={styles.reportTitle}>Danh sách Loại Sản Phẩm</Text>
+          <Text style={styles.reportTitle}>Thông tin đơn hàng</Text>
         </View>
         <View>
           <Text style={styles.reportTitle}>{order.name}</Text>

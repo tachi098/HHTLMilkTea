@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   products: [],
   totalPages: 1,
+  productsAll: []
 };
 
 const ProductSlice = createSlice({
@@ -47,9 +48,12 @@ const ProductSlice = createSlice({
       state.products = action.payload.content;
       state.totalPages = action.payload.totalPages;
     },
+    getAll: (state, action) => {
+      state.productsAll = action.payload
+    }
   },
 });
 
 const { reducer, actions } = ProductSlice;
-export const { getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct, deleteSaleOffProduct } = actions;
+export const { getAll, getProducts, productAdded, productUpdate, productDelete, getSaleOff, getSaleOffProduct, deleteSaleOffProduct } = actions;
 export default reducer;
